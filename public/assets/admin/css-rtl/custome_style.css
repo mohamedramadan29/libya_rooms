@@ -1,0 +1,136 @@
+.certificate_head {
+    max-height: 150px;
+}
+
+.certificate_head .head1 {
+}
+
+.certificate_head .head1 h2 {
+    color: #6F6252;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+.certificate_head .head2 h3 {
+    color: #2980b9;
+}
+
+.certificate_head .image img {
+    width: 90px;
+}
+
+.main_head h1 {
+    color: #6F6252;
+    font-size: 22px;
+    margin-bottom: 60px;
+}
+
+.content_body {
+
+}
+
+.content_body p {
+    font-size: 17px;
+    line-height: 3;
+    word-spacing: 5px;
+}
+
+.content_body p span {
+    display: inline-block;
+    width: 25px;
+    text-align: center;
+}
+
+.body_info {
+}
+
+.body_info ul {
+    padding: 0;
+    margin: 0;
+}
+
+.body_info ul li {
+}
+
+.body_info ul li span:nth-of-type(2) {
+    margin-right: 20%;
+}
+
+.body_info ul hr {
+}
+
+.body_info .alert {
+    background-color: #2980b9;
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+    margin-top: 30px;
+}
+
+.body_info .alert p {
+    padding: 0;
+    margin: 0;
+    word-spacing: 5px;
+    font-size: 16px;
+}
+
+.body_footer {
+}
+
+.body_footer .first_body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 40px;
+}
+
+.body_footer .first_body span {
+    width: 25px;
+    display: inline-block;
+}
+
+.body_footer .second_body {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+.body_footer .second_body .sign {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.body_footer .second_body .sign p {
+    font-weight: bold;
+    font-size: 17px;
+    margin-left: 20px;
+}
+
+.body_footer .second_body .sign .line {
+ border-bottom: 1px solid #6F6252;
+    width: 180px;
+}
+
+.body_footer .last_footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 50px;
+}
+.body_footer .last_footer .first{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.body_footer .last_footer .first span{
+    margin-left: 15px;
+}
+.body_footer .last_footer .first span i{
+    font-size: 20px;
+    color: #6F6252;
+}
+.body_footer .last_footer .first p{
+    font-size: 15px;
+    line-height: 2;
+}
