@@ -9,6 +9,8 @@ use App\Models\admin\CompanyCategories;
 use App\Models\admin\CompanyType;
 use App\Models\admin\FinanialTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,7 +20,7 @@ class CompaniesController extends Controller
 
     public function index()
     {
-        $companies = Companies::all();
+        $companies = Companies::orderby('id','desc')->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
@@ -223,51 +225,91 @@ class CompaniesController extends Controller
     }
 
     // Market Confrim Status companies
-    public function market_confirm(Request $request)
+    public function market_confirm(Request $request,$id)
     {
         $alldata = $request->all();
-        $companies = explode(',', $alldata['companies']);
+        $company = Companies::findOrFail($id);
+        $company->update(['market_confirm' => 1]);
+        return $this->success_message(' تم توثيق الشركه بنجاح  ');
+        //$companies = explode(',', $alldata['companies']);
         // dd($companies);
-        if (!empty($alldata['companies'])) { // التحقق مما إذا كانت القائمة غير فارغة
-            foreach ($companies as $company) {
-                // التحقق مما إذا كانت الشحنة موجودة قبل تحديثها
-                $ship = Companies::find($company);
-                if ($ship) {
-                    // استخدم الدالة update وقم بتمرير مصفوفة بالعمود وقيمته الجديدة
-                    $ship->update(['market_confirm' => 1]);
-                }
-            }
-            return $this->success_message(' تم التاكيد علي الشركات بنجاح  ');
-        } else {
-            return $this->Error_message('من فضلك حدد الشحنات أولاً');
-        }
+
+//        if (!empty($alldata['companies'])) { // التحقق مما إذا كانت القائمة غير فارغة
+//            foreach ($companies as $company) {
+//                // التحقق مما إذا كانت الشحنة موجودة قبل تحديثها
+//                $company = Companies::find($company);
+//                if ($company) {
+//                    // استخدم الدالة update وقم بتمرير مصفوفة بالعمود وقيمته الجديدة
+//                    $company->update(['market_confirm' => 1]);
+//                }
+//            }
+//            return $this->success_message(' تم التاكيد علي الشركات بنجاح  ');
+//        } else {
+//            return $this->Error_message('من فضلك حدد الشحنات أولاً');
+//        }
     }
 
     // Money Confirmed
-    public function money_confirm(Request $request)
+    public function money_confirm(Request $request,$id)
     {
-        $alldata = $request->all();
-        $companies = explode(',', $alldata['companies']);
-        // dd($companies);
-        if (!empty($alldata['companies'])) { // التحقق مما إذا كانت القائمة غير فارغة
-            foreach ($companies as $company) {
-                // التحقق مما إذا كانت الشحنة موجودة قبل تحديثها
-                $ship = Companies::find($company);
-                if ($ship) {
-                    // استخدم الدالة update وقم بتمرير مصفوفة بالعمود وقيمته الجديدة
-                    $ship->update(['money_confirm' => 1]);
+        $company = Companies::findOrFail($id);
+        try {
+            if ($request->isMethod('post')) {
+                $alldata = $request->all();
+                $rules = [
+                    'trans_number' => 'required|numeric',
+                    'company_id' => 'required',
+                    'trans_type' => 'required',
+                    'trans_price' => 'required|numeric',
+                    //'file' => 'required'
+                ];
+                $messages = [
+                    'trans_type.required' => 'من فضلك حدد نوع المعاملة ',
+                    'trans_type.numeric' => ' رقم الايصال يجب ان يكون رقم صحيح  ',
+                    'company_id.required' => 'من فضلك حدد الشركة ',
+                    'trans_number.required' => 'من فضلك ادخل رقم الايصال ',
+                    'trans_price.required' => 'من فضلك ادخل قيمة الايصال ',
+                    'trans_price.numeric' => ' قيمة الايصال يجب ان يكون رقم صحيح  ',
+                   // 'file.required' => 'من فضلك ادخل مرفقات الايصال '
+                ];
+                $validator = Validator::make($alldata, $rules, $messages);
+                if ($validator->fails()) {
+                    return redirect()->back()->withInput()->withErrors($validator);
                 }
+                $filename = '';
+                if ($request->hasFile('file')) {
+                    $filename = $this->saveImage($request->file, public_path('assets/files/transaction_files'));
+                }
+                DB::beginTransaction();
+                $transaction = new FinanialTransaction();
+                $transaction->trans_number = $alldata['trans_number'];
+                $transaction->trans_price = $alldata['trans_price'];
+                $transaction->company_id = $alldata['company_id'];
+                $transaction->trans_type = $alldata['trans_type'];
+                $transaction->notes = $alldata['notes'];
+                $transaction->file = $filename;
+                $transaction->employe_id = Auth::user()->id;
+                $transaction->save();
+                ///// Update Company Status
+                ///
+              $company->update([
+                  'money_confirm'=>1
+              ]);
+                DB::commit();
+
+                return $this->success_message(' تم اضافه المعامله بنجاح وتاكيد دفع الشركه  ');
             }
-            return $this->success_message(' تم التاكيد علي الدفع من الشركات  ');
-        } else {
-            return $this->Error_message('من فضلك حدد الشحنات أولاً');
+
+        } catch (\Exception $e) {
+            return $this->exception_message($e);
         }
     }
 
     // UnConfirmed Companies With Market Team
     public function companies_unconfirmed()
+
     {
-        $companies = Companies::where('market_confirm', '0')->get();
+        $companies = Companies::where('market_confirm', '0')->orderby('id','desc')->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));

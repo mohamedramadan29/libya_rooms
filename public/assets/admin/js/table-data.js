@@ -20,16 +20,16 @@ $(function(e) {
 			lengthMenu: '_MENU_',
 		}
 	});
-	$('#example2').DataTable({
-		responsive: false,
-		//buttons: [ 'copy', 'excel', 'pdf', 'colvis' ],
-		lengthChange: false,
-		searching: true,
-		language: {},
-		columnDefs: [
-			{ targets: [$('#column1').index(), $('#column2').index()], searchable: false } // تحديد العمود بواسطة الـ ID
-		]
-	});
+    $('#example2').DataTable({
+        responsive: false,
+        lengthChange: false,
+        searching: true,
+        language: {},
+        order: [[0, 'desc']], // هذا يحدد الترتيب الافتراضي حسب العمود الأول بشكل تنازلي
+        columnDefs: [
+            { targets: [$('#column1').index(), $('#column2').index()], searchable: false }
+        ]
+    });
 
 
 
