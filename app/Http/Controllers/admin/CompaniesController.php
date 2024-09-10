@@ -318,7 +318,7 @@ class CompaniesController extends Controller
 
     public function money_unconfirmed()
     {
-        $companies = Companies::where('money_confirm', '0')->get();
+        $companies = Companies::where('money_confirm', '0')->where('market_confirm','1')->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));

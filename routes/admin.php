@@ -78,7 +78,5 @@ Route::group(['prefix' => 'admin'], function () {
             Route::match(['post','get'],'transaction/update/{id}','update');
             Route::post('transaction/destroy/{id}', 'destroy');
         });
-
-
     });
 });

@@ -44,35 +44,36 @@
                     <div class="mb-4 main-content-label"> الشركات المسجلة</div>
                     <div class="card-header d-flex align-items-center">
                         @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
-                            <a href="{{url('admin/companies/store')}}" class="btn btn-primary btn-sm"> اضافة شركة جديدة <i
+                            <a href="{{url('admin/companies/store')}}" class="btn btn-primary btn-sm"> اضافة شركة جديدة
+                                <i
                                     class="fa fa-plus"></i> </a>
                         @endif
-{{--                        @if(\Illuminate\Support\Facades\Auth::user()->type == 'market')--}}
-{{--                            <form style="margin-right: 10px;margin-left: 10px;margin-bottom: 0" method="post"--}}
-{{--                                  class="change_orders_status_form"--}}
-{{--                                  action="{{url('admin/companies/market_confirm')}}">--}}
-{{--                                @csrf--}}
-{{--                                <input type="hidden" name="companies" id="selected_orders" class="selected_orders"--}}
-{{--                                       value="">--}}
-{{--                                <button type="submit" class="btn btn-info btn-sm change_orders_status2">--}}
-{{--                                    تاكيد توثيق الشركات <i--}}
-{{--                                        class="fa fa-check"></i>--}}
-{{--                                </button>--}}
-{{--                            </form>--}}
-{{--                        @endif--}}
+                        {{--                        @if(\Illuminate\Support\Facades\Auth::user()->type == 'market')--}}
+                        {{--                            <form style="margin-right: 10px;margin-left: 10px;margin-bottom: 0" method="post"--}}
+                        {{--                                  class="change_orders_status_form"--}}
+                        {{--                                  action="{{url('admin/companies/market_confirm')}}">--}}
+                        {{--                                @csrf--}}
+                        {{--                                <input type="hidden" name="companies" id="selected_orders" class="selected_orders"--}}
+                        {{--                                       value="">--}}
+                        {{--                                <button type="submit" class="btn btn-info btn-sm change_orders_status2">--}}
+                        {{--                                    تاكيد توثيق الشركات <i--}}
+                        {{--                                        class="fa fa-check"></i>--}}
+                        {{--                                </button>--}}
+                        {{--                            </form>--}}
+                        {{--                        @endif--}}
 
                         @if(\Illuminate\Support\Facades\Auth::user()->type == 'money')
-{{--                            <form style="margin-right: 10px;margin-left: 10px;margin-bottom: 0" method="post"--}}
-{{--                                  class="change_orders_status_form"--}}
-{{--                                  action="{{url('admin/companies/money_confirm')}}">--}}
-{{--                                @csrf--}}
-{{--                                <input type="hidden" name="companies" id="selected_orders" class="selected_orders"--}}
-{{--                                       value="">--}}
-{{--                                <button type="submit" class="btn btn-warning btn-sm change_orders_status2">--}}
-{{--                                    تاكيد علي الدفع <i--}}
-{{--                                        class="fa fa-money-bill"></i>--}}
-{{--                                </button>--}}
-{{--                            </form>--}}
+                            {{--                            <form style="margin-right: 10px;margin-left: 10px;margin-bottom: 0" method="post"--}}
+                            {{--                                  class="change_orders_status_form"--}}
+                            {{--                                  action="{{url('admin/companies/money_confirm')}}">--}}
+                            {{--                                @csrf--}}
+                            {{--                                <input type="hidden" name="companies" id="selected_orders" class="selected_orders"--}}
+                            {{--                                       value="">--}}
+                            {{--                                <button type="submit" class="btn btn-warning btn-sm change_orders_status2">--}}
+                            {{--                                    تاكيد علي الدفع <i--}}
+                            {{--                                        class="fa fa-money-bill"></i>--}}
+                            {{--                                </button>--}}
+                            {{--                            </form>--}}
                         @endif
 
                     </div>
@@ -83,18 +84,20 @@
                                 <thead>
                                 <tr>
                                     @if(Auth::user()->type == 'market' || Auth::user()->type == 'money')
-{{--                                        <th>--}}
-{{--                                            <input style="cursor: pointer" id="order_check_select_all"--}}
-{{--                                                   type="checkbox"--}}
-{{--                                                   name="select_all">--}}
-{{--                                        </th>--}}
+                                        {{--                                        <th>--}}
+                                        {{--                                            <input style="cursor: pointer" id="order_check_select_all"--}}
+                                        {{--                                                   type="checkbox"--}}
+                                        {{--                                                   name="select_all">--}}
+                                        {{--                                        </th>--}}
                                     @endif
                                     <th class="wd-15p border-bottom-0"> رقم الشركة</th>
                                     <th class="wd-15p border-bottom-0"> اسم الممثل القانوني</th>
                                     <th class="wd-15p border-bottom-0"> تاريخ الميلاد</th>
                                     <th class="wd-15p border-bottom-0"> الرقم الوطني</th>
                                     <th class="wd-15p border-bottom-0"> محل الاقامة</th>
-                                    <th class="wd-15p border-bottom-0"> المعاملات المالية</th>
+                                    @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
+                                        <th class="wd-15p border-bottom-0"> المعاملات المالية</th>
+                                    @endif
                                     <th class="wd-15p border-bottom-0"> حالة التوثيق</th>
                                     <th class="wd-15p border-bottom-0"> تاكيد الدفع</th>
                                     <th class="wd-15p border-bottom-0" id="column1"> العمليات</th>
@@ -107,20 +110,24 @@
                                 @foreach($companies as $company)
                                     <tr>
                                         @if(Auth::user()->type == 'market' || Auth::user()->type == 'money' )
-{{--                                            <td><input style="cursor: pointer" id="order_check_select"--}}
-{{--                                                       class="order_check_single" type="checkbox"--}}
-{{--                                                       name="select_row" value="{{$company['id']}}">--}}
+                                            {{--                                            <td><input style="cursor: pointer" id="order_check_select"--}}
+                                            {{--                                                       class="order_check_single" type="checkbox"--}}
+                                            {{--                                                       name="select_row" value="{{$company['id']}}">--}}
 
-{{--                                            </td>--}}
+                                            {{--                                            </td>--}}
                                         @endif
                                         <td> {{$company['id']}} </td>
                                         <td> {{$company['name']}} </td>
                                         <td> {{$company['birthdate']}} </td>
                                         <td> {{$company['id_number']}} </td>
                                         <td> {{$company['place']}} </td>
-                                        <td><a class="btn btn-info-gradient btn-sm"
-                                               href="{{url('admin/company/transactions/'.$company['id'])}}"> المعاملات
-                                                المالية </a></td>
+                                        @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
+                                            <td><a class="btn btn-info-gradient btn-sm"
+                                                   href="{{url('admin/company/transactions/'.$company['id'])}}">
+                                                    المعاملات
+                                                    المالية </a></td>
+
+                                        @endif
                                         <td>
                                             @if($company['market_confirm'] == 1)
                                                 <span class="badge badge-success"> موثق  </span>
@@ -128,18 +135,19 @@
                                                 <span class="badge badge-danger"> غير موثق  </span>
                                             @endif
                                         </td>
-                                            <td>
-                                                @if($company['money_confirm'] == 1)
-                                                    <span class="badge badge-success"> تم الدفع  </span>
-                                                    @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
-                                                    <a style="display: block;margin-top: 10px;" href="{{url('admin/company/certificate/'.$company['id'])}}" class="btn btn-info btn-sm"> اصدار شهادة القيد  </a>
-                                                    @endif
-                                                @else
-                                                    <span class="badge badge-danger">  لم يتم الدفع   </span>
-                                                @endif
-                                            </td>
                                         <td>
-
+                                            @if($company['money_confirm'] == 1)
+                                                <span class="badge badge-success"> تم الدفع  </span>
+                                                @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin'||Auth::user()->type=='market')
+                                                    <a style="display: block;margin-top: 10px;"
+                                                       href="{{url('admin/company/certificate/'.$company['id'])}}"
+                                                       class="btn btn-info btn-sm"> اصدار شهادة القيد </a>
+                                                @endif
+                                            @else
+                                                <span class="badge badge-danger">  لم يتم الدفع   </span>
+                                            @endif
+                                        </td>
+                                        <td>
                                             @if(\Illuminate\Support\Facades\Auth::user()->type=='admin')
                                                 <a href="{{url('admin/companies/update/'.$company['id'])}}"
                                                    class="btn btn-primary btn-sm"> <i class="fa fa-edit"></i> </a>
@@ -159,7 +167,7 @@
                                             @if(Auth::user()->type == 'money' && $company['money_confirm'] !=1)
                                                 <button data-target="#money_confirm_{{$company['id']}}"
                                                         data-toggle="modal" class="btn btn-success btn-sm"><i
-                                                        class="fa fa-check"> تأكيد الدفع   </i>
+                                                        class="fa fa-check"> تأكيد الدفع </i>
                                                 </button>
                                             @endif
                                         </td>

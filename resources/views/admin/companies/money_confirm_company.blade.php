@@ -13,7 +13,7 @@
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <input type="text" name="company_id" value="{{$company['id']}}">
+                        <input type="hidden" name="company_id" value="{{$company['id']}}">
                         <input class="form-control" type="text" readonly
                                value="{{$company['name']}}">
                     </div>

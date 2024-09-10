@@ -55,6 +55,7 @@
                             <table class="table text-md-nowrap" id="example2">
                                 <thead>
                                 <tr>
+                                    <th> # </th>
                                     <th class="wd-15p border-bottom-0"> رقم الايصال</th>
                                     <th class="wd-15p border-bottom-0"> اسم الشركة</th>
                                     <th class="wd-15p border-bottom-0"> تاريخ المعاملة</th>
@@ -76,6 +77,7 @@
                                 @endphp
                                 @foreach($transactions as $trans)
                                     <tr>
+                                        <td> {{$i++}} </td>
                                         <td> {{$trans['trans_number']}} </td>
                                         <td><a href="{{url('admin/company/transactions/'.$trans['company_data']['id'])}}"> {{$trans['company_data']['name']}}  </a></td>
                                         <td> {{$trans['created_at']}} </td>
