@@ -82,7 +82,8 @@ License        :   Licensed under ThemeForest License
 */
 /* ######## FONT ######## */
 /* ############### FONTS IMPORT ############### */
-@import url('https://fonts.googleapis.com/css2?family=Cairo&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Zain:wght@200;300;400;700;800;900&display=swap');
 /* ######## BOOTSTRAP ######## */
 /*Color variables*/
 /*gray variables*/
@@ -90,7 +91,7 @@ License        :   Licensed under ThemeForest License
 /*black variables*/
 /*shadow variables*/
 html {
-    font-family: 'Cairo', sans-serif !important;
+    font-family: "Zain", system-ui !important;
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
@@ -100,7 +101,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
   margin: 0;
-    font-family: 'Cairo', sans-serif !important;
+    font-family: "Zain", system-ui !important;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
@@ -111,6 +112,9 @@ body {
 [tabindex="-1"]:focus {
   outline: 0 !important; }
 
+.badge{
+    font-family: "Zain", system-ui !important;
+}
 hr {
   box-sizing: content-box;
   height: 0;
@@ -52544,3 +52548,33 @@ a.text-dark:hover, a.text-dark:focus {
   width: 100vw; }
 
 /*# sourceMappingURL=style.css.map */
+
+.app-sidebar{
+    width:200px !important;
+}
+
+.main-sidebar-header{
+    width:200px !important;
+}
+@media (min-width: 768px) {
+    .app.sidenav-toggled .app-sidebar {
+        width:80px !important
+    }
+}
+@media (min-width: 992px) {
+    .main-content {
+        padding-top: 0 !important;
+        margin-right: 200px !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .app.sidenav-toggled .app-content {
+        margin-right: 80px !important;
+    }
+}
+
+    .app.sidebar-mini.sidenav-toggled-open .app-sidebar {
+        width: 200px !important;
+    }
+

@@ -22,8 +22,6 @@
 
 <!--- Style css -->
 <link href="{{ URL::asset('assets/admin/css-rtl/style.css') }}" rel="stylesheet">
-<!--- Dark-mode css -->
-<link href="{{ URL::asset('assets/admin/css-rtl/style-dark.css') }}" rel="stylesheet">
 <!---Skinmodes css-->
 <link href="{{ URL::asset('assets/admin/css-rtl/skin-modes.css') }}" rel="stylesheet">
 <meta name="csrf-token" content="{{ csrf_token() }}"/>

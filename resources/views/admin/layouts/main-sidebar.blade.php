@@ -2,17 +2,17 @@
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar sidebar-scroll">
     <div class="main-sidebar-header active">
-        <a class="desktop-logo logo-light active" href="{{ url('/' . ($page = 'admin/dashboard')) }}">
+        <a class="desktop-logo logo-light active" href="{{url('admin/dashboard')}}">
             لوحة التحكم
             {{--            <img--}}
             {{--                src="{{ URL::asset('assets/admin/img/brand/logo.png') }}" class="main-logo" alt="logo">--}}
         </a>
-        <a class="desktop-logo logo-dark active" href="{{ url('/' . ($page = 'index')) }}"><img
+        <a class="desktop-logo logo-dark active" href="{{ url('admin/dashboard')}}"><img
                 src="{{ URL::asset('assets/admin/img/brand/logo_tabrat.png') }}" class="main-logo dark-theme"
                 alt="logo"></a>
-        <a class="logo-icon mobile-logo icon-light active" href="{{ url('/' . ($page = 'index')) }}"><img
+        <a class="logo-icon mobile-logo icon-light active" href="{{ url('admin/dashboard')}}"><img
                 src="{{ URL::asset('assets/admin/img/logo_tabrat.png') }}" class="logo-icon" alt="logo"></a>
-        <a class="logo-icon mobile-logo icon-dark active" href="{{ url('/' . ($page = 'index')) }}"><img
+        <a class="logo-icon mobile-logo icon-dark active" href="{{ url('admin/dashboard')}}"><img
                 src="{{ URL::asset('assets/admin/img/logo_tabrat.png') }}" class="logo-icon dark-theme"
                 alt="logo"></a>
     </div>
@@ -56,6 +56,7 @@
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{url('admin/companies')}}"> جميع الشركات </a>
+                        <li><a class="slide-item" href="{{url('admin/expire-companies')}}"> الشركات منتهية الصلاحيه  </a>
                         <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة شركة </a>
                     </ul>
                 </li>

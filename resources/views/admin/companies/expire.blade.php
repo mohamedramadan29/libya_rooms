@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    الشركات المسجلة
+    الشركات منتهية الصلاحية
 @endsection
 @section('css')
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                    class="text-muted mt-1 tx-13 mr-2 mb-0">/ الشركات المسجلة   </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/ الشركات منتهية الصلاحية     </span>
             </div>
         </div>
     </div>
@@ -41,34 +41,35 @@
                     </div>
                 @endif
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5> الشركات المسجلة </h5>
-                    @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
-                        <a href="{{url('admin/companies/store')}}" class="btn btn-primary btn-sm"> اضافة شركة جديدة
-                            <i
-                                class="fa fa-plus"></i> </a>
-                    @endif
+                    <h5>الشركات منتهية الصلاحية </h5>
+                    <h6 class="bg-danger" style="color:#fff;padding:5px;border-radius: 5px;"> {{$expiredCount}}
+                        شركة </h6>
                 </div>
                 <div class="card-body">
                     <div>
-                        <p> فلترة الشركات  </p>
-                        <form method="GET" action="{{ url('admin/company/main-filter')}}">
+                        <p> فلترة الشركات منتهية الصلاحية حسب السنة والشهر </p>
+
+                        <form method="GET" action="{{ url('admin/company/filter') }}">
                             <div class="d-flex align-items-center">
                                 <div class="form_box" style="min-width: 30%">
-                                    <label for="year" class="d-block">  تصنيف الشركة  </label>
-                                    <select class="form-control" name="type" id="type">
-                                        <option value=""> -- حدد التصنيف  -- </option>
-                                        @foreach($types as $type)
-                                            <option value="{{$type['id']}}" {{ old('type',request('type')) == $type['id'] ? 'selected':'' }}>{{$type['name']}}</option>
-                                        @endforeach
+                                    <label for="year" class="d-block"> حدد سنة الانتهاء </label>
+                                    <select class="form-control" name="year" id="year">
+                                        <option value="">اختر السنة</option>
+                                        @for ($i = now()->year - 10; $i <= now()->year + 10; $i++)
+                                            <option
+                                                value="{{ $i }}" {{ old('year', request('year')) == $i ? 'selected' : '' }}>
+                                                {{ $i }}
+                                            </option>
+                                        @endfor
                                     </select>
                                 </div>
                                 <div class="form_box" style="min-width: 30%">
-                                    <label for="category"> نوع النشاط   </label>
-                                    <select class="form-control" name="category" id="category">
-                                        <option value=""> -- حدد نوع النشاط -- </option>
-                                        @foreach($categories as $category)
-                                            <option value="{{$category['id']}}"  {{ old('category',request('category')) == $category['id'] ? 'selected':'' }}> {{$category['name']}} </option>
-                                        @endforeach
+                                    <label for="month"> حدد الشهر </label>
+                                    <select class="form-control" name="month" id="month">
+                                        <option value="">اختر الشهر</option>
+                                        @for ($i = 1; $i <= 12; $i++)
+                                            <option value="{{ $i }}" {{old('month',request('month')) == $i ? 'selected':''}}>{{ $i }}</option>
+                                        @endfor
                                     </select>
                                 </div>
                                 <div class="form_box" style="min-width: 20%">
@@ -79,15 +80,16 @@
                             </div>
                         </form>
                     </div>
+                    <br>
                     <div class="table-responsive">
                         <table class="table text-md-nowrap" id="example">
                             <thead>
                             <tr>
                                 <th class="wd-15p border-bottom-0"> رقم الشركة</th>
                                 <th class="wd-15p border-bottom-0"> الممثل القانوني</th>
-                                <th class="wd-15p border-bottom-0"> تاريخ الميلاد</th>
-                                <th class="wd-15p border-bottom-0"> الرقم الوطني</th>
-                                <th class="wd-15p border-bottom-0"> محل الاقامة</th>
+                                <th class="wd-15p border-bottom-0"> تاريخ الاصدار</th>
+                                <th class="wd-15p border-bottom-0"> الفترة</th>
+                                <th class="wd-15p border-bottom-0"> تاريخ الانتهاء</th>
                                 @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
                                     <th class="wd-15p border-bottom-0"> المعاملات المالية</th>
                                 @endif
@@ -104,9 +106,10 @@
                                 <tr>
                                     <td> {{$company['id']}} </td>
                                     <td> {{$company['name']}} </td>
-                                    <td> {{$company['birthdate']}} </td>
-                                    <td> {{$company['id_number']}} </td>
-                                    <td> {{$company['place']}} </td>
+                                    <td> {{$company['isdar_date']}} </td>
+                                    <td> {{$company['isadarـduration']}} <span class="badge badge-danger"> سنة </span>
+                                    </td>
+                                    <td style="color:red"> {{ $company->expiry_date->format('Y-m-d') }} </td>
                                     @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
                                         <td><a class="btn btn-info-gradient btn-sm"
                                                href="{{url('admin/company/transactions/'.$company['id'])}}">

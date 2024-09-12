@@ -94,7 +94,6 @@
                                         @foreach($categories as $category)
                                             <option @if(old('category') == $category['id']) selected @endif value="{{$category['id']}}"> {{$category['name']}} </option>
                                         @endforeach
-
                                     </select>
 
                                 </div>

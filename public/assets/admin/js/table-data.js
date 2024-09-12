@@ -2,13 +2,27 @@ $(function(e) {
 	//file export datatable
 	var table = $('#example').DataTable({
 		lengthChange: false,
-		buttons: [ 'copy', 'excel', 'pdf', 'colvis' ],
-		responsive: true,
-		language: {
-			searchPlaceholder: 'Search...',
-			sSearch: '',
-			lengthMenu: '_MENU_ ',
-		}
+        buttons: [
+            {
+                extend: 'copy',
+                text: 'نسخ'
+            },
+            {
+                extend: 'excel',
+                text: 'استخراج ملف Excel'
+            },
+            {
+                extend: 'pdf',
+                text: 'استخراج ملف PDF'
+            },
+            {
+                extend: 'colvis',
+                text: 'إظهار/إخفاء الأعمدة'
+            }
+        ],
+		responsive: false,
+		language: {},
+        order: [[0, 'desc']],
 	});
 	table.buttons().container()
 	.appendTo( '#example_wrapper .col-md-6:eq(0)' );

@@ -19,8 +19,9 @@ class FinaialTransactionController extends Controller
     public function index()
     {
         $transactions = FinanialTransaction::with('company_data', 'employe_data')->get();
+        $transactions_count = $transactions->count();
         //dd($transactions);
-        return view('admin.finanial_transaction.index', compact('transactions'));
+        return view('admin.finanial_transaction.index', compact('transactions','transactions_count'));
     }
 
     public function store(Request $request)
@@ -132,5 +133,28 @@ class FinaialTransactionController extends Controller
         } catch (\Exception $e) {
             return $this->exception_message($e);
         }
+    }
+
+    public function TransactionFilter(Request $request)
+    {
+        $query = FinanialTransaction::with('company_data', 'employe_data');
+
+        // التحقق من وجود تواريخ محددة في الطلب
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            // فلترة المعاملات التي تم إنشاؤها بين التاريخين باستخدام created_at
+            $query->whereBetween('created_at', [$request->from_date, $request->to_date]);
+        } elseif ($request->filled('from_date')) {
+            // إذا كان فقط "من تاريخ" موجودًا
+            $query->whereDate('created_at', '>=', $request->from_date);
+        } elseif ($request->filled('to_date')) {
+            // إذا كان فقط "إلى تاريخ" موجودًا
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        // جلب المعاملات المفلترة
+        $transactions = $query->orderBy('created_at', 'desc')->get();
+        $transactions_count = $transactions->count();
+        // إرسال النتائج إلى العرض
+        return view('admin.finanial_transaction.index', compact('transactions','transactions_count'));
     }
 }

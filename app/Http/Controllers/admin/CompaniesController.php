@@ -18,13 +18,15 @@ class CompaniesController extends Controller
 {
     use Message_Trait;
 
-    public function index()
+    public function index(Request $request)
     {
         $companies = Companies::orderby('id','desc')->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
     }
+
+
 
     public function store(Request $request)
     {
@@ -342,4 +344,68 @@ class CompaniesController extends Controller
     }
 
 
+    ////////////////////////////////////////////////// Start Expire Companies ////////////
+    public function expire_companies()
+    {
+
+       // $companies = Companies::where('')
+
+
+        return view('admin.companies.expire');
+    }
+    public function getFilteredCompanies(Request $request)
+    {
+        $query = Companies::query();
+        // فلتر الشركات المنتهية الصلاحية
+        if ($request->has('expired') && $request->expired == 'true') {
+            $query->whereRaw('DATE_ADD(isdar_date, INTERVAL isadarـduration YEAR) < NOW()');
+        }
+
+        // فلتر الشركات التي تنتهي في شهر محدد أو سنة محددة
+        // فلتر الشركات التي تنتهي في سنة محددة
+        if ($request->filled('year')) {
+            $query->whereYear(DB::raw('DATE_ADD(isdar_date, INTERVAL isadarـduration YEAR)'), $request->year);
+        }
+
+        if ($request->filled('month')) {
+            $query->whereMonth(DB::raw('DATE_ADD(isdar_date, INTERVAL isadarـduration YEAR)'), $request->month);
+        }
+
+        // استرجاع الشركات المفلترة
+        $companies = $query->orderBy('id', 'desc')->get();
+        $expiredCount = $companies->count();
+        return view('admin.companies.expire', compact('companies','expiredCount'));
+    }
+
+    public function MainFilter(Request $request)
+    {
+
+        $query = Companies::query();
+
+        if ($request->filled('type')){
+            $query->where('type',$request->type);
+        }
+        if ($request->filled('category')){
+            $query->where('category',$request->category);
+        }
+
+        $companies = $query->orderBy('id','desc')->get();
+        $categories = CompanyCategories::where('status', '1')->get();
+        $types = CompanyType::where('status', '1')->get();
+        return view('admin.companies.index', compact('companies', 'categories', 'types'));
+
+    }
+
+    public function expiredCompanies()
+    {
+        // فلترة الشركات التي انتهت صلاحيتها
+        $companies = companies::whereRaw('DATE_ADD(isdar_date, INTERVAL isadarـduration YEAR) < NOW()')
+            ->orderBy('id', 'desc')
+            ->get();
+        // حساب عدد الشركات المنتهية
+        $expiredCount = $companies->count();
+
+        // عرض النتيجة في صفحة
+        return view('admin.companies.expire', compact('companies','expiredCount'));
+    }
 }

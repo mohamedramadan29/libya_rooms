@@ -38,6 +38,9 @@ Route::group(['prefix' => 'admin'], function () {
         });
         Route::controller(CompaniesController::class)->group(function () {
             Route::get('companies', 'index');
+            Route::get('company/main-filter','MainFilter');
+            Route::get('expire-companies','expiredCompanies');
+            Route::get('company/filter','getFilteredCompanies');
             Route::match(['post', 'get'], 'companies/store', 'store');
             Route::match(['post', 'get'], 'companies/update/{id}', 'update');
             Route::post('companies/destroy/{id}', 'destroy');
@@ -74,6 +77,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::controller(FinaialTransactionController::class)->group(function (){
            Route::get('transaction','index');
+           Route::get('transaction/filter','TransactionFilter');
             Route::match(['post','get'],'transaction/store','store');
             Route::match(['post','get'],'transaction/update/{id}','update');
             Route::post('transaction/destroy/{id}', 'destroy');
