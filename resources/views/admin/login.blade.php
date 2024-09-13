@@ -56,10 +56,7 @@
                                                 </div>
                                                 <button class="btn btn-main-primary btn-block">تسجيل الدخول</button>
                                             </form>
-                                            <div class="main-signin-footer mt-5">
-                                                <p><a href="{{url('admin/register')}}"> اضافه حساب جديد ! </a></p>
-                                                {{--                                                    <p><a href="">نسيت كلمة المرور?</a></p>--}}
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

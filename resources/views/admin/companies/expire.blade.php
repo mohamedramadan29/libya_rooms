@@ -68,7 +68,8 @@
                                     <select class="form-control" name="month" id="month">
                                         <option value="">اختر الشهر</option>
                                         @for ($i = 1; $i <= 12; $i++)
-                                            <option value="{{ $i }}" {{old('month',request('month')) == $i ? 'selected':''}}>{{ $i }}</option>
+                                            <option
+                                                value="{{ $i }}" {{old('month',request('month')) == $i ? 'selected':''}}>{{ $i }}</option>
                                         @endfor
                                     </select>
                                 </div>
@@ -87,7 +88,7 @@
                             <tr>
                                 <th class="wd-15p border-bottom-0"> رقم الشركة</th>
                                 <th class="wd-15p border-bottom-0"> الممثل القانوني</th>
-                                <th class="wd-15p border-bottom-0"> تاريخ الاصدار</th>
+                                <th class="wd-15p border-bottom-0"> تاريخ التوثيق</th>
                                 <th class="wd-15p border-bottom-0"> الفترة</th>
                                 <th class="wd-15p border-bottom-0"> تاريخ الانتهاء</th>
                                 @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
@@ -106,7 +107,12 @@
                                 <tr>
                                     <td> {{$company['id']}} </td>
                                     <td> {{$company['name']}} </td>
-                                    <td> {{$company['isdar_date']}} </td>
+                                    <td>
+                                        @if($company['new_market_confirm_date'] !='')
+                                            {{$company['new_market_confirm_date']}}
+                                        @else
+                                            {{$company['	first_market_confirm_date']}}
+                                        @endif  </td>
                                     <td> {{$company['isadarـduration']}} <span class="badge badge-danger"> سنة </span>
                                     </td>
                                     <td style="color:red"> {{ $company->expiry_date->format('Y-m-d') }} </td>

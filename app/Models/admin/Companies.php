@@ -18,24 +18,29 @@ class Companies extends Model
         return $this->belongsTo(CompanyCategories::class,'category')->select('id','name','number');
     }
 
-
-    //////////////// Strat Get The Expire Company Date
-    ///
+    // تحديد تاريخ انتهاء الشركة بناءً على آخر توثيق ومدة القيد
     public function getExpiryDateAttribute()
     {
-        return Carbon::parse($this->isdar_date)->addYears($this->isadarـduration);
+        // إذا كان هناك تاريخ تجديد توثيق، نستخدمه؛ وإلا نستخدم أول توثيق
+        $marketConfirmDate = $this->new_market_confirm_date
+            ? Carbon::parse($this->new_market_confirm_date)
+            : Carbon::parse($this->first_market_confirm_date);
+
+        // إضافة مدة القيد (عدد السنوات)
+        return $marketConfirmDate->addYears($this->isadarـduration);
     }
 
+    // التحقق مما إذا كانت الشركة منتهية الصلاحية
     public function isExpired()
     {
-        return $this->expiry_date->isPast();
+        return $this->expiry_date->isPast(); // مقارنة تاريخ الانتهاء بالتاريخ الحالي
     }
 
-    // التحقق مما إذا كانت الشركة تنتهي خلال مدة معينة
+    // التحقق مما إذا كانت الشركة ستنتهي خلال مدة معينة (عدد الأشهر)
     public function expiresIn($months)
     {
-        $targetDate = Carbon::now()->addMonths($months);
-        return $this->expiry_date->between(Carbon::now(), $targetDate);
+        $targetDate = Carbon::now()->addMonths($months); // تحديد التاريخ المستهدف بعد عدد الأشهر
+        return $this->expiry_date->between(Carbon::now(), $targetDate); // التحقق بين التاريخ الحالي والتاريخ المستهدف
     }
 
 

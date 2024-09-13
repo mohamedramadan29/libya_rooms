@@ -58,12 +58,21 @@
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
                 @php
-                    // فلترة الشركات التي انتهت صلاحيتها
-                          $companies = \App\Models\admin\companies::whereRaw('DATE_ADD(isdar_date, INTERVAL isadarـduration YEAR) < NOW()')
-                              ->orderBy('id', 'desc')
-                              ->get();
-                          // حساب عدد الشركات المنتهية
-                          $expiredCount = $companies->count();
+
+                    $companies =\App\Models\admin\companies::where(function ($query) {
+      // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+      $query->where(function ($subQuery) {
+          $subQuery->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
+              ->whereNull('new_market_confirm_date');
+      })
+          ->orWhere(function ($subQuery) {
+              $subQuery->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
+          });
+  })
+      ->orderBy('id', 'desc')
+      ->get();
+
+                    $expiredCount = $companies->count();
                 @endphp
                 <div class="card overflow-hidden sales-card bg-warning-gradient">
                     <div class="pl-3 pt-3 pr-3 pb-2 pt-0">

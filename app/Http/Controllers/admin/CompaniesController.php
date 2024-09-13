@@ -8,6 +8,7 @@ use App\Models\admin\Companies;
 use App\Models\admin\CompanyCategories;
 use App\Models\admin\CompanyType;
 use App\Models\admin\FinanialTransaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,12 +21,11 @@ class CompaniesController extends Controller
 
     public function index(Request $request)
     {
-        $companies = Companies::orderby('id','desc')->get();
+        $companies = Companies::orderby('id', 'desc')->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
     }
-
 
 
     public function store(Request $request)
@@ -227,32 +227,50 @@ class CompaniesController extends Controller
     }
 
     // Market Confrim Status companies
-    public function market_confirm(Request $request,$id)
+    public function market_confirm(Request $request, $id)
     {
         $alldata = $request->all();
         $company = Companies::findOrFail($id);
-        $company->update(['market_confirm' => 1]);
-        return $this->success_message(' تم توثيق الشركه بنجاح  ');
-        //$companies = explode(',', $alldata['companies']);
-        // dd($companies);
 
-//        if (!empty($alldata['companies'])) { // التحقق مما إذا كانت القائمة غير فارغة
-//            foreach ($companies as $company) {
-//                // التحقق مما إذا كانت الشحنة موجودة قبل تحديثها
-//                $company = Companies::find($company);
-//                if ($company) {
-//                    // استخدم الدالة update وقم بتمرير مصفوفة بالعمود وقيمته الجديدة
-//                    $company->update(['market_confirm' => 1]);
-//                }
-//            }
-//            return $this->success_message(' تم التاكيد علي الشركات بنجاح  ');
-//        } else {
-//            return $this->Error_message('من فضلك حدد الشحنات أولاً');
-//        }
+        // توثيق الشركة
+        $company->update([
+            'market_confirm' => 1,
+        ]);
+
+        // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
+        if (empty($company->first_market_confirm_date)) {
+            $company->update([
+                'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
+            ]);
+        } else {
+            // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
+            $lastConfirmDate = $company->new_market_confirm_date
+                ? Carbon::parse($company->new_market_confirm_date)
+                : Carbon::parse($company->first_market_confirm_date);
+
+            // الحصول على مدة القيد (عدد السنوات للتجديد)
+            $duration = $company->isadarـduration;
+
+            // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
+            $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
+
+            // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
+            $fixedDayMonth = $lastConfirmDate->format('m-d');
+
+            // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
+            $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
+
+            // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
+            $company->update([
+                'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
+            ]);
+        }
+
+        return $this->success_message('تم توثيق الشركة بنجاح');
     }
 
     // Money Confirmed
-    public function money_confirm(Request $request,$id)
+    public function money_confirm(Request $request, $id)
     {
         $company = Companies::findOrFail($id);
         try {
@@ -272,7 +290,7 @@ class CompaniesController extends Controller
                     'trans_number.required' => 'من فضلك ادخل رقم الايصال ',
                     'trans_price.required' => 'من فضلك ادخل قيمة الايصال ',
                     'trans_price.numeric' => ' قيمة الايصال يجب ان يكون رقم صحيح  ',
-                   // 'file.required' => 'من فضلك ادخل مرفقات الايصال '
+                    // 'file.required' => 'من فضلك ادخل مرفقات الايصال '
                 ];
                 $validator = Validator::make($alldata, $rules, $messages);
                 if ($validator->fails()) {
@@ -294,9 +312,9 @@ class CompaniesController extends Controller
                 $transaction->save();
                 ///// Update Company Status
                 ///
-              $company->update([
-                  'money_confirm'=>1
-              ]);
+                $company->update([
+                    'money_confirm' => 1
+                ]);
                 DB::commit();
 
                 return $this->success_message(' تم اضافه المعامله بنجاح وتاكيد دفع الشركه  ');
@@ -311,7 +329,7 @@ class CompaniesController extends Controller
     public function companies_unconfirmed()
 
     {
-        $companies = Companies::where('market_confirm', '0')->orderby('id','desc')->get();
+        $companies = Companies::where('market_confirm', '0')->orderby('id', 'desc')->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
@@ -320,7 +338,7 @@ class CompaniesController extends Controller
 
     public function money_unconfirmed()
     {
-        $companies = Companies::where('money_confirm', '0')->where('market_confirm','1')->get();
+        $companies = Companies::where('money_confirm', '0')->where('market_confirm', '1')->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
@@ -329,8 +347,8 @@ class CompaniesController extends Controller
     public function certificate(Request $request, $id)
     {
 
-        $company = Companies::with('category')->where('id',$id)->first()->toArray();
-       // dd($company);
+        $company = Companies::with('category')->where('id', $id)->first()->toArray();
+        // dd($company);
         try {
             if ($request->isMethod('post')) {
                 $data = $request->all();
@@ -340,7 +358,7 @@ class CompaniesController extends Controller
             return $this->exception_message($e);
         }
 
-        return view('admin.companies.certificate',compact('company'));
+        return view('admin.companies.certificate', compact('company'));
     }
 
 
@@ -348,33 +366,45 @@ class CompaniesController extends Controller
     public function expire_companies()
     {
 
-       // $companies = Companies::where('')
+        // $companies = Companies::where('')
 
 
         return view('admin.companies.expire');
     }
+
     public function getFilteredCompanies(Request $request)
     {
         $query = Companies::query();
-        // فلتر الشركات المنتهية الصلاحية
-        if ($request->has('expired') && $request->expired == 'true') {
-            $query->whereRaw('DATE_ADD(isdar_date, INTERVAL isadarـduration YEAR) < NOW()');
-        }
 
-        // فلتر الشركات التي تنتهي في شهر محدد أو سنة محددة
-        // فلتر الشركات التي تنتهي في سنة محددة
-        if ($request->filled('year')) {
-            $query->whereYear(DB::raw('DATE_ADD(isdar_date, INTERVAL isadarـduration YEAR)'), $request->year);
-        }
+        // فلتر الشركات التي انتهت صلاحيتها بناءً على تواريخ التوثيق
+        $query->where(function ($subQuery) use ($request) {
+            // فلترة بناءً على السنة
+            if ($request->filled('year')) {
+                $subQuery->where(function ($query) use ($request) {
+                    $query->whereYear(DB::raw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR)'), $request->year)
+                        ->whereNull('new_market_confirm_date');
+                })->orWhere(function ($query) use ($request) {
+                    $query->whereYear(DB::raw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR)'), $request->year);
+                });
+            }
 
-        if ($request->filled('month')) {
-            $query->whereMonth(DB::raw('DATE_ADD(isdar_date, INTERVAL isadarـduration YEAR)'), $request->month);
-        }
+            // فلترة بناءً على الشهر
+            if ($request->filled('month')) {
+                $subQuery->where(function ($query) use ($request) {
+                    $query->whereMonth(DB::raw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR)'), $request->month)
+                        ->whereNull('new_market_confirm_date');
+                })->orWhere(function ($query) use ($request) {
+                    $query->whereMonth(DB::raw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR)'), $request->month);
+                });
+            }
+        });
 
         // استرجاع الشركات المفلترة
         $companies = $query->orderBy('id', 'desc')->get();
         $expiredCount = $companies->count();
-        return view('admin.companies.expire', compact('companies','expiredCount'));
+
+        // عرض النتيجة في صفحة
+        return view('admin.companies.expire', compact('companies', 'expiredCount'));
     }
 
     public function MainFilter(Request $request)
@@ -382,14 +412,14 @@ class CompaniesController extends Controller
 
         $query = Companies::query();
 
-        if ($request->filled('type')){
-            $query->where('type',$request->type);
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
         }
-        if ($request->filled('category')){
-            $query->where('category',$request->category);
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
         }
 
-        $companies = $query->orderBy('id','desc')->get();
+        $companies = $query->orderBy('id', 'desc')->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
@@ -398,14 +428,34 @@ class CompaniesController extends Controller
 
     public function expiredCompanies()
     {
-        // فلترة الشركات التي انتهت صلاحيتها
-        $companies = companies::whereRaw('DATE_ADD(isdar_date, INTERVAL isadarـduration YEAR) < NOW()')
+        // فلترة الشركات التي انتهت صلاحيتها باستخدام تاريخ التوثيق الأول أو الجديد ومدة القيد
+        $companies = Companies::where(function ($query) {
+            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+            $query->where(function ($subQuery) {
+                $subQuery->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
+                    ->whereNull('new_market_confirm_date');
+            })
+                ->orWhere(function ($subQuery) {
+                    $subQuery->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
+                });
+        })
             ->orderBy('id', 'desc')
             ->get();
+
+
+        // تحديث جميع الشركات المنتهية الصلاحية
+        foreach ($companies as $company) {
+            $company->update([
+                'market_confirm' => 0,  // إرجاع توثيق السوق إلى 0
+                'money_confirm' => 0,   // إرجاع تأكيد الدفع إلى 0
+            ]);
+        }
+
+
         // حساب عدد الشركات المنتهية
         $expiredCount = $companies->count();
 
         // عرض النتيجة في صفحة
-        return view('admin.companies.expire', compact('companies','expiredCount'));
+        return view('admin.companies.expire', compact('companies', 'expiredCount'));
     }
 }
