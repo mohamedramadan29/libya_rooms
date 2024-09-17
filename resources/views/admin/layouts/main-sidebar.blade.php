@@ -57,6 +57,7 @@
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{url('admin/companies')}}"> جميع الشركات </a>
                         <li><a class="slide-item" href="{{url('admin/expire-companies')}}"> الشركات منتهية الصلاحيه  </a>
+                        <li><a class="slide-item" href="{{url('admin/expire-month')}}"> الشركات منتهية خلال شهر   </a>
                         <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة شركة </a>
                     </ul>
                 </li>
@@ -107,6 +108,16 @@
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{url('admin/main_categories')}}"> مشاهدة التصنيفات </a></li>
                         <li><a class="slide-item" href="{{url('admin/company_type')}}"> انواع الشركات </a></li>
+                    </ul>
+                </li>
+                <li class="side-item side-item-category"> المناطق والفروع   </li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-city"></i>
+                        <span class="side-menu__label">  المناطق والفروع   </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/regions')}}">  مشاهدة المناطق  </a></li>
                     </ul>
                 </li>
             @elseif(Auth::user()->type == 'market')

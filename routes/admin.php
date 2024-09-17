@@ -8,6 +8,7 @@ use \App\Http\Controllers\admin\MoneyManageController;
 use \App\Http\Controllers\admin\MarketManageController;
 use \App\Http\Controllers\admin\CompaniesController;
 use \App\Http\Controllers\admin\FinaialTransactionController;
+use \App\Http\Controllers\admin\RegionController;
 Route::get('login', [AdminController::class, 'index'])->name('login');
 Route::group(['prefix' => 'admin'], function () {
     Route::post('admin_login', [AdminController::class, 'admin_login']);
@@ -40,6 +41,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('companies', 'index');
             Route::get('company/main-filter','MainFilter');
             Route::get('expire-companies','expiredCompanies');
+            Route::get('expire-month','expiringCompaniesinlastmonth');
             Route::get('company/filter','getFilteredCompanies');
             Route::match(['post', 'get'], 'companies/store', 'store');
             Route::match(['post', 'get'], 'companies/update/{id}', 'update');
@@ -81,6 +83,23 @@ Route::group(['prefix' => 'admin'], function () {
             Route::match(['post','get'],'transaction/store','store');
             Route::match(['post','get'],'transaction/update/{id}','update');
             Route::post('transaction/destroy/{id}', 'destroy');
+        });
+
+        ///////////////////////// Start Regions /////////////////////
+        ///
+        Route::controller(RegionController::class)->group(function (){
+            Route::get('regions','index');
+            Route::match(['post','get'],'region/store','store');
+            Route::match(['post','get'],'region/update','update');
+            Route::post('region/delete/{id}','delete');
+        });
+        ///////////////////////// Start Branches /////////////////////
+        ///
+        Route::controller(\App\Http\Controllers\admin\BranchController::class)->group(function (){
+            Route::get('branches/{region_id}','index');
+            Route::match(['post','get'],'branche/store','store');
+            Route::match(['post','get'],'branche/update','update');
+            Route::post('branche/delete/{id}','delete');
         });
     });
 });

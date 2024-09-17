@@ -5,18 +5,38 @@ $(function(e) {
         buttons: [
             {
                 extend: 'copy',
-                text: 'نسخ'
+                text: 'نسخ',
+                exportOptions: {
+                    columns: ':visible' // لتصدير الأعمدة المرئية فقط
+                },
             },
             {
                 extend: 'excel',
-                text: 'استخراج ملف Excel'
+                text: 'استخراج ملف Excel',
+                exportOptions: {
+                    columns: ':visible' // لتصدير الأعمدة المرئية فقط
+                },
             },
             {
-                extend: 'pdf',
-                text: 'استخراج ملف PDF'
+                extend: 'pdfHtml5',
+                text: 'استخراج ملف PDF',
+                exportOptions: {
+                    orthogonal: "PDF",
+                    columns: ':visible' // لتصدير الأعمدة المرئية فقط
+                },
+                customize: function (doc) {
+                    doc.defaultStyle.alignment = 'right';
+                    // محاذاة النصوص داخل الجدول (الخلايا والعناوين)
+                    doc.content[1].table.body.forEach(function (row, index) {
+                        row.forEach(function (cell) {
+                            cell.alignment = 'right'; // محاذاة الخلايا إلى اليمين
+                        });
+                    });
+                }
             },
             {
                 extend: 'colvis',
+
                 text: 'إظهار/إخفاء الأعمدة'
             }
         ],

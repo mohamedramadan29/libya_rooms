@@ -21,7 +21,12 @@ class CompaniesController extends Controller
 
     public function index(Request $request)
     {
-        $companies = Companies::orderby('id', 'desc')->get();
+        if (Auth::user()->type == 'admin'){
+            $companies = Companies::orderby('id', 'desc')->get();
+        }elseif (Auth::user()->type =='money'){
+            $companies = Companies::where('market_confirm','1')->orderby('id', 'desc')->get();
+        }
+
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
@@ -458,4 +463,29 @@ class CompaniesController extends Controller
         // عرض النتيجة في صفحة
         return view('admin.companies.expire', compact('companies', 'expiredCount'));
     }
+
+    ///////////////  Expire In This ٣٠ days
+    public function expiringCompaniesinlastmonth()
+    {
+        // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
+        $companies = Companies::where(function ($query) {
+            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+            $query->where(function ($subQuery) {
+                $subQuery->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
+                    ->whereNull('new_market_confirm_date');
+            })
+                ->orWhere(function ($subQuery) {
+                    $subQuery->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
+                });
+        })
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // حساب عدد الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
+        $expiringCount = $companies->count();
+
+        // عرض النتيجة في صفحة
+        return view('admin.companies.expiremonth', compact('companies', 'expiringCount'));
+    }
+
 }

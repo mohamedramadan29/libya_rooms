@@ -113,6 +113,24 @@
             </div>
 
             <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+                @php
+                    // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
+                            $companies = \App\Models\admin\companies::where(function ($query) {
+                                // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+                                $query->where(function ($subQuery) {
+                                    $subQuery->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
+                                        ->whereNull('new_market_confirm_date');
+                                })
+                                    ->orWhere(function ($subQuery) {
+                                        $subQuery->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
+                                    });
+                            })
+                                ->orderBy('id', 'desc')
+                                ->get();
+
+                            // حساب عدد الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
+                            $expiringCount = $companies->count();
+ @endphp
                 <div class="card overflow-hidden sales-card bg-info-gradient">
                     <div class="pl-3 pt-3 pr-3 pb-2 pt-0">
                         <div class="">
@@ -121,8 +139,8 @@
                         <div class="pb-0 mt-0">
                             <div class="d-flex">
                                 <div class="">
-                                    <h4 class="tx-20 font-weight-bold mb-1 text-white"> 2 </h4>
-                                    <a href="#" class="mb-0 tx-12 text-white op-7"> مشاهدة
+                                    <h4 class="tx-20 font-weight-bold mb-1 text-white"> {{$expiringCount}} </h4>
+                                    <a href="{{url('admin/expire-month')}}" class="mb-0 tx-12 text-white op-7"> مشاهدة
                                         التفاصيل </a>
                                 </div>
                             </div>

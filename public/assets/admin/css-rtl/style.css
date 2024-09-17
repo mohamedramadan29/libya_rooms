@@ -82243,3 +82243,33 @@ a.text-dark:hover, a.text-dark:focus {
     width: 200px !important;
 }
 
+table.dataTable tbody th, table.dataTable tbody td{
+    text-align:center;
+}
+table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_desc, table.dataTable thead>tr>th.sorting, table.dataTable thead>tr>td.sorting_asc, table.dataTable thead>tr>td.sorting_desc, table.dataTable thead>tr>td.sorting{
+    text-aling:center;
+}
+
+table.dataTable thead .sorting{
+    text-align:center;
+}
+
+/* تخصيص شريط التمرير للمتصفحات المبنية على WebKit (Chrome, Safari) */
+.table-responsive::-webkit-scrollbar {
+    height: 12px; /* تكبير عرض شريط التمرير الأفقي */
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: #888; /* لون شريط التمرير */
+    border-radius: 10px; /* جعل الشريط مستدير الزوايا */
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* لون خلفية المسار */
+}
+
+/* تخصيص شريط التمرير في Firefox */
+.table-responsive {
+    scrollbar-width: thick; /* تكبير عرض شريط التمرير */
+    scrollbar-color: #888; /* تخصيص لون الشريط والمسار */
+}

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-   ادارة التوثيق
+    المناطق
 @endsection
 @section('css')
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                        class="text-muted mt-1 tx-13 mr-2 mb-0">/  ادارة التوثيق   </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/  المناطق   </span>
             </div>
         </div>
     </div>
@@ -30,7 +30,7 @@
                 <div class="card-body">
                     @if(Session::has('Success_message'))
                         <div
-                                class="alert alert-success"> {{Session::get('Success_message')}} </div>
+                            class="alert alert-success"> {{Session::get('Success_message')}} </div>
                     @endif
 
                     @if ($errors->any())
@@ -42,15 +42,15 @@
                             </ul>
                         </div>
                     @endif
-                    <div class="mb-4 main-content-label">  مستخذمين ادارة التوثيق   </div>
+                    <div class="mb-4 main-content-label">  المناطق   </div>
                     <div class="card-header">
                         <button data-target="#add_model"
-                                data-toggle="modal" class="btn btn-primary btn-sm"> اضف مستخدم جديد <i
-                                    class="fa fa-plus"></i>
+                                data-toggle="modal" class="btn btn-primary btn-sm"> اضافة منطقة جديدة   <i
+                                class="fa fa-plus"></i>
                         </button>
                     </div>
                     <!-- Add New Section -->
-                    @include('admin.users.market_manage.add')
+                    @include('admin.regions.add')
                     <div class="card-body">
 
                         <div class="table-responsive">
@@ -58,45 +58,33 @@
                                 <thead>
                                 <tr>
                                     <th class="wd-15p border-bottom-0"> #</th>
-                                    <th class="wd-15p border-bottom-0"> الأسم</th>
-                                    <th class="wd-15p border-bottom-0"> رقم الهاتف</th>
-                                    <th class="wd-20p border-bottom-0"> البريد الألكتروني</th>
-                                    <th class="wd-15p border-bottom-0"> الحالة</th>
-                                    <th class="wd-15p border-bottom-0"> العمليات</th>
+                                    <th class="wd-15p border-bottom-0"> الاسم  </th>
+                                    <th class="wd-15p border-bottom-0"> الفروع  </th>
+                                    <th class="wd-15p border-bottom-0" id="column1"> العمليات</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @php
                                     $i = 1;
                                 @endphp
-                                @foreach($users as $user)
+                                @foreach($regions as $region)
                                     <tr>
-                                        <td> {{$i++}} </td>
-                                        <td> {{$user['name']}} </td>
-                                        <td> {{$user['phone']}} </td>
-                                        <td> {{$user['email']}} </td>
-                                        <td>
-                                            @if($user['status'] == 1)
-                                                <span class="badge badge-success"> فعال </span>
-                                            @elseif($user['status'] == 0)
-                                                <span class="badge badge-danger"> غير فعال </span>
-                                            @endif
-                                        </td>
+                                        <td> {{$region['id']}} </td>
+                                        <td> {{$region['name']}} </td>
+                                        <td>  <a href="{{url('admin/branches/'.$region['id'])}}" class="btn btn-primary btn-sm"> مشاهدة الفروع  </a>  </td>
                                         <td>
                                             <button class="btn btn-primary btn-sm"
-                                                    data-target="#edit_model_{{$user['id']}}"
-                                                    data-toggle="modal"><i class="fa fa-edit"></i></button>
-                                            <button data-target="#delete_model_{{$user['id']}}"
-                                                    data-toggle="modal" class="btn btn-danger btn-sm"><i
-                                                        class="fa fa-trash"></i>
+                                                    data-target="#edit_model_{{$region['id']}}"
+                                                    data-toggle="modal"> تعديل <i class="fa fa-edit"></i></button>
+                                            <button data-target="#delete_model_{{$region['id']}}"
+                                                    data-toggle="modal" class="btn btn-danger btn-sm"> حذف <i
+                                                    class="fa fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
-                                    <!-- Edit Sections -->
-                                    @include('admin.users.market_manage.edit')
 
-                                    <!-- Delete Section Model  -->
-                                    @include('admin.users.market_manage.delete')
+                                    @include('admin.regions.edit')
+                                    @include('admin.regions.delete')
                                 @endforeach
                                 </tbody>
                             </table>
