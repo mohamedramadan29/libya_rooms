@@ -14,22 +14,47 @@
                         <label>  الاسم  </label>
                         <input required type="text" name="name" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>المنطقة</label>
-                        <select name="regions" id="regions" class="form-control">
-                            <option value="">- حدد المنطقة -</option>
-                            @foreach($regions as $region)
-                                <option value="{{ $region['id'] }}">{{ $region['name'] }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>الفرع</label>
-                        <select required name="branches" id="branches" class="form-control">
-                            <option value="">- حدد الفرع -</option>
-                        </select>
-                    </div>
-
+                    @if(Auth::user()->type == 'supervisor')
+                        @if(Auth::user()->branches == null)
+                            <div class="form-group">
+                                <label>المنطقة</label>
+                                <select name="regions" id="regions" class="form-control">
+                                    <option value="">- حدد المنطقة -</option>
+                                    @foreach($regions as $region)
+                                        <option value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>الفرع</label>
+                                <select name="branches" id="branches" class="form-control">
+                                    <option value="">- حدد الفرع -</option>
+                                </select>
+                            </div>
+                        @else
+                            <input type="hidden" name="regions" value="{{Auth::user()->regions}}">
+                            <input type="hidden" name="branches" value="{{Auth::user()->branches}}">
+                        @endif
+                    @elseif(Auth::user()->type == 'market'|| Auth::user()->type == 'money')
+                        <input type="hidden" name="regions" value="{{Auth::user()->regions}}">
+                        <input type="hidden" name="branches" value="{{Auth::user()->branches}}">
+                    @else
+                        <div class="form-group">
+                            <label>المنطقة</label>
+                            <select name="regions" id="regions" class="form-control">
+                                <option value="">- حدد المنطقة -</option>
+                                @foreach($regions as $region)
+                                    <option value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>الفرع</label>
+                            <select name="branches" id="branches" class="form-control">
+                                <option value="">- حدد الفرع -</option>
+                            </select>
+                        </div>
+                    @endif
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script type="text/javascript">
                         $('#regions').on('change', function() {

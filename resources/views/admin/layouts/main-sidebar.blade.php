@@ -131,6 +131,70 @@
                         <li><a class="slide-item" href="{{url('admin/regions')}}">  مشاهدة المناطق  </a></li>
                     </ul>
                 </li>
+                @elseif(Auth::user()->type == 'supervisor')
+                <li class="side-item side-item-category"> الشركات المسجلة</li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-building"></i>
+                        <span class="side-menu__label">  الشركات المسجلة   </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/companies')}}"> جميع الشركات </a>
+                        <li><a class="slide-item" href="{{url('admin/expire-companies')}}"> الشركات منتهية الصلاحيه  </a>
+                        <li><a class="slide-item" href="{{url('admin/expire-month')}}"> الشركات منتهية خلال شهر   </a>
+                        <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة شركة </a>
+                    </ul>
+                </li>
+                <li class="side-item side-item-category"> الادارات</li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-users"></i>
+                        <span class="side-menu__label"> الادارات   </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/market-manage')}}"> ادارة التوثيق </a>
+                        </li>
+                        <li><a class="slide-item" href="{{url('admin/money-manage')}}"> ادارة المالية </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="side-item side-item-category"> المعاملات المالية</li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-money-bill"></i>
+                        <span class="side-menu__label">  المعاملات المالية   </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/transaction')}}"> المعاملات المالية </a>
+                        </li>
+                        <li><a class="slide-item" href="{{url('admin/transaction/store')}}"> اضافة فاتورة </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="side-item side-item-category"> الاعدادات</li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="bx bx-cog"></i>
+                        <span class="side-menu__label">  الاعدادات الشخصية </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/update_admin_password')}}"> تعديل كلمة المرور </a>
+                        </li>
+                        <li><a class="slide-item" href="{{url('admin/update_admin_details')}}"> تعديل البيانات </a></li>
+                    </ul>
+                </li>
+                <li class="side-item side-item-category"> تصنيفات الشركات</li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-city"></i>
+                        <span class="side-menu__label">  تصنيفات الشركات   </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/main_categories')}}"> مشاهدة التصنيفات </a></li>
+                        <li><a class="slide-item" href="{{url('admin/company_type')}}"> انواع الشركات </a></li>
+                    </ul>
+                </li>
             @elseif(Auth::user()->type == 'market')
                 <li class="side-item side-item-category"> الشركات المسجلة</li>
                 <li class="slide">

@@ -8,6 +8,7 @@ use App\Models\admin\Branch;
 use App\Models\admin\Region;
 use App\Models\admin\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class MoneyManageController extends Controller
@@ -16,8 +17,22 @@ class MoneyManageController extends Controller
 
     public function index()
     {
-        $users = User::with('region','branch')->where('type', 'money')->get();
-        $regions = Region::all();
+
+        if (Auth::user()->type == 'admin') {
+            $regions = Region::all();
+            $users = User::with('region','branch')->where('type', 'money')->get();
+
+        } elseif (Auth::user()->type == 'supervisor') {
+            if(Auth::user()->branches !=null){
+                $users = User::where('type','money')->where('regions',Auth::user()->regions)->where('branches',Auth::user()->branches)->get();
+            }else{
+                $users = User::where('type','money')->where('regions',Auth::user()->regions)->get();
+            }
+            $regions = Region::where('id', Auth::user()->regions)->get();
+        } else {
+            $regions = null;
+        }
+//        $regions = Region::all();
         return view('admin.users.money_manage.index', compact('users','regions'));
     }
     public function getBranches($region_id)

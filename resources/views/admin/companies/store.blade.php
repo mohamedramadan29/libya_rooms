@@ -42,6 +42,70 @@
                                     <label class="form-label"> اسم الممثل القانوني : </label>
                                     <input type="text" class="form-control" name="name" value="{{old('name')}}">
                                 </div>
+                                @if(Auth::user()->type == 'supervisor')
+                                    @if(Auth::user()->branches == null)
+                                        <div class="form-group">
+                                            <label>المنطقة</label>
+                                            <select name="regions" id="regions" class="form-control">
+                                                <option value="">- حدد المنطقة -</option>
+                                                @foreach($regions as $region)
+                                                    <option value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>الفرع</label>
+                                            <select name="branches" id="branches" class="form-control">
+                                                <option value="">- حدد الفرع -</option>
+                                            </select>
+                                        </div>
+                                    @else
+                                        <input type="hidden" name="regions" value="{{Auth::user()->regions}}">
+                                        <input type="hidden" name="branches" value="{{Auth::user()->branches}}">
+                                    @endif
+                                @elseif(Auth::user()->type == 'market'|| Auth::user()->type == 'money')
+                                    <input type="hidden" name="regions" value="{{Auth::user()->regions}}">
+                                    <input type="hidden" name="branches" value="{{Auth::user()->branches}}">
+                                @else
+                                    <div class="form-group">
+                                        <label>المنطقة</label>
+                                        <select name="regions" id="regions" class="form-control">
+                                            <option value="">- حدد المنطقة -</option>
+                                            @foreach($regions as $region)
+                                                <option value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>الفرع</label>
+                                        <select name="branches" id="branches" class="form-control">
+                                            <option value="">- حدد الفرع -</option>
+                                        </select>
+                                    </div>
+                                @endif
+                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                <script type="text/javascript">
+                                    $('#regions').on('change', function () {
+                                        var region_id = $(this).val();
+                                        if (region_id) {
+                                            $.ajax({
+                                                url: 'get-branches/' + region_id,
+                                                type: 'GET',
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    $('#branches').empty();
+                                                    $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                                    $.each(data, function (key, value) {
+                                                        $('#branches').append('<option value="' + value.id + '">' + value.name + '</option>');
+                                                    });
+                                                }
+                                            });
+                                        } else {
+                                            $('#branches').empty();
+                                            $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                        }
+                                    });
+                                </script>
 
                                 <div class="form-group ">
                                     <label class="form-label"> تاريخ الميلاد : </label>
@@ -90,9 +154,10 @@
                                 <div class="form-group ">
                                     <label class="form-label"> نوع النشاط : </label>
                                     <select class="form-control" name="category">
-                                        <option value=""> -- حدد نوع النشاط -- </option>
+                                        <option value=""> -- حدد نوع النشاط --</option>
                                         @foreach($categories as $category)
-                                            <option @if(old('category') == $category['id']) selected @endif value="{{$category['id']}}"> {{$category['name']}} </option>
+                                            <option @if(old('category') == $category['id']) selected
+                                                    @endif value="{{$category['id']}}"> {{$category['name']}} </option>
                                         @endforeach
                                     </select>
 
@@ -161,9 +226,10 @@
                                 <div class="form-group ">
                                     <label class="form-label"> تصنيفها : </label>
                                     <select class="form-control" name="type">
-                                        <option value=""> -- حدد التصنيف  -- </option>
+                                        <option value=""> -- حدد التصنيف --</option>
                                         @foreach($types as $type)
-                                            <option @if(old('type') == $type['id']) selected @endif value="{{$type['id']}}">{{$type['name']}}</option>
+                                            <option @if(old('type') == $type['id']) selected
+                                                    @endif value="{{$type['id']}}">{{$type['name']}}</option>
                                         @endforeach
                                     </select>
                                 </div>

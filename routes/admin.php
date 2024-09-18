@@ -54,6 +54,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('companies/market-unconfirmed','companies_unconfirmed');
             Route::get('companies/money-unconfirmed','money_unconfirmed');
             Route::match(['get','post'],'company/certificate/{id}','certificate');
+            Route::get('companies/get-branches/{region_id}', 'getBranches');
         });
 
         // Start Management Routes

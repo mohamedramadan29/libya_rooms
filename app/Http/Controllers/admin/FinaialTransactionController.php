@@ -18,10 +18,21 @@ class FinaialTransactionController extends Controller
 
     public function index()
     {
-        $transactions = FinanialTransaction::with('company_data', 'employe_data')->get();
+        $user = Auth::user();
+        if ($user->type == 'admin') {
+            $transactions = FinanialTransaction::with('company_data', 'employe_data')->get();
+        } elseif ($user->type == 'supervisor') {
+            $query = FinanialTransaction::with('company_data', 'employe_data')->where('region', $user->regions);
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+            $transactions = $query->get();
+        } elseif ($user->type == 'money') {
+            $transactions =  FinanialTransaction::with('company_data', 'employe_data')->where('region',$user->regions)->where('branch',$user->branches)->get();
+        }
         $transactions_count = $transactions->count();
         //dd($transactions);
-        return view('admin.finanial_transaction.index', compact('transactions','transactions_count'));
+        return view('admin.finanial_transaction.index', compact('transactions', 'transactions_count'));
     }
 
     public function store(Request $request)
@@ -30,6 +41,8 @@ class FinaialTransactionController extends Controller
         try {
             if ($request->isMethod('post')) {
                 $alldata = $request->all();
+                $company_id = $alldata['company_id'];
+                $company_data = Companies::findOrFail($company_id);
                 $rules = [
                     'trans_number' => 'required|numeric',
                     'company_id' => 'required',
@@ -57,6 +70,8 @@ class FinaialTransactionController extends Controller
                 $transaction->trans_number = $alldata['trans_number'];
                 $transaction->trans_price = $alldata['trans_price'];
                 $transaction->company_id = $alldata['company_id'];
+                $transaction->region = $company_data['region'];
+                $transaction->branch = $company_data['branch'];
                 $transaction->trans_type = $alldata['trans_type'];
                 $transaction->notes = $alldata['notes'];
                 $transaction->file = $filename;
@@ -155,6 +170,6 @@ class FinaialTransactionController extends Controller
         $transactions = $query->orderBy('created_at', 'desc')->get();
         $transactions_count = $transactions->count();
         // إرسال النتائج إلى العرض
-        return view('admin.finanial_transaction.index', compact('transactions','transactions_count'));
+        return view('admin.finanial_transaction.index', compact('transactions', 'transactions_count'));
     }
 }

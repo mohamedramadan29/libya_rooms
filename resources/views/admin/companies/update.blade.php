@@ -42,6 +42,90 @@
                                     <label class="form-label"> اسم الممثل القانوني : </label>
                                     <input type="text" class="form-control" name="name" value="{{$company['name']}}">
                                 </div>
+                                @if(Auth::user()->type == 'supervisor')
+                                    @if(Auth::user()->branches == null)
+                                        <div class="form-group">
+                                            <label>المنطقة</label>
+                                            <select name="regions" id="regions" class="form-control">
+                                                <option value="">- حدد المنطقة -</option>
+                                                @foreach($regions as $region)
+                                                    <option {{$company['region'] == $region['id'] ? 'selected':''}}  value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>الفرع</label>
+                                            <select name="branches" id="branches" class="form-control">
+                                                <option value="">- حدد الفرع -</option>
+                                            </select>
+                                        </div>
+                                    @else
+                                        <input type="hidden" name="regions" value="{{Auth::user()->regions}}">
+                                        <input type="hidden" name="branches" value="{{Auth::user()->branches}}">
+                                    @endif
+                                @elseif(Auth::user()->type == 'market'|| Auth::user()->type == 'money')
+                                    <input type="hidden" name="regions" value="{{Auth::user()->regions}}">
+                                    <input type="hidden" name="branches" value="{{Auth::user()->branches}}">
+                                @else
+                                    <div class="form-group">
+                                        <label>المنطقة</label>
+                                        <select name="regions" id="regions" class="form-control">
+                                            <option value="">- حدد المنطقة -</option>
+                                            @foreach($regions as $region)
+                                                <option {{$company['region'] == $region['id'] ? 'selected':''}}  value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>الفرع</label>
+                                        <select name="branches" id="branches" class="form-control">
+                                            <option value="">- حدد الفرع -</option>
+                                        </select>
+                                    </div>
+                                @endif
+
+
+                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                <script type="text/javascript">
+                                    var selectedBranch = {{ $company['branch'] ?? 'null' }}; // الفرع الحالي للمستخدم
+                                    console.log(selectedBranch);
+
+                                    // عندما تتغير المنطقة
+                                    $('#regions').on('change', function () {
+                                        var region_id = $(this).val();
+                                        loadBranches(region_id, null); // تحميل الفروع بناءً على المنطقة
+                                    });
+
+                                    // دالة لتحميل الفروع
+                                    function loadBranches(region_id, branch_id) {
+                                        if (region_id) {
+                                            $.ajax({
+                                                url: '/admin/companies/get-branches/' + region_id,
+                                                type: 'GET',
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    $('#branches').empty();
+                                                    $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                                    $.each(data, function (key, value) {
+                                                        var selected = (branch_id && branch_id == value.id) ? 'selected' : '';
+                                                        $('#branches').append('<option value="' + value.id + '" ' + selected + '>' + value.name + '</option>');
+                                                    });
+                                                }
+                                            });
+                                        } else {
+                                            $('#branches').empty();
+                                            $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                        }
+                                    }
+
+                                    // عند تحميل الصفحة، إذا كانت المنطقة محددة مسبقًا، استدعِ الفروع واضبط الفرع المختار
+                                    $(document).ready(function () {
+                                        var region_id = $('#regions').val();
+                                        if (region_id) {
+                                            loadBranches(region_id, selectedBranch); // تحميل الفروع وتحديد الفرع الحالي
+                                        }
+                                    });
+                                </script>
 
                                 <div class="form-group ">
                                     <label class="form-label"> تاريخ الميلاد : </label>

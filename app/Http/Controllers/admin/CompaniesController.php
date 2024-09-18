@@ -4,10 +4,12 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\Message_Trait;
+use App\Models\admin\Branch;
 use App\Models\admin\Companies;
 use App\Models\admin\CompanyCategories;
 use App\Models\admin\CompanyType;
 use App\Models\admin\FinanialTransaction;
+use App\Models\admin\Region;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,10 +23,21 @@ class CompaniesController extends Controller
 
     public function index(Request $request)
     {
-        if (Auth::user()->type == 'admin'){
+
+        $user = Auth::user();
+        if ($user->type == 'admin') {
             $companies = Companies::orderby('id', 'desc')->get();
-        }elseif (Auth::user()->type =='money'){
-            $companies = Companies::where('market_confirm','1')->orderby('id', 'desc')->get();
+        } elseif ($user->type == 'supervisor') {
+            $query = Companies::where('region', $user->regions);
+            // إذا كان لدى المشرف فرع معين، أضف شرط الفرع
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+            $companies = $query->get();
+        } elseif ($user->type == 'money') {
+            $companies = Companies::where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+        } elseif ($user->type == 'market') {
+            $companies = Companies::orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         }
 
         $categories = CompanyCategories::where('status', '1')->get();
@@ -32,9 +45,21 @@ class CompaniesController extends Controller
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
     }
 
+    public function getBranches($region_id)
+    {
+        $branches = Branch::where('region_id', $region_id)->get();
+        return response()->json($branches);
+    }
 
     public function store(Request $request)
     {
+        if (Auth::user()->type == 'admin') {
+            $regions = Region::all();
+        } elseif (Auth::user()->type == 'supervisor') {
+            $regions = Region::where('id', Auth::user()->regions)->get();
+        } else {
+            $regions = null;
+        }
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         if ($request->isMethod('post')) {
@@ -64,6 +89,8 @@ class CompaniesController extends Controller
                     'isadarـduration' => 'required',
                     'type' => 'required',
                     'status' => 'required',
+                    'regions' => 'required',
+                    'branches' => 'required',
                 ];
                 $messages = [
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
@@ -89,13 +116,14 @@ class CompaniesController extends Controller
                     'isadarـduration.required' => 'من فضلك حدد الفترة الزمنية ',
                     'type.required' => 'من فضلك حدد التصنيف ',
                     'status.required' => 'من فضلك حدد حالة الشركة ',
+                    'regions.required' => ' من فضلك حدد المنطقة  ',
+                    'branches.required' => '  من فضلك حدد الفرع '
                 ];
 
                 $validator = Validator::make($data, $rules, $messages);
                 if ($validator->fails()) {
                     return Redirect::back()->withInput()->withErrors($validator);
                 }
-
                 $company = new Companies();
                 $company->name = $data['name'];
                 $company->birthdate = $data['birthdate'];
@@ -120,6 +148,8 @@ class CompaniesController extends Controller
                 $company->isadarـduration = $data['isadarـduration'];
                 $company->type = $data['type'];
                 $company->status = $data['status'];
+                $company->region = $data['regions'];
+                $company->branch = $data['branches'];
 
                 $company->save();
                 return $this->success_message('تم اضافة شركة جديدة بنجاح ');
@@ -128,13 +158,19 @@ class CompaniesController extends Controller
                 return $this->exception_message($e);
             }
         }
-
-        return view('admin.companies.store', compact('categories', 'types'));
-
+        return view('admin.companies.store', compact('categories', 'types', 'regions'));
     }
 
     public function update(Request $request, $id)
     {
+        if (Auth::user()->type == 'admin') {
+            $regions = Region::all();
+        } elseif (Auth::user()->type == 'supervisor') {
+            $regions = Region::where('id', Auth::user()->regions)->get();
+        } else {
+            $regions = null;
+        }
+
         try {
             $company = Companies::findOrFail($id);
             $categories = CompanyCategories::where('status', '1')->get();
@@ -149,6 +185,7 @@ class CompaniesController extends Controller
                     'licenseـnumber' => 'required', 'tax_number' => 'required', 'address' => 'required', 'mobile' => 'required', 'email' => 'required',
                     'commercial_number' => 'required', 'jihad_isdar' => 'required', 'active_circle' => 'required',
                     'isdar_date' => 'required', 'isadarـduration' => 'required', 'type' => 'required', 'status' => 'required',
+                    'regions' => 'required', 'branches' => 'required'
                 ];
                 $messages = [
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
@@ -174,6 +211,8 @@ class CompaniesController extends Controller
                     'isadarـduration.required' => 'من فضلك حدد الفترة الزمنية ',
                     'type.required' => 'من فضلك حدد التصنيف ',
                     'status.required' => 'من فضلك حدد حالة الشركة ',
+                    'regions.required' => ' من فضلك حدد المنطقة  ',
+                    'branches.required' => '  من فضلك حدد الفرع '
                 ];
 
                 $validator = Validator::make($data, $rules, $messages);
@@ -204,13 +243,15 @@ class CompaniesController extends Controller
                     "isadarـduration" => $data['isadarـduration'],
                     "type" => $data['type'],
                     "status" => $data['status'],
+                    'region' => $data['regions'],
+                    'branch' => $data['branches']
                 ]);
                 return $this->success_message(' تم تعديل الشركة بنجاح  ');
             }
         } catch (\Exception $e) {
             return $this->exception_message($e);
         }
-        return view('admin.companies.update', compact('company', 'categories', 'types'));
+        return view('admin.companies.update', compact('company', 'categories', 'types', 'regions'));
     }
 
     public function destroy($id)
@@ -332,9 +373,9 @@ class CompaniesController extends Controller
 
     // UnConfirmed Companies With Market Team
     public function companies_unconfirmed()
-
     {
-        $companies = Companies::where('market_confirm', '0')->orderby('id', 'desc')->get();
+        $user = Auth::user();
+        $companies = Companies::where('market_confirm', '0')->where('region', $user->regions)->where('branch', $user->branches)->orderby('id', 'desc')->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
@@ -343,7 +384,8 @@ class CompaniesController extends Controller
 
     public function money_unconfirmed()
     {
-        $companies = Companies::where('money_confirm', '0')->where('market_confirm', '1')->get();
+        $user = Auth::user();
+        $companies = Companies::where('money_confirm', '0')->where('market_confirm', '1')->where('region', $user->regions)->where('branch', $user->branches)->get();
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
@@ -370,16 +412,21 @@ class CompaniesController extends Controller
     ////////////////////////////////////////////////// Start Expire Companies ////////////
     public function expire_companies()
     {
-
-        // $companies = Companies::where('')
-
-
         return view('admin.companies.expire');
     }
 
     public function getFilteredCompanies(Request $request)
     {
-        $query = Companies::query();
+        $user = Auth::user();
+        if ($user->type == 'admin') {
+            $query = Companies::query();
+        } elseif ($user->type == 'supervisor') {
+            $query = Companies::where('region', $user->regions); // إزالة query() لأنه غير مطلوب
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+        }
+
 
         // فلتر الشركات التي انتهت صلاحيتها بناءً على تواريخ التوثيق
         $query->where(function ($subQuery) use ($request) {
@@ -415,7 +462,19 @@ class CompaniesController extends Controller
     public function MainFilter(Request $request)
     {
 
-        $query = Companies::query();
+//        $query = Companies::query();
+
+        $user = Auth::user();
+        if ($user->type == 'admin') {
+            $query = Companies::query();
+        } elseif ($user->type == 'supervisor') {
+            $query = Companies::where('region', $user->regions); // إزالة query() لأنه غير مطلوب
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+        }
+
+
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
@@ -433,20 +492,32 @@ class CompaniesController extends Controller
 
     public function expiredCompanies()
     {
-        // فلترة الشركات التي انتهت صلاحيتها باستخدام تاريخ التوثيق الأول أو الجديد ومدة القيد
-        $companies = Companies::where(function ($query) {
+        $user = Auth::user();
+
+        // بناء الاستعلام الأساسي بناءً على نوع المستخدم
+        if ($user->type == 'admin') {
+            $query = Companies::query();
+        } elseif ($user->type == 'supervisor') {
+            $query = Companies::where('region', $user->regions);
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+        }
+
+        // فلترة الشركات التي انتهت صلاحيتها باستخدام تواريخ التوثيق ومدة الإيداع
+        $query->where(function ($subQuery) {
             // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-            $query->where(function ($subQuery) {
-                $subQuery->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
+            $subQuery->where(function ($query) {
+                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
                     ->whereNull('new_market_confirm_date');
             })
-                ->orWhere(function ($subQuery) {
-                    $subQuery->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
+                ->orWhere(function ($query) {
+                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
                 });
-        })
-            ->orderBy('id', 'desc')
-            ->get();
+        });
 
+        // جلب الشركات المفلترة والمنتهية الصلاحية
+        $companies = $query->orderBy('id', 'desc')->get();
 
         // تحديث جميع الشركات المنتهية الصلاحية
         foreach ($companies as $company) {
@@ -456,7 +527,6 @@ class CompaniesController extends Controller
             ]);
         }
 
-
         // حساب عدد الشركات المنتهية
         $expiredCount = $companies->count();
 
@@ -464,28 +534,43 @@ class CompaniesController extends Controller
         return view('admin.companies.expire', compact('companies', 'expiredCount'));
     }
 
+
     ///////////////  Expire In This ٣٠ days
     public function expiringCompaniesinlastmonth()
     {
+        $user = Auth::user();
+
+        // بناء الاستعلام الأساسي بناءً على نوع المستخدم
+        if ($user->type == 'admin') {
+            $query = Companies::query();
+        } elseif ($user->type == 'supervisor') {
+            $query = Companies::where('region', $user->regions);
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+        }
+
         // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
-        $companies = Companies::where(function ($query) {
+        $query->where(function ($subQuery) {
             // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-            $query->where(function ($subQuery) {
-                $subQuery->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
+            $subQuery->where(function ($query) {
+                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
                     ->whereNull('new_market_confirm_date');
             })
-                ->orWhere(function ($subQuery) {
-                    $subQuery->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
+                ->orWhere(function ($query) {
+                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
                 });
-        })
-            ->orderBy('id', 'desc')
-            ->get();
+        });
 
-        // حساب عدد الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
+        // جلب الشركات المفلترة التي ستنتهي صلاحيتها خلال الشهر الحالي
+        $companies = $query->orderBy('id', 'desc')->get();
+
+        // حساب عدد الشركات التي ستنتهي صلاحيتها
         $expiringCount = $companies->count();
 
         // عرض النتيجة في صفحة
         return view('admin.companies.expiremonth', compact('companies', 'expiringCount'));
     }
+
 
 }

@@ -42,7 +42,7 @@
                 @endif
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5> الشركات المسجلة </h5>
-                    @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
+                    @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin'|| Auth::user()->type == 'supervisor')
                         <a href="{{url('admin/companies/store')}}" class="btn btn-primary btn-sm"> اضافة شركة جديدة
                             <i
                                 class="fa fa-plus"></i> </a>
@@ -88,7 +88,7 @@
                                 <th class="border-bottom-0"> تاريخ الميلاد</th>
                                 <th class="border-bottom-0"> الرقم الوطني</th>
                                 <th class="border-bottom-0"> محل الاقامة</th>
-                                @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
+                                @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type=='supervisor' || Auth::user()->type =='money')
                                     <th class="wd-15p border-bottom-0"> المعاملات المالية</th>
                                 @endif
                                 <th class="border-bottom-0"> التوثيق</th>
@@ -107,7 +107,7 @@
                                     <td> {{$company['birthdate']}} </td>
                                     <td> {{$company['id_number']}} </td>
                                     <td> {{$company['place']}} </td>
-                                    @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
+                                    @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type=='supervisor'  || Auth::user()->type =='money')
                                         <td><a class="btn btn-info-gradient btn-sm"
                                                href="{{url('admin/company/transactions/'.$company['id'])}}">
                                                 <i class="fa fa-money-bill"></i> </a></td>
@@ -123,7 +123,7 @@
                                     <td>
                                         @if($company['money_confirm'] == 1)
                                             <span class="badge badge-success"> تم الدفع  </span>
-                                            @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin'||Auth::user()->type=='market')
+                                            @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin' || Auth::user()->type=='supervisor' ||Auth::user()->type=='market')
                                                 <a style="display: block;margin-top: 10px;"
                                                    href="{{url('admin/company/certificate/'.$company['id'])}}"
                                                    class="btn btn-info btn-sm"> اصدار شهادة القيد </a>
@@ -133,7 +133,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if(\Illuminate\Support\Facades\Auth::user()->type=='admin')
+                                        @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type=='supervisor' )
                                             <a href="{{url('admin/companies/update/'.$company['id'])}}"
                                                class="btn btn-primary btn-sm"> <i class="fa fa-edit"></i> </a>
                                             <button data-target="#delete_model_{{$company['id']}}"

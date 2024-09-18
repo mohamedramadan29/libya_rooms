@@ -7,7 +7,16 @@
     <div class="breadcrumb-header justify-content-between">
         <div class="left-content">
             <div>
-                <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">مرحبا , {{Auth::user()->name}} </h2>
+                @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
+                    <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1"> الادمن العام   </h2>
+                @elseif(\Illuminate\Support\Facades\Auth::user()->type == 'supervisor')
+                    <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1"> لوحة تحكم المشرف  </h2>
+                @elseif(\Illuminate\Support\Facades\Auth::user()->type == 'money')
+                    <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">مرحبا , {{Auth::user()->name}} </h2>
+                @elseif(\Illuminate\Support\Facades\Auth::user()->type =='market')
+                    <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">مرحبا , {{Auth::user()->name}} </h2>
+                @endif
+{{--                <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">مرحبا , {{Auth::user()->name}} </h2>--}}
                 <p class="mg-b-0"> لوحة التحكم الخاصة بك </p>
             </div>
         </div>
@@ -58,20 +67,32 @@
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
                 @php
+                    $user = \Illuminate\Support\Facades\Auth::user();
 
-                    $companies =\App\Models\admin\companies::where(function ($query) {
-      // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-      $query->where(function ($subQuery) {
-          $subQuery->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
-              ->whereNull('new_market_confirm_date');
-      })
-          ->orWhere(function ($subQuery) {
-              $subQuery->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
-          });
-  })
-      ->orderBy('id', 'desc')
-      ->get();
+                   // بناء الاستعلام الأساسي بناءً على نوع المستخدم
+                   if ($user->type == 'admin') {
+                       $query = \App\Models\admin\Companies::query();
+                   } elseif ($user->type == 'supervisor') {
+                       $query = \App\Models\admin\Companies::where('region', $user->regions);
+                       if ($user->branches !== null) {
+                           $query->where('branch', $user->branches);
+                       }
+                   }
 
+                   // فلترة الشركات التي انتهت صلاحيتها باستخدام تواريخ التوثيق ومدة الإيداع
+                   $query->where(function ($subQuery) {
+                       // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+                       $subQuery->where(function ($query) {
+                           $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
+                               ->whereNull('new_market_confirm_date');
+                       })
+                           ->orWhere(function ($query) {
+                               $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
+                           });
+                   });
+
+                   // جلب الشركات المفلترة والمنتهية الصلاحية
+                   $companies = $query->orderBy('id', 'desc')->get();
                     $expiredCount = $companies->count();
                 @endphp
                 <div class="card overflow-hidden sales-card bg-warning-gradient">
@@ -115,22 +136,36 @@
             <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
                 @php
                     // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
-                            $companies = \App\Models\admin\companies::where(function ($query) {
-                                // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-                                $query->where(function ($subQuery) {
-                                    $subQuery->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
-                                        ->whereNull('new_market_confirm_date');
-                                })
-                                    ->orWhere(function ($subQuery) {
-                                        $subQuery->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
-                                    });
-                            })
-                                ->orderBy('id', 'desc')
-                                ->get();
+                           $user = \Illuminate\Support\Facades\Auth::user();
 
-                            // حساب عدد الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
-                            $expiringCount = $companies->count();
- @endphp
+        // بناء الاستعلام الأساسي بناءً على نوع المستخدم
+        if ($user->type == 'admin') {
+            $query = \App\Models\admin\Companies::query();
+        } elseif ($user->type == 'supervisor') {
+            $query = \App\Models\admin\Companies::where('region', $user->regions);
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+        }
+
+        // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
+        $query->where(function ($subQuery) {
+            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+            $subQuery->where(function ($query) {
+                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
+                    ->whereNull('new_market_confirm_date');
+            })
+                ->orWhere(function ($query) {
+                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
+                });
+        });
+
+        // جلب الشركات المفلترة التي ستنتهي صلاحيتها خلال الشهر الحالي
+        $companies = $query->orderBy('id', 'desc')->get();
+
+        // حساب عدد الشركات التي ستنتهي صلاحيتها
+        $expiringCount = $companies->count();
+                @endphp
                 <div class="card overflow-hidden sales-card bg-info-gradient">
                     <div class="pl-3 pt-3 pr-3 pb-2 pt-0">
                         <div class="">
