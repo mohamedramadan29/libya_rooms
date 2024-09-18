@@ -15,6 +15,45 @@
                         <input required type="text" name="name" class="form-control">
                     </div>
                     <div class="form-group">
+                        <label>المنطقة</label>
+                        <select name="regions" id="regions" class="form-control">
+                            <option value="">- حدد المنطقة -</option>
+                            @foreach($regions as $region)
+                                <option value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الفرع</label>
+                        <select required name="branches" id="branches" class="form-control">
+                            <option value="">- حدد الفرع -</option>
+                        </select>
+                    </div>
+
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script type="text/javascript">
+                        $('#regions').on('change', function() {
+                            var region_id = $(this).val();
+                            if(region_id) {
+                                $.ajax({
+                                    url: 'get-branches/' + region_id,
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    success: function(data) {
+                                        $('#branches').empty();
+                                        $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                        $.each(data, function(key, value) {
+                                            $('#branches').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                                        });
+                                    }
+                                });
+                            } else {
+                                $('#branches').empty();
+                                $('#branches').append('<option value="">- حدد الفرع -</option>');
+                            }
+                        });
+                    </script>
+                    <div class="form-group">
                         <label>   البريد الالكتروني   </label>
                         <input required type="email" name="email" class="form-control">
                     </div>

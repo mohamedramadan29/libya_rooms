@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    الادارة المالية
+    مشرفين المناطق والفروع
 @endsection
 @section('css')
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                        class="text-muted mt-1 tx-13 mr-2 mb-0">/   الادارة المالية  </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/   مشرفين المناطق والفروع   </span>
             </div>
         </div>
     </div>
@@ -30,7 +30,7 @@
                 <div class="card-body">
                     @if(Session::has('Success_message'))
                         <div
-                                class="alert alert-success"> {{Session::get('Success_message')}} </div>
+                            class="alert alert-success"> {{Session::get('Success_message')}} </div>
                     @endif
 
                     @if ($errors->any())
@@ -42,15 +42,15 @@
                             </ul>
                         </div>
                     @endif
-                    <div class="mb-4 main-content-label">  مستخدمين الادارة المالية  </div>
+                    <div class="mb-4 main-content-label"> مشرفين المناطق والفروع</div>
                     <div class="card-header">
                         <button data-target="#add_model"
-                                data-toggle="modal" class="btn btn-primary btn-sm"> اضف مستخدم جديد   <i
-                                    class="fa fa-plus"></i>
+                                data-toggle="modal" class="btn btn-primary btn-sm"> اضافة مشرف جديد <i
+                                class="fa fa-plus"></i>
                         </button>
                     </div>
                     <!-- Add New Section -->
-                    @include('admin.users.money_manage.add')
+                    @include('admin.users.supervisors.add')
                     <div class="card-body">
 
                         <div class="table-responsive">
@@ -77,11 +77,11 @@
                                         <td> {{$user['name']}} </td>
                                         <td> {{$user['region']['name']}} </td>
                                         <td>
-                                            @if($user['branches'] !=null)
-                                                {{$user['branch']['name']}}
-                                            @else
-                                                الكل
-                                            @endif
+                                        @if($user['branches'] !=null)
+                                            {{$user['branch']['name']}}
+                                        @else
+                                            الكل
+                                        @endif
                                         </td>
                                         <td> {{$user['phone']}} </td>
                                         <td> {{$user['email']}} </td>
@@ -96,18 +96,17 @@
                                             <button class="btn btn-primary btn-sm"
                                                     data-target="#edit_model_{{$user['id']}}"
                                                     data-toggle="modal"><i class="fa fa-edit"></i></button>
-
                                             <button data-target="#delete_model_{{$user['id']}}"
                                                     data-toggle="modal" class="btn btn-danger btn-sm"><i
-                                                        class="fa fa-trash"></i>
+                                                    class="fa fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
                                     <!-- Edit Sections -->
-                                    @include('admin.users.money_manage.edit')
+                                    @include('admin.users.supervisors.edit')
 
                                     <!-- Delete Section Model  -->
-                                    @include('admin.users.money_manage.delete')
+                                    @include('admin.users.supervisors.delete')
                                 @endforeach
                                 </tbody>
                             </table>

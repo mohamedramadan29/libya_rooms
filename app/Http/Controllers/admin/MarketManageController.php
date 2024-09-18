@@ -4,7 +4,9 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\Message_Trait;
-use App\Models\User;
+use App\Models\admin\Branch;
+use App\Models\admin\Region;
+use App\Models\admin\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,7 +16,14 @@ class MarketManageController extends Controller
     public function index()
     {
         $users = User::where('type','market')->get();
-        return view('admin.users.market_manage.index',compact('users'));
+        $regions = Region::all();
+        return view('admin.users.market_manage.index',compact('users','regions'));
+    }
+    public function getBranches($region_id)
+    {
+        $branches = Branch::with('region','branch')->where('region_id', $region_id)->get();
+
+        return response()->json($branches);
     }
     public function store(Request $request)
     {
@@ -24,7 +33,9 @@ class MarketManageController extends Controller
                 'name' => 'required|regex:/^[\pL\s\-]+$/u',
                 'email' => 'required|email|unique:users',
                 'phone' => 'required|numeric|unique:users|digits_between:8,11',
-                'password' => 'required|min:8'
+                'password' => 'required|min:8',
+                'regions'=>'required',
+                'branches'=>'required',
             ];
             $customeMessage = [
                 'name.required' => 'من فضلك ادخل الأسم',
@@ -36,7 +47,9 @@ class MarketManageController extends Controller
                 'phone.unique' => 'رقم الهاتف متواجد من قبلك من فضلك ادخل رقم هاتف اخر ',
                 'phone.digits_between' => 'رقم الهاتف يجب ان يكون من 8 الي 11 رقم',
                 'password.required' => 'من فضلك ادخل كلمه المرور ',
-                'password.min' => 'كلمه المرور يجب ان تكون اكبر من 8 احرف '
+                'password.min' => 'كلمه المرور يجب ان تكون اكبر من 8 احرف ',
+                'regions.required'=>' من فضلك حدد المنطقة  ',
+                'branches.required'=>' من فضلك حدد الفرع  ',
             ];
             $this->validate($request, $rules, $customeMessage);
             $user = new User();
@@ -46,6 +59,8 @@ class MarketManageController extends Controller
             $user->phone = $alldata['phone'];
             $user->password = Hash::make($alldata['password']);
             $user->status = $alldata['status'];
+            $user->regions = $alldata['regions'];
+            $user->branches = $alldata['branches'];
             $user->save();
             return $this->success_message('تم اضافه المستخدم بنجاح');
         } catch (\Exception $e) {
@@ -64,6 +79,8 @@ class MarketManageController extends Controller
                 'name' => 'required|regex:/^[\pL\s\-]+$/u',
                 'email' => 'required|email|unique:users,email,' . $user_id,
                 'phone' => 'required|numeric|digits_between:8,11|unique:users,phone,' . $user_id,
+                'regions'=>'required',
+                'branches'=>'required'
             ];
             if ($alldata['password'] != '') {
                 $rules['password'] = 'required|min:8';
@@ -78,7 +95,9 @@ class MarketManageController extends Controller
                 'phone.unique' => 'رقم الهاتف متواجد من قبلك من فضلك ادخل رقم هاتف اخر ',
                 'phone.digits_between' => 'رقم الهاتف يجب ان يكون من 8 الي 11 رقم',
                 'password.required' => 'من فضلك ادخل كلمه المرور ',
-                'password.min' => 'كلمه المرور يجب ان تكون اكبر من 8 احرف '
+                'password.min' => 'كلمه المرور يجب ان تكون اكبر من 8 احرف ',
+                'regions.required'=>' من فضلك حدد المنطقة  ',
+                'branches.required'=>' من فضلك حدد الفرع  ',
             ];
             $this->validate($request, $rules, $customeMessage);
             $user->update([
@@ -86,6 +105,8 @@ class MarketManageController extends Controller
                 "email" => $alldata['email'],
                 "phone" => $alldata['phone'],
                 "status" => $alldata['status'],
+                'regions'=>$alldata['regions'],
+                'branches'=>$alldata['branches']
             ]);
             if ($alldata['password'] != '') {
                 $user->update([

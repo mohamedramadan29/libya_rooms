@@ -2,12 +2,12 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
-                <h6 class="modal-title">  اضافة مستخدم جديد  </h6>
+                <h6 class="modal-title">  اضافة مشرف جديد   </h6>
                 <button aria-label="Close" class="close" data-dismiss="modal"
                         type="button"><span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="{{url('admin/money-manage/store')}}">
+            <form method="post" action="{{url('admin/supervisor/store')}}">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
@@ -25,7 +25,7 @@
                     </div>
                     <div class="form-group">
                         <label>الفرع</label>
-                        <select required name="branches" id="branches" class="form-control">
+                        <select name="branches" id="branches" class="form-control">
                             <option value="">- حدد الفرع -</option>
                         </select>
                     </div>

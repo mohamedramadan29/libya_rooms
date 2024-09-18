@@ -10,22 +10,21 @@ use App\Models\admin\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class MoneyManageController extends Controller
+class SupervisorControllers extends Controller
 {
     use Message_Trait;
 
     public function index()
     {
-        $users = User::with('region','branch')->where('type', 'money')->get();
+        $users = User::with('region','branch')->where('type','supervisor')->get();
         $regions = Region::all();
-        return view('admin.users.money_manage.index', compact('users','regions'));
+        return view('admin.users.supervisors.index',compact('users','regions'));
     }
     public function getBranches($region_id)
     {
         $branches = Branch::where('region_id', $region_id)->get();
         return response()->json($branches);
     }
-
     public function store(Request $request)
     {
         $alldata = $request->all();
@@ -35,8 +34,7 @@ class MoneyManageController extends Controller
                 'email' => 'required|email|unique:users',
                 'phone' => 'required|numeric|unique:users|digits_between:8,11',
                 'password' => 'required|min:8',
-                'regions'=>'required',
-                'branches'=>'required'
+                'regions'=>'required'
             ];
             $customeMessage = [
                 'name.required' => 'من فضلك ادخل الأسم',
@@ -50,11 +48,10 @@ class MoneyManageController extends Controller
                 'password.required' => 'من فضلك ادخل كلمه المرور ',
                 'password.min' => 'كلمه المرور يجب ان تكون اكبر من 8 احرف ',
                 'regions.required'=>' من فضلك حدد المنطقة  ',
-                'branches.required'=>' من فضلك حدد الفرع  ',
             ];
             $this->validate($request, $rules, $customeMessage);
             $user = new User();
-            $user->type = 'money';
+            $user->type = 'supervisor';
             $user->name = $alldata['name'];
             $user->email = $alldata['email'];
             $user->phone = $alldata['phone'];
@@ -74,14 +71,12 @@ class MoneyManageController extends Controller
         $alldata = $request->all();
         $user_id = $alldata['user_id'];
         $user = User::findOrFail($user_id);
-
         try {
             $rules = [
                 'name' => 'required|regex:/^[\pL\s\-]+$/u',
                 'email' => 'required|email|unique:users,email,' . $user_id,
                 'phone' => 'required|numeric|digits_between:8,11|unique:users,phone,' . $user_id,
                 'regions'=>'required',
-                'branches'=>'required'
             ];
             if ($alldata['password'] != '') {
                 $rules['password'] = 'required|min:8';
@@ -98,7 +93,6 @@ class MoneyManageController extends Controller
                 'password.required' => 'من فضلك ادخل كلمه المرور ',
                 'password.min' => 'كلمه المرور يجب ان تكون اكبر من 8 احرف ',
                 'regions.required'=>' من فضلك حدد المنطقة  ',
-                'branches.required'=>' من فضلك حدد الفرع  ',
             ];
             $this->validate($request, $rules, $customeMessage);
             $user->update([
@@ -108,6 +102,7 @@ class MoneyManageController extends Controller
                 "status" => $alldata['status'],
                 'regions'=>$alldata['regions'],
                 'branches'=>$alldata['branches']
+
             ]);
             if ($alldata['password'] != '') {
                 $user->update([

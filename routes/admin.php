@@ -9,6 +9,7 @@ use \App\Http\Controllers\admin\MarketManageController;
 use \App\Http\Controllers\admin\CompaniesController;
 use \App\Http\Controllers\admin\FinaialTransactionController;
 use \App\Http\Controllers\admin\RegionController;
+use \App\Http\Controllers\admin\SupervisorControllers;
 Route::get('login', [AdminController::class, 'index'])->name('login');
 Route::group(['prefix' => 'admin'], function () {
     Route::post('admin_login', [AdminController::class, 'admin_login']);
@@ -64,15 +65,26 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('money-manage/store', 'store');
             Route::post('money-manage/update', 'update');
             Route::post('money-manage/destroy/{id}', 'destroy');
+            Route::get('get-branches/{region_id}', 'getBranches');
         });
-
         // Start Market Management
-
         Route::controller(MarketManageController::class)->group(function () {
             Route::get('market-manage', 'index');
             Route::post('market-manage/store', 'store');
             Route::post('market-manage/update', 'update');
             Route::post('market-manage/destroy/{id}', 'destroy');
+            Route::get('get-branches/{region_id}', 'getBranches');
+        });
+
+        ////////////////////// Start SuperVisor Controller ///////////////////
+        ///
+        Route::controller(SupervisorControllers::class)->group(function (){
+           Route::get('supervisors','index');
+            Route::post('supervisor/store', 'store');
+            Route::post('supervisor/update', 'update');
+            Route::post('supervisor/destroy/{id}', 'destroy');
+            Route::get('get-branches/{region_id}', 'getBranches');
+
         });
 
         // Start Financial Transaction
@@ -101,5 +113,8 @@ Route::group(['prefix' => 'admin'], function () {
             Route::match(['post','get'],'branche/update','update');
             Route::post('branche/delete/{id}','delete');
         });
+
+
+
     });
 });

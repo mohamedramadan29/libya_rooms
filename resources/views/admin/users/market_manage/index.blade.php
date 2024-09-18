@@ -59,6 +59,8 @@
                                 <tr>
                                     <th class="wd-15p border-bottom-0"> #</th>
                                     <th class="wd-15p border-bottom-0"> الأسم</th>
+                                    <th class="wd-15p border-bottom-0"> المنطقة</th>
+                                    <th class="wd-15p border-bottom-0"> الفرع</th>
                                     <th class="wd-15p border-bottom-0"> رقم الهاتف</th>
                                     <th class="wd-20p border-bottom-0"> البريد الألكتروني</th>
                                     <th class="wd-15p border-bottom-0"> الحالة</th>
@@ -73,6 +75,14 @@
                                     <tr>
                                         <td> {{$i++}} </td>
                                         <td> {{$user['name']}} </td>
+                                        <td> {{$user['region']['name']}} </td>
+                                        <td>
+                                            @if($user['branches'] !=null)
+                                                {{$user['branch']['name']}}
+                                            @else
+                                                الكل
+                                            @endif
+                                        </td>
                                         <td> {{$user['phone']}} </td>
                                         <td> {{$user['email']}} </td>
                                         <td>

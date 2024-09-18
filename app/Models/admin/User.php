@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\admin;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +18,25 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $guarded = [];
+
+
+    //////// get User Region And Branch
+    ///
+    public function region()
+    {
+        return $this->belongsTo(Region::class,'regions');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class,'branches');
+    }
+
+
+
+
+
+
 
     /**
      * The attributes that should be hidden for serialization.
