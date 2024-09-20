@@ -93,17 +93,14 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary btn-sm"
-                                                    data-target="#edit_model_{{$user['id']}}"
-                                                    data-toggle="modal"><i class="fa fa-edit"></i></button>
+                                            <a href="{{url('admin/supervisor/update/'.$user['id'])}}" class="btn btn-primary btn-sm"> <i class="fa fa-edit"></i>  </a>
                                             <button data-target="#delete_model_{{$user['id']}}"
                                                     data-toggle="modal" class="btn btn-danger btn-sm"><i
                                                     class="fa fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
-                                    <!-- Edit Sections -->
-                                    @include('admin.users.supervisors.edit')
+
 
                                     <!-- Delete Section Model  -->
                                     @include('admin.users.supervisors.delete')

@@ -64,7 +64,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(MoneyManageController::class)->group(function () {
             Route::get('money-manage', 'index');
             Route::post('money-manage/store', 'store');
-            Route::post('money-manage/update', 'update');
+            Route::match(['post','get'],'money-manage/update/{id}','update');
+          //  Route::post('money-manage/update', 'update');
             Route::post('money-manage/destroy/{id}', 'destroy');
             Route::get('get-branches/{region_id}', 'getBranches');
         });
@@ -72,7 +73,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(MarketManageController::class)->group(function () {
             Route::get('market-manage', 'index');
             Route::post('market-manage/store', 'store');
-            Route::post('market-manage/update', 'update');
+            Route::match(['post','get'],'market-manage/update/{id}','update');
             Route::post('market-manage/destroy/{id}', 'destroy');
             Route::get('get-branches/{region_id}', 'getBranches');
         });
@@ -82,7 +83,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(SupervisorControllers::class)->group(function (){
            Route::get('supervisors','index');
             Route::post('supervisor/store', 'store');
-            Route::post('supervisor/update', 'update');
+            //Route::post('supervisor/update/{id}', 'update');
+            Route::match(['post','get'],'supervisor/update/{id}','update');
             Route::post('supervisor/destroy/{id}', 'destroy');
             Route::get('get-branches/{region_id}', 'getBranches');
 
