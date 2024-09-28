@@ -43,6 +43,7 @@ class FinaialTransactionController extends Controller
                 $alldata = $request->all();
                 $company_id = $alldata['company_id'];
                 $company_data = Companies::findOrFail($company_id);
+               // dd($company_data);
                 $rules = [
                     'trans_number' => 'required|numeric',
                     'company_id' => 'required',

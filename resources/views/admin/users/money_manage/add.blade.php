@@ -80,7 +80,7 @@
                     </script>
                     <div class="form-group">
                         <label>   البريد الالكتروني   </label>
-                        <input required type="email" name="email" class="form-control">
+                        <input type="email" name="email" class="form-control">
                     </div>
                     <div class="form-group">
                         <label>   رقم الهاتف   </label>

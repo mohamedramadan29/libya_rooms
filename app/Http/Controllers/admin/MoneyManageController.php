@@ -48,8 +48,8 @@ class MoneyManageController extends Controller
         try {
             $rules = [
                 'name' => 'required|regex:/^[\pL\s\-]+$/u',
-                'email' => 'required|email|unique:users',
-                'phone' => 'required|numeric|unique:users|digits_between:8,11',
+                'email' => 'email|unique:users',
+                'phone' => 'required|numeric|digits_between:8,11|unique:users,phone',
                 'password' => 'required|min:8',
                 'regions' => 'required',
                 'branches' => 'required'
@@ -57,7 +57,6 @@ class MoneyManageController extends Controller
             $customeMessage = [
                 'name.required' => 'من فضلك ادخل الأسم',
                 'name.regex' => 'من فضلك ادخل الأسم بشكل صحيح ',
-                'email.required' => 'من فضلك ادخل البريد الألكتروني',
                 'email.email' => 'من فضلك ادخل البريد الألكتروني بشكل صحيح',
                 'email.unique' => 'هذا البريد الألكتروني موجود من قبل من فضلك ادخل بريد الكتروني جديد',
                 'phone.required' => 'من فضلك ادخل رقم الهاتف',
@@ -114,7 +113,7 @@ class MoneyManageController extends Controller
             try {
                 $rules = [
                     'name' => 'required|regex:/^[\pL\s\-]+$/u',
-                    'email' => 'required|email|unique:users,email,' . $user_id,
+                    'email' => 'email|unique:users,email,' . $user_id,
                     'phone' => 'required|numeric|digits_between:8,11|unique:users,phone,' . $user_id,
                     'regions' => 'required',
                     'branches' => 'required'

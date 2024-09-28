@@ -7,15 +7,15 @@ use App\Http\Traits\Message_Trait;
 use App\Models\admin\CompanyCategories;
 use Illuminate\Http\Request;
 
-class MainCategoryController extends Controller
+class SubCategoriesController extends Controller
 {
     use Message_Trait;
-
-    public function index()
+    public function index($id)
     {
-        $main_categories = CompanyCategories::with('getparent')->where('parent_id',0)->get();
+        $subcategories = CompanyCategories::with('getparent')->where('parent_id',$id)->get();
+        $maincategory = CompanyCategories::findOrFail($id);
         // dd($main_categories);
-        return view('admin.company_category.main_category.index', compact('main_categories'));
+        return view('admin.company_category.sub_categories.index', compact('subcategories','maincategory'));
     }
 
     public function add(Request $request)
@@ -46,7 +46,6 @@ class MainCategoryController extends Controller
             return $this->exception_message($e);
         }
     }
-
     public function edit(Request $request)
     {
         try {
@@ -69,7 +68,7 @@ class MainCategoryController extends Controller
                 "name" => $alldata['name'],
                 "status" => $alldata['status'],
             ]);
-            return $this->success_message('تم  التعديل  بنجاح ');
+            return $this->success_message(' تم التعديل بنجاح  ');
         } catch (\Exception $e) {
             return $this->exception_message($e);
         }
@@ -80,10 +79,11 @@ class MainCategoryController extends Controller
         try {
             $category = CompanyCategories::findOrFail($id);
             $category->delete();
-            return $this->success_message('  تم الحذف بنجاح  ');
+            return $this->success_message('  تم الحذف بنجاح   ');
         } catch (\Exception $e) {
             return $this->exception_message($e);
         }
 
     }
+
 }

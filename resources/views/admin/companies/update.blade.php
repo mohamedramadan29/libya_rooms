@@ -1,13 +1,13 @@
 @extends('admin.layouts.master')
 @section('title')
-   تعديل بيانات الشركة
+   تعديل بيانات الشعبة
 @endsection
 @section('content')
     <!-- breadcrumb -->
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span class="text-muted mt-1 tx-13 mr-2 mb-0"> تعديل بيانات الشركة   </span>
+                <h4 class="content-title mb-0 my-auto">الرئيسية  / </h4><span class="text-muted mt-1 tx-13 mr-2 mb-0"> تعديل بيانات الشعبة    </span>
             </div>
         </div>
     </div>
@@ -83,8 +83,6 @@
                                         </select>
                                     </div>
                                 @endif
-
-
                                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                 <script type="text/javascript">
                                     var selectedBranch = {{ $company['branch'] ?? 'null' }}; // الفرع الحالي للمستخدم
@@ -172,16 +170,65 @@
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> نوع النشاط : </label>
-                                    <select class="form-control" name="category">
-                                        <option value=""> -- حدد نوع النشاط -- </option>
+                                    <label class="form-label"> حدد الشعبة : </label>
+                                    <select  id="main_category" class="form-control" name="category">
+                                        <option value=""> -- حدد الشعبة -- </option>
                                         @foreach($categories as $category)
                                             <option @if($company['category'] == $category['id']) selected @endif value="{{$category['id']}}"> {{$category['name']}} </option>
                                         @endforeach
-
                                     </select>
-
                                 </div>
+
+                                <div class="form-group ">
+                                    <label class="form-label">   نوع النشاط   : </label>
+                                    <select id="sub_category" class="form-control" name="sub_category">
+                                        <option value=""> -- حدد نوع النشاط --</option>
+                                    </select>
+                                </div>
+
+                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                <script type="text/javascript">
+                                    var selectedsubcategory = {{ $company['sub_category'] ?? 'null' }}; // الفرع الحالي للمستخدم
+                                    console.log(selectedBranch);
+
+                                    // عندما تتغير المنطقة
+                                    $('#main_category').on('change', function () {
+                                        var main_category= $(this).val();
+                                        loadSubcategories(main_category, null); // تحميل الفروع بناءً على المنطقة
+                                    });
+
+                                    // دالة لتحميل الفروع
+                                    function loadSubcategories(main_category, sub_category) {
+                                        if (main_category) {
+                                            $.ajax({
+                                                url: '/admin/companies/get-subcategories/' + main_category,
+                                                type: 'GET',
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    $('#sub_category').empty();
+                                                    $('#sub_category').append('<option value="">-  حدد نوع النشاط -</option>');
+                                                    $.each(data, function (key, value) {
+                                                        var selected = (sub_category && sub_category == value.id) ? 'selected' : '';
+                                                        $('#sub_category').append('<option value="' + value.id + '" ' + selected + '>' + value.name + '</option>');
+                                                    });
+                                                }
+                                            });
+                                        } else {
+                                            $('#sub_category').empty();
+                                            $('#sub_category').append('<option value="">-  حدد نوع النشاط -</option>');
+                                        }
+                                    }
+
+                                    // عند تحميل الصفحة، إذا كانت المنطقة محددة مسبقًا، استدعِ الفروع واضبط الفرع المختار
+                                    $(document).ready(function () {
+                                        var main_category = $('#main_category').val();
+                                        if (main_category) {
+                                            loadSubcategories(main_category, selectedsubcategory); // تحميل الفروع وتحديد الفرع الحالي
+                                        }
+                                    });
+                                </script>
+
+
 
                                 <div class="form-group ">
                                     <label class="form-label"> راس المال : </label>
@@ -282,7 +329,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-left">
-                            <button type="submit" class="btn btn-primary waves-effect waves-light"> تعديل الشركة
+                            <button type="submit" class="btn btn-primary waves-effect waves-light"> تعديل
                             </button>
                         </div>
                     </form>

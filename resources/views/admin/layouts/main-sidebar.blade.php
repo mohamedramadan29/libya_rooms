@@ -48,17 +48,17 @@
             </li>
 
             @if(Auth::user()->type == 'admin')
-                <li class="side-item side-item-category"> الشركات المسجلة</li>
+                <li class="side-item side-item-category"> الشعب المسجلة  </li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="">
                         <i style="font-size: 22px;margin-left: 10px" class="fa fa-building"></i>
-                        <span class="side-menu__label">  الشركات المسجلة   </span><i
+                        <span class="side-menu__label">  الشعب المسجلة  </span><i
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
-                        <li><a class="slide-item" href="{{url('admin/companies')}}"> جميع الشركات </a>
-                        <li><a class="slide-item" href="{{url('admin/expire-companies')}}"> الشركات منتهية الصلاحيه  </a>
-                        <li><a class="slide-item" href="{{url('admin/expire-month')}}"> الشركات منتهية خلال شهر   </a>
-                        <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة شركة </a>
+                        <li><a class="slide-item" href="{{url('admin/companies')}}">  جميع الشعب  </a>
+                        <li><a class="slide-item" href="{{url('admin/expire-companies')}}"> الانشطة منتهية الصلاحيه  </a>
+                        <li><a class="slide-item" href="{{url('admin/expire-month')}}"> الانشطة  منتهية خلال شهر   </a>
+                        <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة نشاط </a>
                     </ul>
                 </li>
                 <li class="side-item side-item-category"> الادارات</li>
@@ -71,17 +71,6 @@
                         <li><a class="slide-item" href="{{url('admin/market-manage')}}"> ادارة التوثيق </a>
                         </li>
                         <li><a class="slide-item" href="{{url('admin/money-manage')}}"> ادارة المالية </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="side-item side-item-category"> مشرفين المناطق والفروع  </li>
-                <li class="slide">
-                    <a class="side-menu__item" data-toggle="slide" href="">
-                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-users"></i>
-                        <span class="side-menu__label"> مشرفين المناطق والفروع    </span><i
-                            class="angle fe fe-chevron-down"></i></a>
-                    <ul class="slide-menu">
-                        <li><a class="slide-item" href="{{url('admin/supervisors')}}"> المشرفين  </a>
                         </li>
                     </ul>
                 </li>
@@ -98,27 +87,26 @@
                         </li>
                     </ul>
                 </li>
-                <li class="side-item side-item-category"> الاعدادات</li>
-                <li class="slide">
-                    <a class="side-menu__item" data-toggle="slide" href="">
-                        <i style="font-size: 22px;margin-left: 10px" class="bx bx-cog"></i>
-                        <span class="side-menu__label">  الاعدادات الشخصية </span><i
-                            class="angle fe fe-chevron-down"></i></a>
-                    <ul class="slide-menu">
-                        <li><a class="slide-item" href="{{url('admin/update_admin_password')}}"> تعديل كلمة المرور </a>
-                        </li>
-                        <li><a class="slide-item" href="{{url('admin/update_admin_details')}}"> تعديل البيانات </a></li>
-                    </ul>
-                </li>
-                <li class="side-item side-item-category"> تصنيفات الشركات</li>
+                <li class="side-item side-item-category"> تصنيفات  الشعب  </li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="">
                         <i style="font-size: 22px;margin-left: 10px" class="fa fa-city"></i>
-                        <span class="side-menu__label">  تصنيفات الشركات   </span><i
+                        <span class="side-menu__label">  تصنيفات الشعب   </span><i
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{url('admin/main_categories')}}"> مشاهدة التصنيفات </a></li>
-                        <li><a class="slide-item" href="{{url('admin/company_type')}}"> انواع الشركات </a></li>
+                        <li><a class="slide-item" href="{{url('admin/company_type')}}"> انواع الشعب </a></li>
+                    </ul>
+                </li>
+                <li class="side-item side-item-category"> مشرفين المناطق والفروع  </li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-users"></i>
+                        <span class="side-menu__label"> مشرفين المناطق والفروع    </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/supervisors')}}"> المشرفين  </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="side-item side-item-category"> المناطق والفروع   </li>
@@ -129,6 +117,18 @@
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{url('admin/regions')}}">  مشاهدة المناطق  </a></li>
+                    </ul>
+                </li>
+                <li class="side-item side-item-category"> الاعدادات</li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="bx bx-cog"></i>
+                        <span class="side-menu__label">  الاعدادات الشخصية </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/update_admin_password')}}"> تعديل كلمة المرور </a>
+                        </li>
+                        <li><a class="slide-item" href="{{url('admin/update_admin_details')}}"> تعديل البيانات </a></li>
                     </ul>
                 </li>
                 @elseif(Auth::user()->type == 'supervisor')

@@ -10,6 +10,7 @@ use \App\Http\Controllers\admin\CompaniesController;
 use \App\Http\Controllers\admin\FinaialTransactionController;
 use \App\Http\Controllers\admin\RegionController;
 use \App\Http\Controllers\admin\SupervisorControllers;
+use \App\Http\Controllers\admin\SubCategoriesController;
 Route::get('login', [AdminController::class, 'index'])->name('login');
 Route::group(['prefix' => 'admin'], function () {
     Route::post('admin_login', [AdminController::class, 'admin_login']);
@@ -30,6 +31,14 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('main_categories/add', 'add');
             Route::post('main_categories/edit', 'edit');
             Route::post('main_categories/delete/{id}', 'delete');
+        });
+        //////////// Start SubCategories Controller
+        Route::controller(SubCategoriesController::class)->group(function (){
+            Route::get('sub_categories/{id}','index');
+            Route::post('sub_category/add','add');
+            Route::post('sub_category/edit', 'edit');
+            Route::post('sub_category/delete/{id}', 'delete');
+
         });
         // Company Types
         Route::controller(CompanyTypeController::class)->group(function () {
@@ -55,6 +64,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('companies/money-unconfirmed','money_unconfirmed');
             Route::match(['get','post'],'company/certificate/{id}','certificate');
             Route::get('companies/get-branches/{region_id}', 'getBranches');
+            Route::get('companies/get-subcategories/{main_category}','getsubcategories');
         });
 
         // Start Management Routes

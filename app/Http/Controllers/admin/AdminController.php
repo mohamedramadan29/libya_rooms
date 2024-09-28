@@ -23,18 +23,17 @@ class AdminController extends Controller
         $data_lgoin = $request->all();
         try {
             $rules = [
-                'email' => 'required|email',
+                'phone' => 'required',
                 'password' => 'required',
             ];
             $customMessage = [
-                'email.required' => 'من فضلك ادخل البريد الإلكتروني',
-                'email.email' => 'من فضلك ادخل بريد الكتوني صحيح',
+                'phone.required' => 'من فضلك ادخل رقم الهاتف',
                 'password.required' => 'من فضلك ادخل كلمة المرور',
             ];
             $this->validate($request, $rules, $customMessage);
-            $email = $data_lgoin['email'];
+            $phone = $data_lgoin['phone'];
             $password = $data_lgoin['password'];
-            if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            if (Auth::attempt(['phone' => $phone, 'password' => $password])) {
                 if (Auth::user()->status == 1) {
                     return redirect('admin/dashboard');
                 } else {
@@ -69,17 +68,17 @@ class AdminController extends Controller
             ////////////////////// Make Validation //////////////
             $rules = [
                 'name' => 'required|regex:/^[\pL\s\-]+$/u',
-                'email' => 'required|email|unique:users,email,' . $id,
-                'phone' => 'required|numeric|digits_between:8,11',
+                'email' => 'email|unique:users,email,' . $id,
+                'phone' => 'required|numeric|digits_between:8,11|unique:users,phone,' . $id,
             ];
             $customeMessage = [
                 'name.required' => 'من فضلك ادخل الأسم',
                 'name.regex' => 'من فضلك ادخل الأسم بشكل صحيح ',
-                'email.required' => 'من فضلك ادخل البريد الألكتروني',
                 'email.email' => 'من فضلك ادخل البريد الألكتروني بشكل صحيح',
                 'email.unique' => 'هذا البريد الألكتروني موجود من قبل من فضلك ادخل بريد الكتروني جديد',
                 'phone.required' => 'من فضلك ادخل رقم الهاتف',
                 'phone.digits_between' => 'رقم الهاتف يجب ان يكون من 8 الي 11 رقم',
+                'phone.unique'=>' رقم الهاتف مستخدم من قبل من فضلك ادخل رقم هاتف جديد  '
             ];
             $this->validate($request, $rules, $customeMessage);
             $user->update([

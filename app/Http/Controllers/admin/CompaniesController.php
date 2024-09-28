@@ -48,7 +48,16 @@ class CompaniesController extends Controller
     public function getBranches($region_id)
     {
         $branches = Branch::where('region_id', $region_id)->get();
+       // dd($branches);
         return response()->json($branches);
+    }
+
+    public function getsubcategories($main_category)
+    {
+
+        $subcategories = CompanyCategories::where('parent_id', $main_category)->get();
+        return response()->json($subcategories);
+
     }
 
     public function store(Request $request)
@@ -60,7 +69,7 @@ class CompaniesController extends Controller
         } else {
             $regions = null;
         }
-        $categories = CompanyCategories::where('status', '1')->get();
+        $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
         $types = CompanyType::where('status', '1')->get();
         if ($request->isMethod('post')) {
             try {
@@ -134,6 +143,7 @@ class CompaniesController extends Controller
                 $company->personal_number = $data['personal_number'];
                 $company->trade_name = $data['trade_name'];
                 $company->category = $data['category'];
+                $company->sub_category = $data['sub_category'];
                 $company->money_head = $data['money_head'];
                 $company->bank_name = $data['bank_name'];
                 $company->licenseـnumber = $data['licenseـnumber'];
@@ -173,7 +183,7 @@ class CompaniesController extends Controller
 
         try {
             $company = Companies::findOrFail($id);
-            $categories = CompanyCategories::where('status', '1')->get();
+            $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
             $types = CompanyType::where('status', '1')->get();
 
             if ($request->isMethod('post')) {
@@ -228,6 +238,7 @@ class CompaniesController extends Controller
                     "place" => $data['place'],
                     "personal_number" => $data['personal_number'],
                     "trade_name" => $data['trade_name'],
+                    "sub_category" => $data['sub_category'],
                     "category" => $data['category'],
                     "money_head" => $data['money_head'],
                     "bank_name" => $data['bank_name'],
@@ -352,6 +363,8 @@ class CompaniesController extends Controller
                 $transaction->trans_price = $alldata['trans_price'];
                 $transaction->company_id = $alldata['company_id'];
                 $transaction->trans_type = $alldata['trans_type'];
+                $transaction->region = $company['region'];
+                $transaction->branch = $company['branch'];
                 $transaction->notes = $alldata['notes'];
                 $transaction->file = $filename;
                 $transaction->employe_id = Auth::user()->id;
@@ -473,7 +486,6 @@ class CompaniesController extends Controller
                 $query->where('branch', $user->branches);
             }
         }
-
 
 
         if ($request->filled('type')) {

@@ -45,8 +45,8 @@
                                             <form action="{{url('admin/admin_login')}}" method="post">
                                                 @csrf
                                                 <div class="form-group">
-                                                    <label>البريد الالكتروني </label> <input class="form-control"
-                                                                                             name="email" type="email"
+                                                    <label> رقم الهاتف  </label> <input placeholder="من فضلك ادخل رقم الهاتف" class="form-control"
+                                                                                             name="phone" type="number"
                                                                                              required>
                                                 </div>
                                                 <div class="form-group">

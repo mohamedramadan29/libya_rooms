@@ -125,7 +125,7 @@
                             </script>
                             <div class="form-group">
                                 <label> البريد الالكتروني </label>
-                                <input required type="email" name="email" class="form-control"
+                                <input type="email" name="email" class="form-control"
                                        value="{{$user['email']}}">
                             </div>
                             <div class="form-group">

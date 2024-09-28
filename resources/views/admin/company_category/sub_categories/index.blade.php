@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    تصنيفات الشعب
+    مشاهدة انواع النشاط
 @endsection
 @section('css')
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                    class="text-muted mt-1 tx-13 mr-2 mb-0">/  التصنيفات الرئيسية للشعب    </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/   مشاهدة انواع النشاط/  {{$maincategory['name']}}   </span>
             </div>
         </div>
     </div>
@@ -42,15 +42,15 @@
                             </ul>
                         </div>
                     @endif
-                    <div class="mb-4 main-content-label"> تصنيفات الشعب </div>
+                    <div class="mb-4 main-content-label"> مشاهدة انواع النشاط/  {{$maincategory['name']}} </div>
                     <div class="card-header">
                         <button data-target="#add_model"
-                                data-toggle="modal" class="btn btn-primary btn-sm"> اضافة تصنيف <i
+                                data-toggle="modal" class="btn btn-primary btn-sm">  اضافة نوع جديد <i
                                 class="fa fa-plus"></i>
                         </button>
                     </div>
                     <!-- Add New Section -->
-                    @include('admin.company_category.main_category.add')
+                    @include('admin.company_category.sub_categories.add')
                     <div class="card-body">
 
                         <div class="table-responsive">
@@ -58,10 +58,9 @@
                                 <thead>
                                 <tr>
                                     <th class="wd-15p border-bottom-0"> #</th>
-                                    <th class="wd-15p border-bottom-0"> رقم الشعبة</th>
+                                    <th class="wd-15p border-bottom-0"> رقم الشعبة </th>
                                     <th class="wd-15p border-bottom-0"> الاسم  </th>
                                     <th class="wd-15p border-bottom-0"> الحالة</th>
-                                    <th class="wd-15p border-bottom-0" id="column2"> نوع القسم</th>
                                     <th class="wd-15p border-bottom-0" id="column1"> العمليات</th>
                                 </tr>
                                 </thead>
@@ -69,7 +68,7 @@
                                 @php
                                     $i = 1;
                                 @endphp
-                                @foreach($main_categories as $category)
+                                @foreach($subcategories as $category)
                                     <tr>
                                         <td> {{$category['id']}} </td>
                                         <td> {{$category['number']}} </td>
@@ -79,10 +78,7 @@
                                             @else
                                                 <span class="badge badge-danger"> غير فعال </span>
                                             @endif </td>
-                                        <td>
-                                                <a class="btn btn-primary btn-sm" href="{{url('admin/sub_categories/'.$category['id'])}}">  مشاهدة انواع النشاط   <i class="fa fa-eye"></i>  </a>
 
-                                        </td>
                                         <td>
                                             <button class="btn btn-primary btn-sm"
                                                     data-target="#edit_model_{{$category['id']}}"
@@ -94,8 +90,8 @@
                                         </td>
                                     </tr>
 
-                                    @include('admin.company_category.main_category.edit')
-                                    @include('admin.company_category.main_category.delete')
+                                    @include('admin.company_category.sub_categories.edit')
+                                    @include('admin.company_category.sub_categories.delete')
                                 @endforeach
                                 </tbody>
                             </table>

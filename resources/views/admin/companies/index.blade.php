@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                    class="text-muted mt-1 tx-13 mr-2 mb-0">/ الشركات المسجلة   </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/  الشعب المسجلة   </span>
             </div>
         </div>
     </div>
@@ -41,9 +41,9 @@
                     </div>
                 @endif
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5> الشركات المسجلة </h5>
+                    <h5> الشعب  المسجلة </h5>
                     @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin'|| Auth::user()->type == 'supervisor')
-                        <a href="{{url('admin/companies/store')}}" class="btn btn-primary btn-sm"> اضافة شركة جديدة
+                        <a href="{{url('admin/companies/store')}}" class="btn btn-primary btn-sm"> اضافة   جديدة
                             <i
                                 class="fa fa-plus"></i> </a>
                     @endif
@@ -54,7 +54,7 @@
                         <form method="GET" action="{{ url('admin/company/main-filter')}}">
                             <div class="d-flex align-items-center">
                                 <div class="form_box" style="min-width: 30%">
-                                    <label for="year" class="d-block">  تصنيف الشركة  </label>
+                                    <label for="year" class="d-block">  تصنيف الشعبة   </label>
                                     <select class="form-control" name="type" id="type">
                                         <option value=""> -- حدد التصنيف  -- </option>
                                         @foreach($types as $type)
