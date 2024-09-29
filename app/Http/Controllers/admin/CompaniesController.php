@@ -40,7 +40,7 @@ class CompaniesController extends Controller
             $companies = Companies::orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         }
 
-        $categories = CompanyCategories::where('status', '1')->get();
+        $categories = CompanyCategories::where('status', '1')->where('parent_id','0')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
     }
@@ -408,6 +408,10 @@ class CompaniesController extends Controller
     {
 
         $company = Companies::with('category')->where('id', $id)->first()->toArray();
+        $confirmationDate = $company['new_market_confirm_date'] ?? $company['first_market_confirm_date'];
+
+         // Calculate the expiration date by adding `isadar_duration` to the confirmation date
+        $expirationDate = Carbon::parse($confirmationDate)->addYears($company['isadarـduration']);
         // dd($company);
         try {
             if ($request->isMethod('post')) {
@@ -418,7 +422,7 @@ class CompaniesController extends Controller
             return $this->exception_message($e);
         }
 
-        return view('admin.companies.certificate', compact('company'));
+        return view('admin.companies.certificate', compact('company','expirationDate'));
     }
 
 
@@ -486,17 +490,18 @@ class CompaniesController extends Controller
                 $query->where('branch', $user->branches);
             }
         }
-
-
         if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
+        if ($request->filled('sub_category')) {
+            $query->where('sub_category', $request->sub_category);
+        }
 
         $companies = $query->orderBy('id', 'desc')->get();
-        $categories = CompanyCategories::where('status', '1')->get();
+        $categories = CompanyCategories::where('status', '1')->where('parent_id','0')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
 

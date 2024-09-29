@@ -83,11 +83,16 @@
                     <div class="body_footer">
                         <div class="first_body">
                             <div>
-                                <p> حرر بتاريخ : <span> </span> <span> / </span> <span> </span> <span> / </span></p>
+                                @if($company['new_market_confirm_date'] == null)
+                                    <p> حرر بتاريخ :   {{$company['first_market_confirm_date']}}   </p>
+                                @else
+                                    <p> حرر بتاريخ :   {{$company['new_market_confirm_date']}}      </p>
+                                @endif
+
                             </div>
 
                             <div>
-                                <p> تاريخ الصلاحية : <span> </span> <span> / </span> <span> </span> <span> / </span></p>
+                                <p> تاريخ الصلاحية :  {{$expirationDate->format('Y-m-d')}}   </p>
                             </div>
                         </div>
                         <div>
