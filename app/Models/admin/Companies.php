@@ -18,6 +18,19 @@ class Companies extends Model
         return $this->belongsTo(CompanyCategories::class,'category')->select('id','name','number');
     }
 
+    public function subcategory()
+    {
+        return $this->belongsTo(CompanyCategories::class,'sub_category')->select('id','name','number');
+    }
+
+    public function companytype()
+    {
+        return $this->belongsTo(CompanyType::class, 'type');
+    }
+
+
+
+
     // تحديد تاريخ انتهاء الشركة بناءً على آخر توثيق ومدة القيد
     public function getExpiryDateAttribute()
     {

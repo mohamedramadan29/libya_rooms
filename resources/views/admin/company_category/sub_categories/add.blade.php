@@ -16,11 +16,11 @@
                     </div>
                     <div class="form-group">
                         <input type="hidden" name="parent_id" value="{{$maincategory['id']}}">
-                        <label> رقم الشعبة   </label>
-                        <input required type="number" name="number" class="form-control">
+                        <input type="hidden" name="number" value="{{$maincategory['number']}}">
+
                     </div>
                     <div class="form-group">
-                        <label>   الاسم   </label>
+                        <label>    نوع النشاط   </label>
                         <input required type="text" name="name" class="form-control">
                     </div>
                     <div class="form-group">

@@ -57,21 +57,18 @@
                             <table class="table text-md-nowrap" id="example">
                                 <thead>
                                 <tr>
-                                    <th class="wd-15p border-bottom-0"> #</th>
+
                                     <th class="wd-15p border-bottom-0"> رقم الشعبة</th>
-                                    <th class="wd-15p border-bottom-0"> الاسم  </th>
+                                    <th class="wd-15p border-bottom-0">  اسم الشعبة   </th>
                                     <th class="wd-15p border-bottom-0"> الحالة</th>
                                     <th class="wd-15p border-bottom-0" id="column2"> نوع القسم</th>
                                     <th class="wd-15p border-bottom-0" id="column1"> العمليات</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @php
-                                    $i = 1;
-                                @endphp
                                 @foreach($main_categories as $category)
                                     <tr>
-                                        <td> {{$category['id']}} </td>
+
                                         <td> {{$category['number']}} </td>
                                         <td> {{$category['name']}} </td>
                                         <td> @if($category['status'] == 1)

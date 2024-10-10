@@ -8,6 +8,7 @@ use App\Models\admin\Branch;
 use App\Models\admin\Region;
 use App\Models\admin\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class SupervisorControllers extends Controller
@@ -16,8 +17,27 @@ class SupervisorControllers extends Controller
 
     public function index()
     {
+
+        $user = Auth::user();
         $users = User::with('region','branch')->where('type','supervisor')->get();
-        $regions = Region::all();
+        if ($user->type == 'supervisor'){
+            $users = User::with('region','branch')->where('type','supervisor')->
+            where('regions',$user->regions)->where('branches','!=',null)->get();
+        }
+
+        //$regions = Region::all();
+
+        if (Auth::user()->type == 'admin') {
+            $regions = Region::all();
+            $users = User::with('region', 'branch')->where('type', 'money')->get();
+
+        } elseif (Auth::user()->type == 'supervisor') {
+
+            $regions = Region::where('id', Auth::user()->regions)->get();
+        } else {
+            $regions = null;
+        }
+
         return view('admin.users.supervisors.index',compact('users','regions'));
     }
     public function getBranches($region_id)
@@ -67,7 +87,18 @@ class SupervisorControllers extends Controller
 
     public function update(Request $request,$id)
     {
-        $regions = Region::all();
+
+        if (Auth::user()->type == 'admin') {
+            $regions = Region::all();
+            $users = User::with('region', 'branch')->where('type', 'money')->get();
+
+        } elseif (Auth::user()->type == 'supervisor') {
+
+            $regions = Region::where('id', Auth::user()->regions)->get();
+        } else {
+            $regions = null;
+        }
+
         $alldata = $request->all();
 
         $user = User::findOrFail($id);

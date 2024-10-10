@@ -61,7 +61,7 @@ class SubCategoriesController extends Controller
                 'parent_id.required' => 'من فضلك حدد نوع التصنيف'
             ];
             $this->validate($request, $rules, $messages);
-            $main_category = CompanyCategories::where('id', $alldata['cat_id'])->first();
+            $main_category = CompanyCategories::where('id', $alldata['parent_id'])->first();
             $main_category->update([
                 "number" => $alldata['number'],
                 "parent_id" => $alldata['parent_id'],

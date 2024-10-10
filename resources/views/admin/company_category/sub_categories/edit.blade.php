@@ -15,14 +15,10 @@
                         <label> التصنيف الرئيسي  </label>
                         <input readonly disabled type="text" name="" class="form-control" value="{{$maincategory['name']}}">
                         <input type="hidden" name="parent_id" value="{{$maincategory['id']}}">
+                        <input type="hidden" name="number" value="{{$maincategory['number']}}">
                     </div>
                     <div class="form-group">
-                        <label> رقم الشعبة   </label>
-                        <input type="hidden" name="cat_id" value="{{$category['id']}}">
-                        <input required type="number" name="number" class="form-control" value="{{$category['number']}}">
-                    </div>
-                    <div class="form-group">
-                        <label>   الاسم   </label>
+                        <label>    نوع النشاط   </label>
                         <input required type="text" name="name" class="form-control"  value="{{$category['name']}}">
                     </div>
                     <div class="form-group">

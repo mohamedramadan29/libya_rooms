@@ -72,7 +72,7 @@
                             <hr>
                             <li><span> عنوانها </span> <span> {{$company['address']}} </span></li>
                             <hr>
-                            <li><span>  نوع النشاط </span> <span> {{$company['category']['name']}} </span></li>
+                            <li><span>  نوع النشاط </span> <span> {{$company['subcategory']['name']}} </span></li>
                             <hr>
                         </ul>
                         <div class="">

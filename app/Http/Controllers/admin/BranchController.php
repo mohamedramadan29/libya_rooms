@@ -7,15 +7,24 @@ use App\Http\Traits\Message_Trait;
 use App\Models\admin\Branch;
 use App\Models\admin\Region;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BranchController extends Controller
 {
     use Message_Trait;
+
     public function index($region_id)
     {
-        $branches = Branch::where('region_id',$region_id)->get();
+        $user = Auth::user();
+        $branches = Branch::where('region_id', $region_id)->get();
+        if ($user->type == 'supervisor') {
+            if ($region_id !=$user->regions){
+                abort(404);
+            }
+            $branches = Branch::where('region_id', $region_id)->where('region_id', $user->regions)->get();
+        }
         $region = Region::findOrFail($region_id);
-        return view('admin.branches.index',compact('branches','region'));
+        return view('admin.branches.index', compact('branches', 'region'));
     }
 
     public function store(Request $request)
@@ -62,7 +71,7 @@ class BranchController extends Controller
         }
     }
 
-    public function delete(Request $request,$id)
+    public function delete(Request $request, $id)
     {
         try {
             $branch = Branch::findOrFail($id);

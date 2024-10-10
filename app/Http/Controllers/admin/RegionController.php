@@ -7,14 +7,19 @@ use App\Http\Traits\Message_Trait;
 use App\Models\admin\CompanyType;
 use App\Models\admin\Region;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RegionController extends Controller
 {
     use Message_Trait;
     public function index()
     {
+        $user = Auth::user();
         $regions = Region::all();
-        return view('admin.regions.index',compact('regions'));
+        if ($user->type == 'supervisor'){
+            $regions = Region::where('id',$user->regions)->get();
+        }
+            return view('admin.regions.index',compact('regions'));
     }
 
     public function store(Request $request)

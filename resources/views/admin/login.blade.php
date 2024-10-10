@@ -56,6 +56,10 @@
                                                 </div>
                                                 <button class="btn btn-main-primary btn-block">تسجيل الدخول</button>
                                             </form>
+                                            <div style="margin-top: 15px">
+
+                                                <a href="{{url('companies/store')}}"> تسجيل شركة جديدة  </a>
+                                            </div>
 
                                         </div>
                                     </div>

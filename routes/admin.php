@@ -65,6 +65,8 @@ Route::group(['prefix' => 'admin'], function () {
             Route::match(['get','post'],'company/certificate/{id}','certificate');
             Route::get('companies/get-branches/{region_id}', 'getBranches');
             Route::get('companies/get-subcategories/{main_category}','getsubcategories');
+            Route::get('companies/company_under_view','company_under_view');
+            Route::post('companies/confirm/{id}','confirm_archive');
         });
 
         // Start Management Routes
@@ -130,4 +132,10 @@ Route::group(['prefix' => 'admin'], function () {
 
 
     });
+});
+
+Route::controller(CompaniesController::class)->group(function (){
+    Route::match(['post', 'get'], 'companies/store', 'user_store');
+    Route::get('companies/get-branches/{region_id}', 'getBranches');
+    Route::get('companies/get-subcategories/{main_category}','getsubcategories');
 });

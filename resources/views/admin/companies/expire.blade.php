@@ -111,7 +111,7 @@
                                         @if($company['new_market_confirm_date'] !='')
                                             {{$company['new_market_confirm_date']}}
                                         @else
-                                            {{$company['	first_market_confirm_date']}}
+                                            {{$company['first_market_confirm_date']}}
                                         @endif  </td>
                                     <td> {{$company['isadarـduration']}} <span class="badge badge-danger"> سنة </span>
                                     </td>

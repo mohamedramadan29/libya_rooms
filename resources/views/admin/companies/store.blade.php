@@ -107,11 +107,6 @@
                                     });
                                 </script>
 
-                                <div class="form-group ">
-                                    <label class="form-label"> تاريخ الميلاد : </label>
-                                    <input type="date" class="form-control" name="birthdate"
-                                           value="{{old('birthdate')}}">
-                                </div>
 
                                 <div class="form-group ">
                                     <label class="form-label"> مكان الميلاد : </label>
@@ -248,11 +243,6 @@
                                            value="{{old('jihad_isdar')}}">
                                 </div>
 
-                                <div class="form-group ">
-                                    <label class="form-label"> دائرة النشاط : </label>
-                                    <input type="text" class="form-control" name="active_circle"
-                                           value="{{old('active_circle')}}">
-                                </div>
 
                                 <div class="form-group ">
                                     <label class="form-label"> تصنيفها : </label>

@@ -26,21 +26,22 @@ class CompaniesController extends Controller
 
         $user = Auth::user();
         if ($user->type == 'admin') {
-            $companies = Companies::orderby('id', 'desc')->get();
+            $companies = Companies::with('subcategory', 'companytype')->orderby('id', 'desc')->get();
+            //  dd($companies);
         } elseif ($user->type == 'supervisor') {
             $query = Companies::where('region', $user->regions);
             // إذا كان لدى المشرف فرع معين، أضف شرط الفرع
             if ($user->branches !== null) {
                 $query->where('branch', $user->branches);
             }
-            $companies = $query->get();
+            $companies = $query->with('subcategory', 'companytype')->get();
         } elseif ($user->type == 'money') {
-            $companies = Companies::where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory', 'companytype')->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         } elseif ($user->type == 'market') {
-            $companies = Companies::orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory', 'companytype')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         }
 
-        $categories = CompanyCategories::where('status', '1')->where('parent_id','0')->get();
+        $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
     }
@@ -48,7 +49,7 @@ class CompaniesController extends Controller
     public function getBranches($region_id)
     {
         $branches = Branch::where('region_id', $region_id)->get();
-       // dd($branches);
+        // dd($branches);
         return response()->json($branches);
     }
 
@@ -67,7 +68,8 @@ class CompaniesController extends Controller
         } elseif (Auth::user()->type == 'supervisor') {
             $regions = Region::where('id', Auth::user()->regions)->get();
         } else {
-            $regions = null;
+            // $regions = null;
+            $regions = Region::all();
         }
         $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
         $types = CompanyType::where('status', '1')->get();
@@ -76,7 +78,7 @@ class CompaniesController extends Controller
                 $data = $request->all();
                 $rules = [
                     'name' => 'required',
-                    'birthdate' => 'required',
+
                     'birthplace' => 'required',
                     'nationality' => 'required',
                     'id_number' => 'required',
@@ -93,7 +95,7 @@ class CompaniesController extends Controller
                     'email' => 'required',
                     'commercial_number' => 'required',
                     'jihad_isdar' => 'required',
-                    'active_circle' => 'required',
+//                    'active_circle' => 'required',
                     'isdar_date' => 'required',
                     'isadarـduration' => 'required',
                     'type' => 'required',
@@ -103,7 +105,7 @@ class CompaniesController extends Controller
                 ];
                 $messages = [
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
-                    'birthdate.required' => 'من فضلك ادخل تاريخ الميلاد ',
+
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
                     'nationality.required' => 'من فضلك ادخل الجنسية ',
                     'id_number.required' => 'من فضلك ادخل الرقم الوطني ',
@@ -120,7 +122,7 @@ class CompaniesController extends Controller
                     'email.required' => 'من فضلك ادخل البريد الالكتروني ',
                     'commercial_number.required' => 'من فضلك ادخل رقم السجل التجاري ',
                     'jihad_isdar.required' => 'من فضلك ادخل جهه الاصدار',
-                    'active_circle.required' => 'من فضلك ادخل دائرة النشاط ',
+//                    'active_circle.required' => 'من فضلك ادخل دائرة النشاط ',
                     'isdar_date.required' => 'من فضلك حدد تاريخ الاصدار',
                     'isadarـduration.required' => 'من فضلك حدد الفترة الزمنية ',
                     'type.required' => 'من فضلك حدد التصنيف ',
@@ -135,7 +137,6 @@ class CompaniesController extends Controller
                 }
                 $company = new Companies();
                 $company->name = $data['name'];
-                $company->birthdate = $data['birthdate'];
                 $company->birthplace = $data['birthplace'];
                 $company->nationality = $data['nationality'];
                 $company->id_number = $data['id_number'];
@@ -153,7 +154,7 @@ class CompaniesController extends Controller
                 $company->email = $data['email'];
                 $company->commercial_number = $data['commercial_number'];
                 $company->jihad_isdar = $data['jihad_isdar'];
-                $company->active_circle = $data['active_circle'];
+//                $company->active_circle = $data['active_circle'];
                 $company->isdar_date = $data['isdar_date'];
                 $company->isadarـduration = $data['isadarـduration'];
                 $company->type = $data['type'];
@@ -189,17 +190,16 @@ class CompaniesController extends Controller
             if ($request->isMethod('post')) {
                 $data = $request->all();
                 $rules = [
-                    'name' => 'required', 'birthdate' => 'required', 'birthplace' => 'required', 'nationality' => 'required',
+                    'name' => 'required', 'birthplace' => 'required', 'nationality' => 'required',
                     'id_number' => 'required', 'place' => 'required', 'personal_number' => 'required', 'trade_name' => 'required',
                     'category' => 'required', 'money_head' => 'required', 'bank_name' => 'required',
                     'licenseـnumber' => 'required', 'tax_number' => 'required', 'address' => 'required', 'mobile' => 'required', 'email' => 'required',
-                    'commercial_number' => 'required', 'jihad_isdar' => 'required', 'active_circle' => 'required',
+                    'commercial_number' => 'required', 'jihad_isdar' => 'required',
                     'isdar_date' => 'required', 'isadarـduration' => 'required', 'type' => 'required', 'status' => 'required',
                     'regions' => 'required', 'branches' => 'required'
                 ];
                 $messages = [
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
-                    'birthdate.required' => 'من فضلك ادخل تاريخ الميلاد ',
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
                     'nationality.required' => 'من فضلك ادخل الجنسية ',
                     'id_number.required' => 'من فضلك ادخل الرقم الوطني ',
@@ -216,7 +216,7 @@ class CompaniesController extends Controller
                     'email.required' => 'من فضلك ادخل البريد الالكتروني ',
                     'commercial_number.required' => 'من فضلك ادخل رقم السجل التجاري ',
                     'jihad_isdar.required' => 'من فضلك ادخل جهه الاصدار',
-                    'active_circle.required' => 'من فضلك ادخل دائرة النشاط ',
+//                    'active_circle.required' => 'من فضلك ادخل دائرة النشاط ',
                     'isdar_date.required' => 'من فضلك حدد تاريخ الاصدار',
                     'isadarـduration.required' => 'من فضلك حدد الفترة الزمنية ',
                     'type.required' => 'من فضلك حدد التصنيف ',
@@ -231,7 +231,7 @@ class CompaniesController extends Controller
                 }
                 $company->update([
                     "name" => $data['name'],
-                    "birthdate" => $data['birthdate'],
+
                     "birthplace" => $data['birthplace'],
                     "nationality" => $data['nationality'],
                     "id_number" => $data['id_number'],
@@ -249,7 +249,7 @@ class CompaniesController extends Controller
                     "email" => $data['email'],
                     "commercial_number" => $data['commercial_number'],
                     "jihad_isdar" => $data['jihad_isdar'],
-                    "active_circle" => $data['active_circle'],
+//                    "active_circle" => $data['active_circle'],
                     "isdar_date" => $data['isdar_date'],
                     "isadarـduration" => $data['isadarـduration'],
                     "type" => $data['type'],
@@ -407,10 +407,10 @@ class CompaniesController extends Controller
     public function certificate(Request $request, $id)
     {
 
-        $company = Companies::with('category')->where('id', $id)->first()->toArray();
+        $company = Companies::with('category', 'subcategory', 'companytype')->where('id', $id)->first()->toArray();
         $confirmationDate = $company['new_market_confirm_date'] ?? $company['first_market_confirm_date'];
 
-         // Calculate the expiration date by adding `isadar_duration` to the confirmation date
+        // Calculate the expiration date by adding `isadar_duration` to the confirmation date
         $expirationDate = Carbon::parse($confirmationDate)->addYears($company['isadarـduration']);
         // dd($company);
         try {
@@ -422,7 +422,7 @@ class CompaniesController extends Controller
             return $this->exception_message($e);
         }
 
-        return view('admin.companies.certificate', compact('company','expirationDate'));
+        return view('admin.companies.certificate', compact('company', 'expirationDate'));
     }
 
 
@@ -501,7 +501,7 @@ class CompaniesController extends Controller
         }
 
         $companies = $query->orderBy('id', 'desc')->get();
-        $categories = CompanyCategories::where('status', '1')->where('parent_id','0')->get();
+        $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
 
@@ -590,4 +590,148 @@ class CompaniesController extends Controller
     }
 
 
+
+
+    ///////////////////// User Store Company
+    ///
+    public function user_store(Request $request)
+    {
+        $regions = Region::all();
+        $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
+        $types = CompanyType::where('status', '1')->get();
+        if ($request->isMethod('post')) {
+            try {
+                $data = $request->all();
+                $rules = [
+                    'name' => 'required',
+
+                    'birthplace' => 'required',
+                    'nationality' => 'required',
+                    'id_number' => 'required',
+                    'place' => 'required',
+                    'personal_number' => 'required',
+                    'trade_name' => 'required',
+                    'category' => 'required',
+                    'money_head' => 'required',
+                    'bank_name' => 'required',
+                    'licenseـnumber' => 'required',
+                    'tax_number' => 'required',
+                    'address' => 'required',
+                    'mobile' => 'required',
+                    'email' => 'required',
+                    'commercial_number' => 'required',
+                    'jihad_isdar' => 'required',
+//                    'active_circle' => 'required',
+                    'isdar_date' => 'required',
+                    'isadarـduration' => 'required',
+                    'type' => 'required',
+                    'status' => 'required',
+                    'regions' => 'required',
+                    'branches' => 'required',
+                ];
+                $messages = [
+                    'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
+
+                    'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
+                    'nationality.required' => 'من فضلك ادخل الجنسية ',
+                    'id_number.required' => 'من فضلك ادخل الرقم الوطني ',
+                    'place.required' => 'من فضلك ادخل محل الاقامة ',
+                    'personal_number.required' => 'من فضلك ادخل رقم اثبات الشخصية ',
+                    'trade_name.required' => 'من فضلك ادخل الاسم التجاري ',
+                    'category.required' => 'من فضلك حدد نوع النشاط ',
+                    'money_head.required' => 'من فضلك حدد راس المال ',
+                    'bank_name.required' => 'من فضلك ادخل المصرف ',
+                    'licenseـnumber.required' => 'من فضلك ادخل رقم الترخيص ',
+                    'tax_number.required' => 'من فضلك ادخل الرقم الضريبي ',
+                    'address.required' => 'من فضلك ادخل العنوان ',
+                    'mobile.required' => 'من فضلك ادخل رقم الهاتف ',
+                    'email.required' => 'من فضلك ادخل البريد الالكتروني ',
+                    'commercial_number.required' => 'من فضلك ادخل رقم السجل التجاري ',
+                    'jihad_isdar.required' => 'من فضلك ادخل جهه الاصدار',
+//                    'active_circle.required' => 'من فضلك ادخل دائرة النشاط ',
+                    'isdar_date.required' => 'من فضلك حدد تاريخ الاصدار',
+                    'isadarـduration.required' => 'من فضلك حدد الفترة الزمنية ',
+                    'type.required' => 'من فضلك حدد التصنيف ',
+                    'status.required' => 'من فضلك حدد حالة الشركة ',
+                    'regions.required' => ' من فضلك حدد المنطقة  ',
+                    'branches.required' => '  من فضلك حدد الفرع '
+                ];
+
+                $validator = Validator::make($data, $rules, $messages);
+                if ($validator->fails()) {
+                    return Redirect::back()->withInput()->withErrors($validator);
+                }
+                $company = new Companies();
+                $company->name = $data['name'];
+                $company->birthplace = $data['birthplace'];
+                $company->nationality = $data['nationality'];
+                $company->id_number = $data['id_number'];
+                $company->place = $data['place'];
+                $company->personal_number = $data['personal_number'];
+                $company->trade_name = $data['trade_name'];
+                $company->category = $data['category'];
+                $company->sub_category = $data['sub_category'];
+                $company->money_head = $data['money_head'];
+                $company->bank_name = $data['bank_name'];
+                $company->licenseـnumber = $data['licenseـnumber'];
+                $company->tax_number = $data['tax_number'];
+                $company->address = $data['address'];
+                $company->mobile = $data['mobile'];
+                $company->email = $data['email'];
+                $company->commercial_number = $data['commercial_number'];
+                $company->jihad_isdar = $data['jihad_isdar'];
+//                $company->active_circle = $data['active_circle'];
+                $company->isdar_date = $data['isdar_date'];
+                $company->isadarـduration = $data['isadarـduration'];
+                $company->type = $data['type'];
+                $company->status = $data['status'];
+                $company->region = $data['regions'];
+                $company->branch = $data['branches'];
+                $company->active_status = 0;
+
+                $company->save();
+                return $this->success_message(' تم اضافة الشركة بنجاح انتظر التفعيل من الادارة  ');
+
+            } catch (\Exception $e) {
+                return $this->exception_message($e);
+            }
+        }
+        return view('admin.companies.store-company', compact('categories', 'types', 'regions'));
+    }
+
+    ////////////// Archive Company ///////////
+    ///
+    public function company_under_view()
+    {
+        $user = Auth::user();
+        if ($user->type == 'admin') {
+            $companies = Companies::with('subcategory', 'companytype')->orderby('id', 'desc')->where('active_status',0)->get();
+            //  dd($companies);
+        } elseif ($user->type == 'supervisor') {
+            $query = Companies::where('region', $user->regions);
+            // إذا كان لدى المشرف فرع معين، أضف شرط الفرع
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+            $companies = $query->with('subcategory', 'companytype')->where('active_status',0)->get();
+        } elseif ($user->type == 'money') {
+            $companies = Companies::with('subcategory', 'companytype')->where('active_status',0)->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+        } elseif ($user->type == 'market') {
+            $companies = Companies::with('subcategory', 'companytype')->where('active_status',0)->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+        }
+
+        $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
+        $types = CompanyType::where('status', '1')->get();
+
+        return view('admin.companies.company_under_view',compact('companies','categories','types'));
+    }
+
+    public function confirm_archive($id)
+    {
+        $company = Companies::findOrFail($id);
+        $company->update([
+            'active_status'=>1
+        ]);
+        return $this->success_message(' تم اضافة الشركة بنجاح  ');
+    }
 }

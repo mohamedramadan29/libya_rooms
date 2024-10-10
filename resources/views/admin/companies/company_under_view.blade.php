@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    الشعب المسجلة
+    شعب تحت المراجعه
 @endsection
 @section('css')
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                    class="text-muted mt-1 tx-13 mr-2 mb-0">/  الشعب المسجلة   </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/   شعب تحت المراجعة  </span>
             </div>
         </div>
     </div>
@@ -40,95 +40,87 @@
                         </ul>
                     </div>
                 @endif
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5> الشعب المسجلة </h5>
-                    @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin'|| Auth::user()->type == 'supervisor')
-                        <a href="{{url('admin/companies/store')}}" class="btn btn-primary btn-sm"> اضافة جديد
-                            <i
-                                class="fa fa-plus"></i> </a>
-                    @endif
-                </div>
                 <div class="card-body">
-                    <div>
-                        <p> فلترة الشركات </p>
-                        <form method="GET" action="{{ url('admin/company/main-filter')}}">
-                            <div class="d-flex align-items-center">
-                                <div class="form_box" style="min-width: 30%">
-                                    <label for="category"> الشعبة </label>
-                                    <select class="form-control" name="category" id="main_category">
-                                        <option value=""> الكل</option>
-                                        @foreach($categories as $category)
-                                            <option
-                                                value="{{$category['id']}}" {{ old('category',request('category')) == $category['id'] ? 'selected':'' }}> {{$category['name']}} </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form_box" style="min-width: 30%">
-                                    <label for="category"> نوع النشاط </label>
-                                    <select class="form-control" name="sub_category" id="sub_category">
-                                        <option value=""> الكل</option>
-                                    </select>
-                                </div>
-                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                <script type="text/javascript">
-                                    var selectedsubcategory = {{ old('sub_category') ?? 'null' }}; // الفرع الحالي للمستخدم
-                                    // عندما تتغير المنطقة
-                                    $('#main_category').on('change', function () {
-                                        console.log('cliekc');
-                                        var main_category = $(this).val();
-                                        loadSubcategories(main_category, null); // تحميل الفروع بناءً على المنطقة
-                                    });
+                    {{--                    <div>--}}
+                    {{--                        <p> فلترة الشركات </p>--}}
+                    {{--                        <form method="GET" action="{{ url('admin/company/main-filter')}}">--}}
+                    {{--                            <div class="d-flex align-items-center">--}}
+                    {{--                                <div class="form_box" style="min-width: 30%">--}}
+                    {{--                                    <label for="category"> الشعبة </label>--}}
+                    {{--                                    <select class="form-control" name="category" id="main_category">--}}
+                    {{--                                        <option value=""> الكل</option>--}}
+                    {{--                                        @foreach($categories as $category)--}}
+                    {{--                                            <option--}}
+                    {{--                                                value="{{$category['id']}}" {{ old('category',request('category')) == $category['id'] ? 'selected':'' }}> {{$category['name']}} </option>--}}
+                    {{--                                        @endforeach--}}
+                    {{--                                    </select>--}}
+                    {{--                                </div>--}}
+                    {{--                                <div class="form_box" style="min-width: 30%">--}}
+                    {{--                                    <label for="category"> نوع النشاط </label>--}}
+                    {{--                                    <select class="form-control" name="sub_category" id="sub_category">--}}
+                    {{--                                        <option value=""> الكل</option>--}}
+                    {{--                                    </select>--}}
+                    {{--                                </div>--}}
+                    {{--                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>--}}
+                    {{--                                <script type="text/javascript">--}}
+                    {{--                                    var selectedsubcategory = {{ old('sub_category') ?? 'null' }}; // الفرع الحالي للمستخدم--}}
+                    {{--                                    // عندما تتغير المنطقة--}}
+                    {{--                                    $('#main_category').on('change', function () {--}}
+                    {{--                                        console.log('cliekc');--}}
+                    {{--                                        var main_category = $(this).val();--}}
+                    {{--                                        loadSubcategories(main_category, null); // تحميل الفروع بناءً على المنطقة--}}
+                    {{--                                    });--}}
 
-                                    // دالة لتحميل الفروع
-                                    function loadSubcategories(main_category, sub_category) {
-                                        if (main_category) {
-                                            $.ajax({
-                                                url: '/admin/companies/get-subcategories/' + main_category,
-                                                type: 'GET',
-                                                dataType: 'json',
-                                                success: function (data) {
-                                                    $('#sub_category').empty();
-                                                    $('#sub_category').append('<option value="">الكل</option>');
-                                                    $.each(data, function (key, value) {
-                                                        var selected = (sub_category && sub_category == value.id) ? 'selected' : '';
-                                                        $('#sub_category').append('<option value="' + value.id + '" ' + selected + '>' + value.name + '</option>');
-                                                    });
-                                                }
-                                            });
-                                        } else {
-                                            $('#sub_category').empty();
-                                            $('#sub_category').append('<option value=""> الكل </option>');
-                                        }
-                                    }
+                    {{--                                    // دالة لتحميل الفروع--}}
+                    {{--                                    function loadSubcategories(main_category, sub_category) {--}}
+                    {{--                                        if (main_category) {--}}
+                    {{--                                            $.ajax({--}}
+                    {{--                                                url: '/admin/companies/get-subcategories/' + main_category,--}}
+                    {{--                                                type: 'GET',--}}
+                    {{--                                                dataType: 'json',--}}
+                    {{--                                                success: function (data) {--}}
+                    {{--                                                    $('#sub_category').empty();--}}
+                    {{--                                                    $('#sub_category').append('<option value="">الكل</option>');--}}
+                    {{--                                                    $.each(data, function (key, value) {--}}
+                    {{--                                                        var selected = (sub_category && sub_category == value.id) ? 'selected' : '';--}}
+                    {{--                                                        $('#sub_category').append('<option value="' + value.id + '" ' + selected + '>' + value.name + '</option>');--}}
+                    {{--                                                    });--}}
+                    {{--                                                }--}}
+                    {{--                                            });--}}
+                    {{--                                        } else {--}}
+                    {{--                                            $('#sub_category').empty();--}}
+                    {{--                                            $('#sub_category').append('<option value=""> الكل </option>');--}}
+                    {{--                                        }--}}
+                    {{--                                    }--}}
 
-                                    // عند تحميل الصفحة، إذا كانت المنطقة محددة مسبقًا، استدعِ الفروع واضبط الفرع المختار
-                                    $(document).ready(function () {
-                                        var main_category = $('#main_category').val();
-                                        if (main_category) {
-                                            loadSubcategories(main_category, selectedsubcategory); // تحميل الفروع وتحديد الفرع الحالي
-                                        }
-                                    });
-                                </script>
+                    {{--                                    // عند تحميل الصفحة، إذا كانت المنطقة محددة مسبقًا، استدعِ الفروع واضبط الفرع المختار--}}
+                    {{--                                    $(document).ready(function () {--}}
+                    {{--                                        var main_category = $('#main_category').val();--}}
+                    {{--                                        if (main_category) {--}}
+                    {{--                                            loadSubcategories(main_category, selectedsubcategory); // تحميل الفروع وتحديد الفرع الحالي--}}
+                    {{--                                        }--}}
+                    {{--                                    });--}}
+                    {{--                                </script>--}}
 
 
-                                <div class="form_box" style="min-width: 30%">
-                                    <label for="year" class="d-block"> تصنيف الشعبة </label>
-                                    <select class="form-control" name="type" id="type">
-                                        <option value=""> الكل</option>
-                                        @foreach($types as $type)
-                                            <option
-                                                value="{{$type['id']}}" {{ old('type',request('type')) == $type['id'] ? 'selected':'' }}>{{$type['name']}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form_box" style="min-width: 20%">
-                                    <button style="margin-top: 29px" type="submit" class="btn btn-primary"><i
-                                            class="fa fa-search"></i> تصفية
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                    {{--                                <div class="form_box" style="min-width: 30%">--}}
+                    {{--                                    <label for="year" class="d-block"> تصنيف الشعبة </label>--}}
+                    {{--                                    <select class="form-control" name="type" id="type">--}}
+                    {{--                                        <option value=""> الكل</option>--}}
+                    {{--                                        @foreach($types as $type)--}}
+                    {{--                                            <option--}}
+                    {{--                                                value="{{$type['id']}}" {{ old('type',request('type')) == $type['id'] ? 'selected':'' }}>{{$type['name']}}</option>--}}
+                    {{--                                        @endforeach--}}
+                    {{--                                    </select>--}}
+                    {{--                                </div>--}}
+                    {{--                                <div class="form_box" style="min-width: 20%">--}}
+                    {{--                                    <button style="margin-top: 29px" type="submit" class="btn btn-primary"><i--}}
+                    {{--                                            class="fa fa-search"></i> تصفية--}}
+                    {{--                                    </button>--}}
+                    {{--                                </div>--}}
+                    {{--                            </div>--}}
+                    {{--                        </form>--}}
+                    {{--                    </div>--}}
                     <div class="table-responsive">
                         <table class="table text-md-nowrap" id="example">
                             <thead>
@@ -194,6 +186,12 @@
                                                     data-toggle="modal" class="btn btn-danger btn-sm"><i
                                                     class="fa fa-trash"></i>
                                             </button>
+
+                                            <button data-target="#company_under_view_{{$company['id']}}"
+                                                    data-toggle="modal" class="btn btn-success btn-sm"><i
+                                                    class="fa fa-check"></i>
+                                            </button>
+
                                         @endif
 
                                         @if(Auth::user()->type == 'market' && $company['market_confirm'] !=1)
@@ -214,7 +212,7 @@
                                 @include('admin.companies.delete')
                                 @include('admin.companies.market_confirm_company')
                                 @include('admin.companies.money_confirm_company')
-
+                                @include('admin.companies.confirm-modal')
                             @endforeach
                             </tbody>
                         </table>

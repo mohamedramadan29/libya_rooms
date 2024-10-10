@@ -4,8 +4,6 @@
     <div class="main-sidebar-header active">
         <a class="desktop-logo logo-light active" href="{{url('admin/dashboard')}}">
             لوحة التحكم
-            {{--            <img--}}
-            {{--                src="{{ URL::asset('assets/admin/img/brand/logo.png') }}" class="main-logo" alt="logo">--}}
         </a>
         <a class="desktop-logo logo-dark active" href="{{ url('admin/dashboard')}}"><img
                 src="{{ URL::asset('assets/admin/img/brand/logo_tabrat.png') }}" class="main-logo dark-theme"
@@ -59,6 +57,7 @@
                         <li><a class="slide-item" href="{{url('admin/expire-companies')}}"> الانشطة منتهية الصلاحيه  </a>
                         <li><a class="slide-item" href="{{url('admin/expire-month')}}"> الانشطة  منتهية خلال شهر   </a>
                         <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة نشاط </a>
+                        <li><a class="slide-item" href="{{url('admin/companies/company_under_view')}}">  شعب تحت المراجعة  </a>
                     </ul>
                 </li>
                 <li class="side-item side-item-category"> الادارات</li>
@@ -98,17 +97,17 @@
                         <li><a class="slide-item" href="{{url('admin/company_type')}}"> انواع الشعب </a></li>
                     </ul>
                 </li>
-                <li class="side-item side-item-category"> مشرفين المناطق والفروع  </li>
-                <li class="slide">
-                    <a class="side-menu__item" data-toggle="slide" href="">
-                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-users"></i>
-                        <span class="side-menu__label"> مشرفين المناطق والفروع    </span><i
-                            class="angle fe fe-chevron-down"></i></a>
-                    <ul class="slide-menu">
-                        <li><a class="slide-item" href="{{url('admin/supervisors')}}"> المشرفين  </a>
-                        </li>
-                    </ul>
-                </li>
+{{--                <li class="side-item side-item-category"> مشرفين المناطق والفروع  </li>--}}
+{{--                <li class="slide">--}}
+{{--                    <a class="side-menu__item" data-toggle="slide" href="">--}}
+{{--                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-users"></i>--}}
+{{--                        <span class="side-menu__label"> مشرفين المناطق والفروع    </span><i--}}
+{{--                            class="angle fe fe-chevron-down"></i></a>--}}
+{{--                    <ul class="slide-menu">--}}
+{{--                        <li><a class="slide-item" href="{{url('admin/supervisors')}}"> المشرفين  </a>--}}
+{{--                        </li>--}}
+{{--                    </ul>--}}
+{{--                </li>--}}
                 <li class="side-item side-item-category"> المناطق والفروع   </li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="">
@@ -117,6 +116,8 @@
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{url('admin/regions')}}">  مشاهدة المناطق  </a></li>
+                        <li><a class="slide-item" href="{{url('admin/supervisors')}}"> المشرفين  </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="side-item side-item-category"> الاعدادات</li>
@@ -132,17 +133,18 @@
                     </ul>
                 </li>
                 @elseif(Auth::user()->type == 'supervisor')
-                <li class="side-item side-item-category"> الشركات المسجلة</li>
+                <li class="side-item side-item-category">  الشعب المسجلة </li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="">
                         <i style="font-size: 22px;margin-left: 10px" class="fa fa-building"></i>
-                        <span class="side-menu__label">  الشركات المسجلة   </span><i
+                        <span class="side-menu__label"> الشعب المسجلة   </span><i
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
-                        <li><a class="slide-item" href="{{url('admin/companies')}}"> جميع الشركات </a>
-                        <li><a class="slide-item" href="{{url('admin/expire-companies')}}"> الشركات منتهية الصلاحيه  </a>
-                        <li><a class="slide-item" href="{{url('admin/expire-month')}}"> الشركات منتهية خلال شهر   </a>
-                        <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة شركة </a>
+                        <li><a class="slide-item" href="{{url('admin/companies')}}">  جميع الشعب  </a>
+                        <li><a class="slide-item" href="{{url('admin/expire-companies')}}"> الانشطة منتهية الصلاحيه  </a>
+                        <li><a class="slide-item" href="{{url('admin/expire-month')}}"> الانشطة  منتهية خلال شهر   </a>
+                        <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة نشاط </a>
+
                     </ul>
                 </li>
                 <li class="side-item side-item-category"> الادارات</li>
@@ -172,6 +174,34 @@
                         </li>
                     </ul>
                 </li>
+
+                <li class="side-item side-item-category"> تصنيفات  الشعب  </li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-city"></i>
+                        <span class="side-menu__label">  تصنيفات الشعب   </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/main_categories')}}"> مشاهدة التصنيفات </a></li>
+                        <li><a class="slide-item" href="{{url('admin/company_type')}}"> انواع الشعب </a></li>
+                    </ul>
+                </li>
+
+                @if(Auth::user()->branches == null)
+                <li class="side-item side-item-category"> المناطق والفروع   </li>
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="">
+                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-city"></i>
+                        <span class="side-menu__label">   مشاهدة الفروع    </span><i
+                            class="angle fe fe-chevron-down"></i></a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{url('admin/branches/'.\Illuminate\Support\Facades\Auth::user()->regions)}}">  مشاهدة الفروع   </a></li>
+                        <li><a class="slide-item" href="{{url('admin/supervisors')}}"> المشرفين  </a>
+                        </li>
+                    </ul>
+                </li>
+                @endif
+
                 <li class="side-item side-item-category"> الاعدادات</li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="">
@@ -184,28 +214,17 @@
                         <li><a class="slide-item" href="{{url('admin/update_admin_details')}}"> تعديل البيانات </a></li>
                     </ul>
                 </li>
-                <li class="side-item side-item-category"> تصنيفات الشركات</li>
-                <li class="slide">
-                    <a class="side-menu__item" data-toggle="slide" href="">
-                        <i style="font-size: 22px;margin-left: 10px" class="fa fa-city"></i>
-                        <span class="side-menu__label">  تصنيفات الشركات   </span><i
-                            class="angle fe fe-chevron-down"></i></a>
-                    <ul class="slide-menu">
-                        <li><a class="slide-item" href="{{url('admin/main_categories')}}"> مشاهدة التصنيفات </a></li>
-                        <li><a class="slide-item" href="{{url('admin/company_type')}}"> انواع الشركات </a></li>
-                    </ul>
-                </li>
             @elseif(Auth::user()->type == 'market')
-                <li class="side-item side-item-category"> الشركات المسجلة</li>
+                <li class="side-item side-item-category"> الشعب المسجلة  </li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="">
                         <i style="font-size: 22px;margin-left: 10px" class="fa fa-building"></i>
-                        <span class="side-menu__label">  الشركات المسجلة   </span><i
+                        <span class="side-menu__label"> الشعب المسجلة    </span><i
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
-                        <li><a class="slide-item" href="{{url('admin/companies')}}"> جميع الشركات </a>
-                        <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة شركة </a>
-                        <li><a class="slide-item" href="{{url('admin/companies/market-unconfirmed')}}"> الشركات الغير
+                        <li><a class="slide-item" href="{{url('admin/companies')}}"> جميع الشعب  </a>
+                        <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة نشاط </a>
+                        <li><a class="slide-item" href="{{url('admin/companies/market-unconfirmed')}}"> الشعب الغير
                                 موثقة </a>
                     </ul>
                 </li>
@@ -222,15 +241,15 @@
                     </ul>
                 </li>
             @elseif(Auth::user()->type == 'money')
-                <li class="side-item side-item-category"> الشركات المسجلة</li>
+                <li class="side-item side-item-category">   الشعب المسجلة   </li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="">
                         <i style="font-size: 22px;margin-left: 10px" class="fa fa-building"></i>
-                        <span class="side-menu__label">  الشركات المسجلة   </span><i
+                        <span class="side-menu__label">  الشعب المسجلة   </span><i
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
-                        <li><a class="slide-item" href="{{url('admin/companies')}}"> جميع الشركات </a></li>
-                        <li><a class="slide-item" href="{{url('admin/companies/money-unconfirmed')}}">  شركات لم يتم تاكيدها </a></li>
+                        <li><a class="slide-item" href="{{url('admin/companies')}}"> جميع الشعب  </a></li>
+                        <li><a class="slide-item" href="{{url('admin/companies/money-unconfirmed')}}">  شعب لم يتم تاكيدها </a></li>
                     </ul>
                 </li>
                 <li class="side-item side-item-category"> المعاملات المالية</li>
