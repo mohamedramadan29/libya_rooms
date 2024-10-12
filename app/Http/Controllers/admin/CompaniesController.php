@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\Message_Trait;
+use App\Http\Traits\Upload_image;
 use App\Models\admin\Branch;
 use App\Models\admin\Companies;
 use App\Models\admin\CompanyCategories;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Validator;
 class CompaniesController extends Controller
 {
     use Message_Trait;
+    use Upload_image;
 
     public function index(Request $request)
     {
@@ -284,6 +286,8 @@ class CompaniesController extends Controller
     }
 
     // Market Confrim Status companies
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public function market_confirm(Request $request, $id)
     {
         $alldata = $request->all();
@@ -295,38 +299,38 @@ class CompaniesController extends Controller
         ]);
 
         // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
-        if (empty($company->first_market_confirm_date)) {
-            $company->update([
-                'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
-            ]);
-        } else {
-            // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
-            $lastConfirmDate = $company->new_market_confirm_date
-                ? Carbon::parse($company->new_market_confirm_date)
-                : Carbon::parse($company->first_market_confirm_date);
-
-            // الحصول على مدة القيد (عدد السنوات للتجديد)
-            $duration = $company->isadarـduration;
-
-            // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
-            $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
-
-            // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
-            $fixedDayMonth = $lastConfirmDate->format('m-d');
-
-            // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
-            $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
-
-            // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
-            $company->update([
-                'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
-            ]);
-        }
-
+//        if (empty($company->first_market_confirm_date)) {
+//            $company->update([
+//                'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
+//            ]);
+//        } else {
+//            // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
+//            $lastConfirmDate = $company->new_market_confirm_date
+//                ? Carbon::parse($company->new_market_confirm_date)
+//                : Carbon::parse($company->first_market_confirm_date);
+//
+//            // الحصول على مدة القيد (عدد السنوات للتجديد)
+//            $duration = $company->isadarـduration;
+//
+//            // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
+//            $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
+//
+//            // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
+//            $fixedDayMonth = $lastConfirmDate->format('m-d');
+//
+//            // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
+//            $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
+//
+//            // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
+//            $company->update([
+//                'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
+//            ]);
+//        }
         return $this->success_message('تم توثيق الشركة بنجاح');
     }
 
     // Money Confirmed
+    //////////////////////////////////////////////////////////////////// Money Confirm //////////////////////////////////////
     public function money_confirm(Request $request, $id)
     {
         $company = Companies::findOrFail($id);
@@ -342,7 +346,7 @@ class CompaniesController extends Controller
                 ];
                 $messages = [
                     'trans_type.required' => 'من فضلك حدد نوع المعاملة ',
-                    'trans_type.numeric' => ' رقم الايصال يجب ان يكون رقم صحيح  ',
+                    'trans_number.numeric' => ' رقم الايصال يجب ان يكون رقم صحيح  ',
                     'company_id.required' => 'من فضلك حدد الشركة ',
                     'trans_number.required' => 'من فضلك ادخل رقم الايصال ',
                     'trans_price.required' => 'من فضلك ادخل قيمة الايصال ',
@@ -374,6 +378,41 @@ class CompaniesController extends Controller
                 $company->update([
                     'money_confirm' => 1
                 ]);
+                // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
+                if (empty($company->first_market_confirm_date)) {
+                    if (isset($alldata['special_date']) && $alldata['special_date'] != '') {
+                        $company->update([
+                            'first_market_confirm_date' => $alldata['special_date'], // إضافة التاريخ الحالي فقط
+                        ]);
+                    } else {
+                        $company->update([
+                            'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
+                        ]);
+                    }
+                } else {
+                    // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
+                    $lastConfirmDate = $company->new_market_confirm_date
+                        ? Carbon::parse($company->new_market_confirm_date)
+                        : Carbon::parse($company->first_market_confirm_date);
+
+                    // الحصول على مدة القيد (عدد السنوات للتجديد)
+                    $duration = $company->isadarـduration;
+
+                    // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
+                    $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
+
+                    // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
+                    $fixedDayMonth = $lastConfirmDate->format('m-d');
+
+                    // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
+                    $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
+
+                    // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
+                    $company->update([
+                        'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
+                    ]);
+                }
+
                 DB::commit();
 
                 return $this->success_message(' تم اضافه المعامله بنجاح وتاكيد دفع الشركه  ');
@@ -705,7 +744,7 @@ class CompaniesController extends Controller
     {
         $user = Auth::user();
         if ($user->type == 'admin') {
-            $companies = Companies::with('subcategory', 'companytype')->orderby('id', 'desc')->where('active_status',0)->get();
+            $companies = Companies::with('subcategory', 'companytype')->orderby('id', 'desc')->where('active_status', 0)->get();
             //  dd($companies);
         } elseif ($user->type == 'supervisor') {
             $query = Companies::where('region', $user->regions);
@@ -713,24 +752,24 @@ class CompaniesController extends Controller
             if ($user->branches !== null) {
                 $query->where('branch', $user->branches);
             }
-            $companies = $query->with('subcategory', 'companytype')->where('active_status',0)->get();
+            $companies = $query->with('subcategory', 'companytype')->where('active_status', 0)->get();
         } elseif ($user->type == 'money') {
-            $companies = Companies::with('subcategory', 'companytype')->where('active_status',0)->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory', 'companytype')->where('active_status', 0)->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         } elseif ($user->type == 'market') {
-            $companies = Companies::with('subcategory', 'companytype')->where('active_status',0)->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory', 'companytype')->where('active_status', 0)->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         }
 
         $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
         $types = CompanyType::where('status', '1')->get();
 
-        return view('admin.companies.company_under_view',compact('companies','categories','types'));
+        return view('admin.companies.company_under_view', compact('companies', 'categories', 'types'));
     }
 
     public function confirm_archive($id)
     {
         $company = Companies::findOrFail($id);
         $company->update([
-            'active_status'=>1
+            'active_status' => 1
         ]);
         return $this->success_message(' تم اضافة الشركة بنجاح  ');
     }

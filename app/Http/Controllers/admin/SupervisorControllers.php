@@ -24,15 +24,12 @@ class SupervisorControllers extends Controller
             $users = User::with('region','branch')->where('type','supervisor')->
             where('regions',$user->regions)->where('branches','!=',null)->get();
         }
-
         //$regions = Region::all();
-
         if (Auth::user()->type == 'admin') {
             $regions = Region::all();
-            $users = User::with('region', 'branch')->where('type', 'money')->get();
+           // $users = User::with('region', 'branch')->where('type', 'money')->get();
 
         } elseif (Auth::user()->type == 'supervisor') {
-
             $regions = Region::where('id', Auth::user()->regions)->get();
         } else {
             $regions = null;

@@ -7,6 +7,7 @@ use App\Http\Traits\Message_Trait;
 use App\Http\Traits\Upload_image;
 use App\Models\admin\Companies;
 use App\Models\admin\FinanialTransaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -28,7 +29,7 @@ class FinaialTransactionController extends Controller
             }
             $transactions = $query->get();
         } elseif ($user->type == 'money') {
-            $transactions =  FinanialTransaction::with('company_data', 'employe_data')->where('region',$user->regions)->where('branch',$user->branches)->get();
+            $transactions = FinanialTransaction::with('company_data', 'employe_data')->where('region', $user->regions)->where('branch', $user->branches)->get();
         }
         $transactions_count = $transactions->count();
         //dd($transactions);
@@ -43,7 +44,7 @@ class FinaialTransactionController extends Controller
                 $alldata = $request->all();
                 $company_id = $alldata['company_id'];
                 $company_data = Companies::findOrFail($company_id);
-               // dd($company_data);
+                // dd($company_data);
                 $rules = [
                     'trans_number' => 'required|numeric',
                     'company_id' => 'required',
@@ -78,6 +79,49 @@ class FinaialTransactionController extends Controller
                 $transaction->file = $filename;
                 $transaction->employe_id = Auth::user()->id;
                 $transaction->save();
+
+                if ($alldata['trans_type'] == 'القيد' || $alldata['trans_type'] == 'التجديد') {
+
+                    $company = Companies::findOrFail($alldata['company_id']);
+                   // $company = $companyinfo->id;
+                    // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
+                    if (empty($company->first_market_confirm_date)) {
+                        if (isset($alldata['special_date']) && $alldata['special_date'] != '') {
+                            $company->update([
+                                'first_market_confirm_date' => $alldata['special_date'], // إضافة التاريخ الحالي فقط
+                            ]);
+                        } else {
+                            $company->update([
+                                'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
+                            ]);
+                        }
+                    } else {
+                        // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
+                        $lastConfirmDate = $company->new_market_confirm_date
+                            ? Carbon::parse($company->new_market_confirm_date)
+                            : Carbon::parse($company->first_market_confirm_date);
+
+                        // الحصول على مدة القيد (عدد السنوات للتجديد)
+                        $duration = $company->isadarـduration;
+
+                        // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
+                        $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
+
+                        // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
+                        $fixedDayMonth = $lastConfirmDate->format('m-d');
+
+                        // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
+                        $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
+
+                        // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
+                        $company->update([
+                            'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
+                        ]);
+                    }
+
+                }
+
+
                 return $this->success_message('تم اضافة معاملة جديدة بنجاح ');
             }
 

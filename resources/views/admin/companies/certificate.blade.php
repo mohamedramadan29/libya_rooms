@@ -10,10 +10,11 @@
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/responsive.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/admin/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/admin/css-rtl/custome_style.css') }}" rel="stylesheet">
+
 @endsection
 @section('content')
     <!-- breadcrumb -->
-    <div class="breadcrumb-header justify-content-between">
+    <div class="breadcrumb-header justify-content-between no-print">
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
@@ -21,34 +22,26 @@
             </div>
         </div>
     </div>
+
     <!-- breadcrumb -->
     <!-- row -->
     <div class="row row-sm">
         <!-- Col -->
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
+            <div class="card" style="background-color:#fff !important;">
+                <div class="card-header no-print d-flex align-items-center justify-content-between">
                     <div class="mb-4 main-content-label"> اصدار شهادة التوثيق</div>
+                    <button onclick="printDiv('print')" class="btn btn-primary">طباعة الشهادة</button>
                 </div>
-                <div class="card-body">
+                <div class="card-body print" id="print">
                     <div class="certificate_head d-flex justify-content-between">
-                        <img style="object-fit: contain" src="{{asset('assets/admin/certificate/header.png')}}" alt="">
-{{--                        <div class="head1">--}}
-{{--                            <h2> غرفة السياحة </h2>--}}
-{{--                            <h2> المنطقة الغربية </h2>--}}
-{{--                        </div>--}}
-{{--                        <div class="image">--}}
-{{--                            <img src="{{asset('assets/admin/img/logo_tabrat.png')}}">--}}
-{{--                        </div>--}}
-{{--                        <div class="head2">--}}
-
-{{--                            <h3> دولة ليبيا </h3>--}}
-{{--                            <h3> The State Of Libya </h3>--}}
-{{--                        </div>--}}
+                        <img class="no-print" style="object-fit: contain" src="{{asset('assets/admin/certificate/header.png')}}" alt="">
                     </div>
+
                     <div class="main_head">
-                        <img style="object-fit: contain;max-width: 50%;margin: auto;display: block;margin-top: 40px;margin-bottom: 30px;" src="{{asset('assets/admin/certificate/second_head.png')}}" alt="">
-{{--                        <h1 class="text-center"> شهادة اثبات قيد بالغرفة </h1>--}}
+                        <img
+                            style="object-fit: contain;max-width: 50%;margin: auto;display: block;margin-top: 40px;margin-bottom: 30px;"
+                            src="{{asset('assets/admin/certificate/second_head.png')}}" alt="">
                     </div>
                     <div class="content_body">
                         <p> بناءا علي طلب القيد المؤرخ في <span> </span> <span> /  </span> <span> </span>
@@ -62,101 +55,64 @@
                     <hr>
                     <div class="body_info">
                         <ul class="list-unstyled">
-                            <li><span> الاسم التجاري </span> <span> {{$company['trade_name']}} </span></li>
+                            <li><span class="no-print"> الاسم التجاري </span> <span> {{$company['trade_name']}} </span></li>
                             <hr>
-                            <li><span>  رئيس مجلس الادارة </span> <span> {{$company['name']}} </span></li>
+                            <li><span  class="no-print">  رئيس مجلس الادارة </span> <span> {{$company['name']}} </span></li>
                             <hr>
-                            <li><span> اسم المدير العام </span> <span> {{$company['name']}} </span></li>
+                            <li><span  class="no-print"> اسم المدير العام </span> <span> {{$company['name']}} </span></li>
                             <hr>
-                            <li><span> شكلها القانوني </span> <span> {{$company['name']}} </span></li>
+                            <li><span  class="no-print"> شكلها القانوني </span> <span> {{$company['name']}} </span></li>
                             <hr>
-                            <li><span> عنوانها </span> <span> {{$company['address']}} </span></li>
+                            <li><span  class="no-print"> عنوانها </span> <span> {{$company['address']}} </span></li>
                             <hr>
-                            <li><span>  نوع النشاط </span> <span> {{$company['subcategory']['name']}} </span></li>
+                            <li><span  class="no-print">  نوع النشاط </span> <span> {{$company['subcategory']['name']}} </span></li>
                             <hr>
                         </ul>
+                        <style>
+                            @media print {
+                                .no-print {
+                                    display: none;
+                                }
+                            }
+                        </style>
                         <div class="">
-                            <img style="object-fit: contain" src="{{asset('assets/admin/certificate/head3.png')}}" alt="">
-{{--                            <p> اعطيت هذة الشهادة لاستعمالها فيما يحولة القانون وصالحة لتجديد الرخصة واذن المزاولة </p>--}}
+                            <img style="object-fit: contain" src="{{asset('assets/admin/certificate/head3.png')}}"
+                                 alt="">
+                            {{--                            <p> اعطيت هذة الشهادة لاستعمالها فيما يحولة القانون وصالحة لتجديد الرخصة واذن المزاولة </p>--}}
                         </div>
                     </div>
                     <div class="body_footer">
                         <div class="first_body">
                             <div>
                                 @if($company['new_market_confirm_date'] == null)
-                                    <p> حرر بتاريخ :   {{$company['first_market_confirm_date']}}   </p>
+                                    <p> حرر بتاريخ : {{$company['first_market_confirm_date']}}   </p>
                                 @else
-                                    <p> حرر بتاريخ :   {{$company['new_market_confirm_date']}}      </p>
+                                    <p> حرر بتاريخ : {{$company['new_market_confirm_date']}}      </p>
                                 @endif
 
                             </div>
 
                             <div>
-                                <p> تاريخ الصلاحية :  {{$expirationDate->format('Y-m-d')}}   </p>
+                                <p> تاريخ الصلاحية : {{$expirationDate->format('Y-m-d')}}   </p>
                             </div>
                         </div>
                         <div>
-                            <img style="    object-fit: contain;max-width: 90%;display: block;margin: auto;" src="{{asset('assets/admin/certificate/footer.png')}}" alt="">
+                            <img style="    object-fit: contain;max-width: 90%;display: block;margin: auto;"
+                                 src="{{asset('assets/admin/certificate/footer.png')}}" alt="">
                         </div>
-{{--                        <div class="second_body">--}}
-{{--                            <div class="sign">--}}
-{{--                                <p> التوقيع المختص </p>--}}
-{{--                                <p class="line"></p>--}}
-{{--                            </div>--}}
-{{--                            <div class="sign">--}}
-{{--                                <p> المدير العام </p>--}}
-{{--                                <p class="line"></p>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        <div class="last_footer">--}}
-{{--                            <div class="first">--}}
-{{--                                <div>--}}
-{{--                                    <span> <i class="fa fa-location-arrow"></i> </span>--}}
-{{--                                </div>--}}
-{{--                                <div>--}}
-{{--                                    <p> المكتب رقم 100 الدور الاول <br>--}}
-{{--                                        برج طرابلس - طرابلس ليبيا <br>--}}
-{{--                                        Office No - 100 First Floor <br>--}}
-{{--                                        Triplo Tower - Triplo Libya--}}
-{{--                                    </p>--}}
-{{--                                </div>--}}
-
-{{--                            </div>--}}
-{{--                            <div class="first">--}}
-{{--                                <div>--}}
-{{--                                    <span> <i class="fa fa-phone"></i> </span>--}}
-{{--                                </div>--}}
-{{--                                <div>--}}
-{{--                                    <p> +218 91 731 0066 <br>--}}
-{{--                                        +218 91 731 0066 <br>--}}
-{{--                                        +218 91 731 0066 <br>--}}
-{{--                                        +218 91 731 0066--}}
-{{--                                    </p>--}}
-
-{{--                                </div>--}}
-
-
-{{--                            </div>--}}
-{{--                            <div class="first">--}}
-{{--                                <div>--}}
-{{--                                    <span> <i class="fa fa-desktop"></i> </span>--}}
-{{--                                </div>--}}
-{{--                                <div>--}}
-{{--                                    <p> www.website.com <br>--}}
-{{--                                        www.website.com--}}
-{{--                                    </p>--}}
-
-{{--                                </div>--}}
-
-{{--                            </div>--}}
-{{--                        </div>--}}
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
     <!-- /Col -->
     </div>
+    <style>
+        body{
+            background-color: #fff;
+        }
+    </style>
     <!-- row closed -->
     </div>
     <!-- Container closed -->
@@ -226,5 +182,18 @@
             });
         });
 
-    });
+    })
+
+    function printDiv(divId) {
+        var printContents = document.getElementById(divId).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload(); // لإعادة تحميل الصفحة بعد الطباعة
+    }
+
 </script>
+
+

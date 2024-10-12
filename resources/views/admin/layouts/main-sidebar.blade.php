@@ -82,8 +82,8 @@
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{url('admin/transaction')}}"> المعاملات المالية </a>
                         </li>
-                        <li><a class="slide-item" href="{{url('admin/transaction/store')}}"> اضافة فاتورة </a>
-                        </li>
+{{--                        <li><a class="slide-item" href="{{url('admin/transaction/store')}}"> اضافة فاتورة </a>--}}
+{{--                        </li>--}}
                     </ul>
                 </li>
                 <li class="side-item side-item-category"> تصنيفات  الشعب  </li>
@@ -170,8 +170,10 @@
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{url('admin/transaction')}}"> المعاملات المالية </a>
                         </li>
+                        @if(Auth::user()->branches != null)
                         <li><a class="slide-item" href="{{url('admin/transaction/store')}}"> اضافة فاتورة </a>
                         </li>
+                        @endif
                     </ul>
                 </li>
 
