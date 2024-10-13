@@ -71,7 +71,7 @@
                                     <tr>
                                         <td> {{$region['id']}} </td>
                                         <td> {{$region['name']}} </td>
-                                        <td>  <a href="{{url('admin/branches/'.$region['id'])}}" class="btn btn-primary btn-sm"> مشاهدة الفروع  </a>  </td>
+                                        <td>  <a href="{{url('admin/branches/'.$region['id'])}}" class="btn btn-primary btn-sm">  مشاهدة المكاتب  </a>  </td>
                                         <td>
                                             <button class="btn btn-primary btn-sm"
                                                     data-target="#edit_model_{{$region['id']}}"

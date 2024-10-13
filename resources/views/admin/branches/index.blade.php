@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                    class="text-muted mt-1 tx-13 mr-2 mb-0">/ فروع المنطقة   </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/ مكاتب  المنطقة   </span>
             </div>
         </div>
     </div>
@@ -42,10 +42,10 @@
                             </ul>
                         </div>
                     @endif
-                    <div class="mb-4 main-content-label">فروع المنطقة    </div>
+                    <div class="mb-4 main-content-label">مكاتب  المنطقة    </div>
                     <div class="card-header">
                         <button data-target="#add_model"
-                                data-toggle="modal" class="btn btn-primary btn-sm"> اضافة فرع جديد   <i
+                                data-toggle="modal" class="btn btn-primary btn-sm"> اضافة مكتب جديد   <i
                                 class="fa fa-plus"></i>
                         </button>
                     </div>
@@ -58,7 +58,7 @@
                                 <thead>
                                 <tr>
                                     <th class="wd-15p border-bottom-0"> #</th>
-                                    <th class="wd-15p border-bottom-0">  اسم الفرع  </th>
+                                    <th class="wd-15p border-bottom-0">  اسم المكتب   </th>
                                     <th class="wd-15p border-bottom-0" id="column1"> العمليات</th>
                                 </tr>
                                 </thead>

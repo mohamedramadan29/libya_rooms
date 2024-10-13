@@ -108,11 +108,11 @@
 {{--                        </li>--}}
 {{--                    </ul>--}}
 {{--                </li>--}}
-                <li class="side-item side-item-category"> المناطق والفروع   </li>
+                <li class="side-item side-item-category"> المناطق والمكاتب   </li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="">
                         <i style="font-size: 22px;margin-left: 10px" class="fa fa-city"></i>
-                        <span class="side-menu__label">  المناطق والفروع   </span><i
+                        <span class="side-menu__label">  المناطق والمكاتب   </span><i
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{url('admin/regions')}}">  مشاهدة المناطق  </a></li>
@@ -190,14 +190,14 @@
                 </li>
 
                 @if(Auth::user()->branches == null)
-                <li class="side-item side-item-category"> المناطق والفروع   </li>
+                <li class="side-item side-item-category"> المكاتب والمشرفين    </li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="">
                         <i style="font-size: 22px;margin-left: 10px" class="fa fa-city"></i>
-                        <span class="side-menu__label">   مشاهدة الفروع    </span><i
+                        <span class="side-menu__label">  المكاتب والمشرفين     </span><i
                             class="angle fe fe-chevron-down"></i></a>
                     <ul class="slide-menu">
-                        <li><a class="slide-item" href="{{url('admin/branches/'.\Illuminate\Support\Facades\Auth::user()->regions)}}">  مشاهدة الفروع   </a></li>
+                        <li><a class="slide-item" href="{{url('admin/branches/'.\Illuminate\Support\Facades\Auth::user()->regions)}}">  مشاهدة المكاتب   </a></li>
                         <li><a class="slide-item" href="{{url('admin/supervisors')}}"> المشرفين  </a>
                         </li>
                     </ul>

@@ -110,7 +110,7 @@
                                 <div class="form-group ">
                                     <label class="form-label"> رقم اثبات الشخصية : </label>
                                     <input type="text" class="form-control" name="personal_number"
-                                           value="{{old('personal_number')}}">
+                                           value="{{old('personal_number')}}" style="text-transform: uppercase;">
                                 </div>
                             </div>
 
@@ -221,7 +221,7 @@
 
 
                                 <div class="form-group ">
-                                    <label class="form-label"> تصنيفها : </label>
+                                    <label class="form-label"> التصنيف : </label>
                                     <select class="form-control" name="type">
                                         <option value=""> -- حدد التصنيف --</option>
                                         @foreach($types as $type)
@@ -232,7 +232,7 @@
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> تاريخ صدورها : </label>
+                                    <label class="form-label"> تاريخ الاصدار : </label>
                                     <input type="date" class="form-control" name="isdar_date"
                                            value="{{old('isdar_date')}}">
                                 </div>
