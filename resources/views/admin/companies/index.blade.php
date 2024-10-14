@@ -171,7 +171,14 @@
                                         @if($company['market_confirm'] == 1)
                                             <span class="badge badge-success"> موثق  </span>
                                         @else
+                                            @if(Auth::user()->type == 'supervisor')
+                                                <button data-target="#market_confirm_{{$company['id']}}"
+                                                        data-toggle="modal" class="btn btn-success btn-sm"><i
+                                                        class="fa fa-check"> توثيق الشركه </i>
+                                                </button>
+                                            @endif
                                             <span class="badge badge-danger"> غير موثق  </span>
+
                                         @endif
                                     </td>
                                     <td>
@@ -184,6 +191,12 @@
                                             @endif
                                         @else
                                             <span class="badge badge-danger">  لم يتم الدفع   </span>
+                                            @if(Auth::user()->type == 'supervisor')
+                                                <button data-target="#money_confirm_{{$company['id']}}"
+                                                        data-toggle="modal" class="btn btn-success btn-sm"><i
+                                                        class="fa fa-check"> تأكيد الدفع </i>
+                                                </button>
+                                            @endif
                                         @endif
                                     </td>
                                     <td>

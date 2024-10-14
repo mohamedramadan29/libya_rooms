@@ -144,6 +144,7 @@
                         <li><a class="slide-item" href="{{url('admin/expire-companies')}}"> الانشطة منتهية الصلاحيه  </a>
                         <li><a class="slide-item" href="{{url('admin/expire-month')}}"> الانشطة  منتهية خلال شهر   </a>
                         <li><a class="slide-item" href="{{url('admin/companies/store')}}"> اضافة نشاط </a>
+                        <li><a class="slide-item" href="{{url('admin/companies/company_under_view')}}">  شعب تحت المراجعة  </a>
 
                     </ul>
                 </li>

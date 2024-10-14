@@ -38,7 +38,7 @@
                         <img class="no-print" style="object-fit: contain" src="{{asset('assets/admin/certificate/header.png')}}" alt="">
                     </div>
 
-                    <div class="main_head">
+                    <div class="main_head no-print">
                         <img
                             style="object-fit: contain;max-width: 50%;margin: auto;display: block;margin-top: 40px;margin-bottom: 30px;"
                             src="{{asset('assets/admin/certificate/second_head.png')}}" alt="">
@@ -54,7 +54,7 @@
                     </div>
                     <hr>
                     <div class="body_info">
-                        <ul class="list-unstyled">
+                        <ul class="list-unstyled listed_info">
                             <li><span class="no-print"> الاسم التجاري </span> <span> {{$company['trade_name']}} </span></li>
                             <hr>
                             <li><span  class="no-print">  رئيس مجلس الادارة </span> <span> {{$company['name']}} </span></li>
@@ -68,15 +68,9 @@
                             <li><span  class="no-print">  نوع النشاط </span> <span> {{$company['subcategory']['name']}} </span></li>
                             <hr>
                         </ul>
-                        <style>
-                            @media print {
-                                .no-print {
-                                    display: none;
-                                }
-                            }
-                        </style>
+
                         <div class="">
-                            <img style="object-fit: contain" src="{{asset('assets/admin/certificate/head3.png')}}"
+                            <img class="no-print" style="object-fit: contain" src="{{asset('assets/admin/certificate/head3.png')}}"
                                  alt="">
                             {{--                            <p> اعطيت هذة الشهادة لاستعمالها فيما يحولة القانون وصالحة لتجديد الرخصة واذن المزاولة </p>--}}
                         </div>
@@ -96,10 +90,23 @@
                                 <p> تاريخ الصلاحية : {{$expirationDate->format('Y-m-d')}}   </p>
                             </div>
                         </div>
-                        <div>
-                            <img style="    object-fit: contain;max-width: 90%;display: block;margin: auto;"
+                        <div  class="no-print">
+                            <img class="no-print" style="object-fit: contain;max-width: 90%;display: block;margin: auto;"
                                  src="{{asset('assets/admin/certificate/footer.png')}}" alt="">
                         </div>
+                        <style>
+                            @media print {
+                                .content_body{
+                                    padding-top: 250px;
+                                }
+                                .listed_info{
+                                    padding-bottom: 80px;
+                                }
+                                .no-print {
+                                    display: none;
+                                }
+                            }
+                        </style>
                     </div>
                 </div>
             </div>
@@ -108,6 +115,7 @@
     </div>
     <!-- /Col -->
     </div>
+
     <style>
         body{
             background-color: #fff;
