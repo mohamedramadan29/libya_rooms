@@ -133,10 +133,12 @@
                         <table class="table text-md-nowrap" id="example">
                             <thead>
                             <tr style="direction: rtl">
-                                <th class="border-bottom-0"> اسم النشاط</th>
-                                <th class="border-bottom-0"> نوع النشاط</th>
-                                <th class="border-bottom-0"> التصنيف</th>
+                                <th class="border-bottom-0"> رقم القيد  </th>
+                                <th class="wd-15p border-bottom-0"> اسم النشاط</th>
+                                <th class=" border-bottom-0"> الشعبة  </th>
+                                <th class="wd-15p border-bottom-0"> الشكل القانوني  </th>
                                 <th class="border-bottom-0"> تاريخ الانتهاء</th>
+                                <th class="border-bottom-0"> نوع النشاط</th>
                                 @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type=='supervisor' || Auth::user()->type =='money')
                                     <th class="wd-15p border-bottom-0"> المعاملات المالية</th>
                                 @endif
@@ -151,9 +153,10 @@
                             @endphp
                             @foreach($companies as $company)
                                 <tr>
+                                    <td> {{$company['id']}} </td>
                                     <td style="direction: rtl;text-align: right"> {{$company['trade_name']}} </td>
-                                    <td> {{$company['subcategory']['name']}} </td>
-                                    <td> {{ optional($company->companytype)->name }} </td>
+                                    <td> {{$company['categorydata']['name']}} </td>
+                                    <td> {{$company['companytype']['name']}} </td>
                                     <td>
                                         @if($company['first_market_confirm_date'] == null && $company['new_market_confirm_date'] == null)
                                             <span class="badge badge-danger"> لم يحدد بعد </span>
@@ -161,6 +164,8 @@
                                             {{ $company->expiry_date->format('Y-m-d') }}
                                         @endif
                                     </td>
+                                    <td> {{$company['subcategory']['name']}} </td>
+
                                     @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type=='supervisor'  || Auth::user()->type =='money')
                                         <td><a class="btn btn-info-gradient btn-sm"
                                                href="{{url('admin/company/transactions/'.$company['id'])}}">
@@ -191,7 +196,7 @@
                                             @endif
                                         @else
                                             <span class="badge badge-danger">  لم يتم الدفع   </span>
-                                            @if(Auth::user()->type == 'supervisor')
+                                            @if(Auth::user()->type == 'supervisor' && $company['market_confirm'] == 1)
                                                 <button data-target="#money_confirm_{{$company['id']}}"
                                                         data-toggle="modal" class="btn btn-success btn-sm"><i
                                                         class="fa fa-check"> تأكيد الدفع </i>

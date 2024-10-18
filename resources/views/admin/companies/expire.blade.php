@@ -86,9 +86,13 @@
                         <table class="table text-md-nowrap" id="example">
                             <thead>
                             <tr>
-                                <th class="wd-15p border-bottom-0"> رقم الشركة</th>
-                                <th class="wd-15p border-bottom-0"> الممثل القانوني</th>
-                                <th class="wd-15p border-bottom-0"> تاريخ التوثيق</th>
+                                <th class="border-bottom-0"> رقم القيد  </th>
+                                <th class="wd-15p border-bottom-0"> اسم النشاط</th>
+                                <th class=" border-bottom-0"> الشعبة  </th>
+                                <th class="wd-15p border-bottom-0"> الشكل القانوني  </th>
+
+
+{{--                                <th class="wd-15p border-bottom-0"> تاريخ التوثيق</th>--}}
                                 <th class="wd-15p border-bottom-0"> الفترة</th>
                                 <th class="wd-15p border-bottom-0"> تاريخ الانتهاء</th>
                                 @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
@@ -106,13 +110,17 @@
                             @foreach($companies as $company)
                                 <tr>
                                     <td> {{$company['id']}} </td>
-                                    <td> {{$company['name']}} </td>
-                                    <td>
-                                        @if($company['new_market_confirm_date'] !='')
-                                            {{$company['new_market_confirm_date']}}
-                                        @else
-                                            {{$company['first_market_confirm_date']}}
-                                        @endif  </td>
+                                    <td style="direction: rtl;text-align: right"> {{$company['trade_name']}} </td>
+                                    <td> {{$company['categorydata']['name']}} </td>
+                                    <td> {{$company['companytype']['name']}} </td>
+
+
+{{--                                    <td>--}}
+{{--                                        @if($company['new_market_confirm_date'] !='')--}}
+{{--                                            {{$company['new_market_confirm_date']}}--}}
+{{--                                        @else--}}
+{{--                                            {{$company['first_market_confirm_date']}}--}}
+{{--                                        @endif  </td>--}}
                                     <td> {{$company['isadarـduration']}} <span class="badge badge-danger"> سنة </span>
                                     </td>
                                     <td style="color:red"> {{ $company->expiry_date->format('Y-m-d') }} </td>

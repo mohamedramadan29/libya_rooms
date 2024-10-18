@@ -28,7 +28,7 @@ class CompaniesController extends Controller
 
         $user = Auth::user();
         if ($user->type == 'admin') {
-            $companies = Companies::with('subcategory', 'companytype')->orderby('id', 'desc')->get();
+            $companies = Companies::with('subcategory','categorydata', 'companytype')->orderby('id', 'desc')->get();
             //  dd($companies);
         } elseif ($user->type == 'supervisor') {
             $query = Companies::where('region', $user->regions);
@@ -36,13 +36,12 @@ class CompaniesController extends Controller
             if ($user->branches !== null) {
                 $query->where('branch', $user->branches);
             }
-            $companies = $query->with('subcategory', 'companytype')->get();
+            $companies = $query->with('subcategory','categorydata', 'companytype')->get();
         } elseif ($user->type == 'money') {
-            $companies = Companies::with('subcategory', 'companytype')->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory','categorydata', 'companytype')->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         } elseif ($user->type == 'market') {
-            $companies = Companies::with('subcategory', 'companytype')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory','categorydata', 'companytype')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         }
-
         $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
@@ -446,7 +445,7 @@ class CompaniesController extends Controller
     public function certificate(Request $request, $id)
     {
 
-        $company = Companies::with('category', 'subcategory', 'companytype')->where('id', $id)->first()->toArray();
+        $company = Companies::with('subcategory','categorydata', 'companytype')->where('id', $id)->first()->toArray();
         $confirmationDate = $company['new_market_confirm_date'] ?? $company['first_market_confirm_date'];
 
         // Calculate the expiration date by adding `isadar_duration` to the confirmation date
@@ -461,7 +460,11 @@ class CompaniesController extends Controller
             return $this->exception_message($e);
         }
 
-        return view('admin.companies.certificate', compact('company', 'expirationDate'));
+        $company_type = CompanyType::where('id',$company['type'])->first();
+        $type_name = $company_type['name'];
+
+      //  dd($company);
+        return view('admin.companies.certificate', compact('company', 'expirationDate','type_name'));
     }
 
 
@@ -549,12 +552,11 @@ class CompaniesController extends Controller
     public function expiredCompanies()
     {
         $user = Auth::user();
-
         // بناء الاستعلام الأساسي بناءً على نوع المستخدم
         if ($user->type == 'admin') {
-            $query = Companies::query();
+            $query = Companies::with('subcategory','categorydata', 'companytype');
         } elseif ($user->type == 'supervisor') {
-            $query = Companies::where('region', $user->regions);
+            $query = Companies::with('subcategory','categorydata', 'companytype')->where('region', $user->regions);
             if ($user->branches !== null) {
                 $query->where('branch', $user->branches);
             }
@@ -586,6 +588,7 @@ class CompaniesController extends Controller
         // حساب عدد الشركات المنتهية
         $expiredCount = $companies->count();
 
+
         // عرض النتيجة في صفحة
         return view('admin.companies.expire', compact('companies', 'expiredCount'));
     }
@@ -598,9 +601,9 @@ class CompaniesController extends Controller
 
         // بناء الاستعلام الأساسي بناءً على نوع المستخدم
         if ($user->type == 'admin') {
-            $query = Companies::query();
+            $query = Companies::with('subcategory','categorydata', 'companytype');
         } elseif ($user->type == 'supervisor') {
-            $query = Companies::where('region', $user->regions);
+            $query = Companies::with('subcategory','categorydata', 'companytype')->where('region', $user->regions);
             if ($user->branches !== null) {
                 $query->where('branch', $user->branches);
             }
@@ -744,7 +747,7 @@ class CompaniesController extends Controller
     {
         $user = Auth::user();
         if ($user->type == 'admin') {
-            $companies = Companies::with('subcategory', 'companytype')->orderby('id', 'desc')->where('active_status', 0)->get();
+            $companies = Companies::with('subcategory','categorydata', 'companytype')->orderby('id', 'desc')->where('active_status', 0)->get();
             //  dd($companies);
         } elseif ($user->type == 'supervisor') {
             $query = Companies::where('region', $user->regions);
@@ -752,11 +755,11 @@ class CompaniesController extends Controller
             if ($user->branches !== null) {
                 $query->where('branch', $user->branches);
             }
-            $companies = $query->with('subcategory', 'companytype')->where('active_status', 0)->get();
+            $companies = $query->with('subcategory','categorydata', 'companytype')->where('active_status', 0)->get();
         } elseif ($user->type == 'money') {
-            $companies = Companies::with('subcategory', 'companytype')->where('active_status', 0)->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory','categorydata', 'companytype')->where('active_status', 0)->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         } elseif ($user->type == 'market') {
-            $companies = Companies::with('subcategory', 'companytype')->where('active_status', 0)->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory','categorydata', 'companytype')->where('active_status', 0)->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         }
 
         $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();

@@ -35,7 +35,8 @@
                 </div>
                 <div class="card-body print" id="print">
                     <div class="certificate_head d-flex justify-content-between">
-                        <img class="no-print" style="object-fit: contain" src="{{asset('assets/admin/certificate/header.png')}}" alt="">
+                        <img class="no-print" style="object-fit: contain"
+                             src="{{asset('assets/admin/certificate/header.png')}}" alt="">
                     </div>
 
                     <div class="main_head no-print">
@@ -44,33 +45,44 @@
                             src="{{asset('assets/admin/certificate/second_head.png')}}" alt="">
                     </div>
                     <div class="content_body">
-                        <p> بناءا علي طلب القيد المؤرخ في <span> </span> <span> /  </span> <span> </span>
-                            <span> /  </span> <span> </span> عملاء باحكام المادة <br>
-                            رقم (5) من القانون رقم (7) لسنة ( 2024 م ) بشان السياحة واللوائح والقرارات الصادرة بالخصوص .
-                            فقد <br>
-                            تم القيد بسجلات الغرفه تحت رقم ( <span> {{$company['id']}} </span> ) شعبة رقم (
-                            <span> {{$company['category']['number']}} </span> )
-                        </p>
+                        <div>
+                            <p> <strong class="no-print">  بناءا علي طلب القيد المؤرخ في </strong> <span class="text1"> </span> <span> </span> <span> /  </span>
+                                <span> </span>
+                                <span> /  </span> <span> </span>   <strong class="no-print">  عملاء باحكام المادة </strong><br>
+                               <strong class="no-print">  رقم (5) من القانون رقم (7) لسنة ( 2024 م ) بشان السياحة واللوائح والقرارات الصادرة
+                                   بالخصوص .
+                                   فقد  </strong>
+                                <br>
+                                <strong class="no-print"> تم القيد بسجلات الغرفه تحت رقم ( </strong>  <span class="text2"> {{$company['id']}} </span> <strong class="no-print"> ) شعبة رقم ( </strong>
+                                <span class="text3"> {{$company['category']['number']}} </span> <strong class="no-print">  ) </strong>
+                            </p>
+                        </div>
+
                     </div>
                     <hr>
                     <div class="body_info">
                         <ul class="list-unstyled listed_info">
-                            <li><span class="no-print"> الاسم التجاري </span> <span> {{$company['trade_name']}} </span></li>
+                            <li><span class="no-print"> الاسم التجاري </span> <span> {{$company['trade_name']}} </span>
+                            </li>
                             <hr>
-                            <li><span  class="no-print">  رئيس مجلس الادارة </span> <span> {{$company['name']}} </span></li>
+                            <li><span class="no-print">  رئيس مجلس الادارة </span> <span> {{$company['name']}} </span>
+                            </li>
                             <hr>
-                            <li><span  class="no-print"> اسم المدير العام </span> <span> {{$company['name']}} </span></li>
+                            <li><span class="no-print"> اسم المدير العام </span> <span> {{$company['name']}} </span>
+                            </li>
                             <hr>
-                            <li><span  class="no-print"> شكلها القانوني </span> <span> {{$company['name']}} </span></li>
+                            <li><span class="no-print"> شكلها القانوني </span> <span> {{ $type_name }}  </span></li>
                             <hr>
-                            <li><span  class="no-print"> عنوانها </span> <span> {{$company['address']}} </span></li>
+                            <li><span class="no-print"> عنوانها </span> <span> {{$company['address']}} </span></li>
                             <hr>
-                            <li><span  class="no-print">  نوع النشاط </span> <span> {{$company['subcategory']['name']}} </span></li>
+                            <li><span class="no-print">  نوع النشاط </span>
+                                <span> {{$company['subcategory']['name']}} </span></li>
                             <hr>
                         </ul>
 
                         <div class="">
-                            <img class="no-print" style="object-fit: contain" src="{{asset('assets/admin/certificate/head3.png')}}"
+                            <img class="no-print" style="object-fit: contain"
+                                 src="{{asset('assets/admin/certificate/head3.png')}}"
                                  alt="">
                             {{--                            <p> اعطيت هذة الشهادة لاستعمالها فيما يحولة القانون وصالحة لتجديد الرخصة واذن المزاولة </p>--}}
                         </div>
@@ -79,31 +91,47 @@
                         <div class="first_body">
                             <div>
                                 @if($company['new_market_confirm_date'] == null)
-                                    <p> حرر بتاريخ : {{$company['first_market_confirm_date']}}   </p>
+                                    <p class="text4">  <strong class="no-print text4"> حرر بتاريخ : </strong> {{$company['first_market_confirm_date']}}   </p>
                                 @else
-                                    <p> حرر بتاريخ : {{$company['new_market_confirm_date']}}      </p>
+                                    <p class="text4">  <strong class="no-print text4"> حرر بتاريخ : </strong>   {{$company['new_market_confirm_date']}}      </p>
                                 @endif
 
                             </div>
 
                             <div>
-                                <p> تاريخ الصلاحية : {{$expirationDate->format('Y-m-d')}}   </p>
+                                <p class="text5"><strong class="no-print">  تاريخ الصلاحية :  </strong> {{$expirationDate->format('Y-m-d')}}   </p>
                             </div>
                         </div>
-                        <div  class="no-print">
-                            <img class="no-print" style="object-fit: contain;max-width: 90%;display: block;margin: auto;"
+                        <div class="no-print">
+                            <img class="no-print"
+                                 style="object-fit: contain;max-width: 90%;display: block;margin: auto;"
                                  src="{{asset('assets/admin/certificate/footer.png')}}" alt="">
                         </div>
                         <style>
                             @media print {
-                                .content_body{
+                                .content_body {
                                     padding-top: 250px;
                                 }
-                                .listed_info{
+
+                                .listed_info {
                                     padding-bottom: 80px;
                                 }
+
                                 .no-print {
                                     display: none;
+                                }
+                                .text1{
+                                    display: inline-block;margin-left: 200px
+                                }
+                                .text2{
+                                    display: inline-block; margin-right: 245px;
+                                    margin-left: 104px;
+                                }
+                                .text4{
+                                    margin-right: 55px;
+                                }
+                                .text5{
+                                    margin-right: 55px;
                                 }
                             }
                         </style>
@@ -117,7 +145,7 @@
     </div>
 
     <style>
-        body{
+        body {
             background-color: #fff;
         }
     </style>

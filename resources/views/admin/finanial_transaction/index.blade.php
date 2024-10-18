@@ -81,15 +81,19 @@
                         <table class="table text-md-nowrap" id="example">
                             <thead>
                             <tr>
-                                <th> #</th>
+                                <th> ر.م </th>
+                                <th> رقم القيد  </th>
                                 <th class="wd-15p border-bottom-0"> رقم الايصال</th>
-                                <th class="wd-15p border-bottom-0"> اسم الشركة</th>
+                                <th class="wd-15p border-bottom-0"> اسم النشاط</th>
                                 <th class="wd-15p border-bottom-0"> تاريخ المعاملة</th>
-                                <th class="wd-20p border-bottom-0"> الموطف</th>
-                                <th class="wd-20p border-bottom-0"> القيد</th>
-                                <th class="wd-20p border-bottom-0"> التجديد</th>
+                                <th class="wd-15p border-bottom-0"> قيمة الرسوم الاجمالية   </th>
+
+                                <th class="wd-20p border-bottom-0"> قيد جديد  </th>
+                                <th class="wd-20p border-bottom-0"> تجديد قيد  </th>
                                 <th class="wd-20p border-bottom-0"> التصديق</th>
                                 <th class="wd-20p border-bottom-0"> الشهادات</th>
+                                <th class="wd-20p border-bottom-0"> ايرادات اخري   </th>
+                                <th class="wd-20p border-bottom-0"> الموطف</th>
                                 @if((Auth::user()->type == 'supervisor' && Auth::user()->branches != null) || Auth::user()->type == 'money')
                                     <th class="wd-15p border-bottom-0"> العمليات</th>
                                 @endif
@@ -103,18 +107,25 @@
                                     $total_renew = 0;
                                     $total_confirm = 0;
                                     $total_certificate = 0;
+                                    $total_other = 0;
                                 @endphp
                                 @foreach($transactions as $trans)
                                     <tr>
                                         <td> {{$i++}} </td>
+                                        <td> {{$trans['company_data']['id']}} </td>
                                         <td> {{$trans['trans_number']}} </td>
                                         <td>
-                                            <a href="{{url('admin/company/transactions/'.$trans['company_data']['id'])}}"> {{$trans['company_data']['name']}}  </a>
+                                            <a href="{{url('admin/company/transactions/'.$trans['company_data']['id'])}}"> {{$trans['company_data']['trade_name']}}  </a>
                                         </td>
                                         <td> {{ $trans['created_at']->format('Y-m-d') }} </td>
-                                        <td> {{$trans['employe_data']['name']}} </td>
+                                        @php
+                                            $totalAmount = \App\Models\admin\FinanialTransaction::total_transaction($trans['company_data']['id']);
+ @endphp
+                                        <td> {{ $totalAmount  }} </td>
+
+
                                         <td>
-                                            @if($trans['trans_type'] == 'القيد')
+                                            @if($trans['trans_type'] == 'قيد جديد')
                                                 {{$trans['trans_price']}}
                                                 @php $total_new = $total_new + $trans['trans_price']; @endphp
                                             @else
@@ -122,7 +133,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if($trans['trans_type'] == 'التجديد')
+                                            @if($trans['trans_type'] == 'تجديد قيد')
                                                 {{$trans['trans_price']}}
                                                 @php $total_renew = $total_renew + $trans['trans_price']; @endphp
                                             @else
@@ -130,7 +141,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if($trans['trans_type'] == 'التصديق')
+                                            @if($trans['trans_type'] == 'تصديق المستندات')
                                                 {{$trans['trans_price']}}
                                                 @php $total_confirm = $total_confirm + $trans['trans_price']; @endphp
                                             @else
@@ -138,15 +149,24 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if($trans['trans_type'] == 'الشهادات')
+                                            @if($trans['trans_type'] == 'استخراج شهائد')
                                                 {{$trans['trans_price']}}
                                                 @php $total_certificate = $total_certificate + $trans['trans_price']; @endphp
                                             @else
                                                 0
                                             @endif
                                         </td>
+                                        <td>
+                                            @if($trans['trans_type'] == 'ايرادات اخري')
+                                                {{$trans['trans_price']}}
+                                                @php $total_other = $total_other + $trans['trans_price']; @endphp
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
 
                                         {{--                                        @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')--}}
+                                        <td> {{$trans['employe_data']['name']}} </td>
                                         @if((Auth::user()->type == 'supervisor' && Auth::user()->branches != null) || Auth::user()->type == 'money')
                                             <td>
                                                 <a href="{{url('admin/transaction/update/'.$trans['id'])}}"
@@ -164,11 +184,12 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th colspan="5"> الاجمالي</th>
+                                <th colspan="6">  الاجمالي</th>
                                 <th> {{ $total_new  }} </th>
                                 <th> {{ $total_renew  }} </th>
                                 <th> {{ $total_confirm  }} </th>
                                 <th> {{ $total_certificate  }} </th>
+                                <th> {{ $total_other  }} </th>
                                 <th></th>
                             </tr>
                             </tfoot>

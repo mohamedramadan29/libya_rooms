@@ -13,9 +13,9 @@ class Companies extends Model
 
     // get the company category
 
-    public function category()
+    public function categorydata()
     {
-        return $this->belongsTo(CompanyCategories::class,'category')->select('id','name','number');
+        return $this->belongsTo(CompanyCategories::class,'category');
     }
 
     public function subcategory()

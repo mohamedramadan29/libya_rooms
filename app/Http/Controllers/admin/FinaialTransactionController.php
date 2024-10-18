@@ -80,7 +80,7 @@ class FinaialTransactionController extends Controller
                 $transaction->employe_id = Auth::user()->id;
                 $transaction->save();
 
-                if ($alldata['trans_type'] == 'القيد' || $alldata['trans_type'] == 'التجديد') {
+                if ($alldata['trans_type'] == 'قيد جديد' || $alldata['trans_type'] == 'تجديد قيد') {
 
                     $company = Companies::findOrFail($alldata['company_id']);
                    // $company = $companyinfo->id;

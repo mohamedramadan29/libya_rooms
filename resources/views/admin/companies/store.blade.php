@@ -38,10 +38,7 @@
                         <div class="row">
                             <div class="col-lg-4 col-12">
                                 <div class="mb-4  btn btn-sm btn-success-gradient light-text"> البيانات الاساسية</div>
-                                <div class="form-group ">
-                                    <label class="form-label"> اسم الممثل القانوني : </label>
-                                    <input type="text" class="form-control" name="name" value="{{old('name')}}">
-                                </div>
+
                                 @if(Auth::user()->type == 'supervisor')
                                     @if(Auth::user()->branches == null)
                                         <div class="form-group">
@@ -54,9 +51,9 @@
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>الفرع</label>
+                                            <label> المكتب  </label>
                                             <select name="branches" id="branches" class="form-control">
-                                                <option value="">- حدد الفرع -</option>
+                                                <option value="">- حدد المكتب  -</option>
                                             </select>
                                         </div>
                                     @else
@@ -77,9 +74,9 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label>الفرع</label>
+                                        <label> المكتب  </label>
                                         <select name="branches" id="branches" class="form-control">
-                                            <option value="">- حدد الفرع -</option>
+                                            <option value="">- حدد المكتب  -</option>
                                         </select>
                                     </div>
                                 @endif
@@ -94,7 +91,7 @@
                                                 dataType: 'json',
                                                 success: function (data) {
                                                     $('#branches').empty();
-                                                    $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                                    $('#branches').append('<option value="">- حدد المكتب  -</option>');
                                                     $.each(data, function (key, value) {
                                                         $('#branches').append('<option value="' + value.id + '">' + value.name + '</option>');
                                                     });
@@ -102,17 +99,16 @@
                                             });
                                         } else {
                                             $('#branches').empty();
-                                            $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                            $('#branches').append('<option value="">- حدد المكتب  -</option>');
                                         }
                                     });
                                 </script>
 
-
                                 <div class="form-group ">
-                                    <label class="form-label"> مكان الميلاد : </label>
-                                    <input type="text" class="form-control" name="birthplace"
-                                           value="{{old('birthplace')}}">
+                                    <label class="form-label"> اسم الممثل القانوني : </label>
+                                    <input type="text" class="form-control" name="name" value="{{old('name')}}">
                                 </div>
+
 
                                 <div class="form-group ">
                                     <label class="form-label"> الجنسية : </label>
@@ -120,26 +116,37 @@
                                            value="{{old('nationality')}}">
                                 </div>
 
+
+                                <div class="form-group ">
+                                    <label class="form-label"> رقم اثبات الهوية او جواز السفر  : </label>
+                                    <input type="text" class="form-control" name="personal_number"
+                                           value="{{old('personal_number')}}" style="text-transform: uppercase;">
+                                </div>
+
+                                <div class="form-group ">
+                                    <label class="form-label"> مكان الميلاد : </label>
+                                    <input type="text" class="form-control" name="birthplace"
+                                           value="{{old('birthplace')}}">
+                                </div>
+
+
+
                                 <div class="form-group ">
                                     <label class="form-label"> الرقم الوطني : </label>
                                     <input type="text" class="form-control" name="id_number"
                                            value="{{old('id_number')}}">
                                 </div>
 
-                                <div class="form-group ">
+                                <div class="form-group">
                                     <label class="form-label"> محل الاقامة : </label>
                                     <input type="text" class="form-control" name="place" value="{{old('place')}}">
                                 </div>
 
-                                <div class="form-group ">
-                                    <label class="form-label"> رقم اثبات الشخصية : </label>
-                                    <input type="text" class="form-control" name="personal_number"
-                                           value="{{old('personal_number')}}" style="text-transform: uppercase;">
-                                </div>
+
                             </div>
 
                             <div class="col-lg-4 col-12">
-                                <div class="mb-4  btn btn-sm btn-info-gradient light-text"> بيانات الشركة</div>
+                                <div class="mb-4  btn btn-sm btn-info-gradient light-text"> بيانات النشاط </div>
                                 <div class="form-group ">
                                     <label class="form-label"> الاسم التجاري : </label>
                                     <input type="text" class="form-control" name="trade_name"
@@ -190,19 +197,19 @@
 
 
                                 <div class="form-group ">
-                                    <label class="form-label"> راس المال : </label>
+                                    <label class="form-label">  راس المال : </label>
                                     <input type="text" class="form-control" name="money_head"
                                            value="{{old('money_head')}}">
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> المصرف : </label>
+                                    <label class="form-label"> المصرف  : </label>
                                     <input type="text" class="form-control" name="bank_name"
                                            value="{{old('bank_name')}}">
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> رقم الترخيص : </label>
+                                    <label class="form-label">  رقم الترخيص : </label>
                                     <input type="text" class="form-control" name="licenseـnumber"
                                            value="{{old('licenseـnumber')}}">
                                 </div>
@@ -214,25 +221,25 @@
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> عنوان الشركة : </label>
+                                    <label class="form-label"> عنوان الشركة :  </label>
                                     <input type="text" class="form-control" name="address" value="{{old('address')}}">
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> الهاتف : </label>
+                                    <label class="form-label"> الهاتف :  </label>
                                     <input type="text" class="form-control" name="mobile" value="{{old('mobile')}}">
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> البريد الالكتروني : </label>
+                                    <label class="form-label"> البريد الالكتروني :  </label>
                                     <input type="email" class="form-control" name="email" value="{{old('email')}}">
                                 </div>
                             </div>
 
                             <div class="col-lg-4 col-12">
-                                <div class="mb-4  btn btn-sm btn-primary-gradient light-text"> الشكل القانوني</div>
+                                <div class="mb-4  btn btn-sm btn-warning-gradient light-text"> الشكل القانوني</div>
                                 <div class="form-group ">
-                                    <label class="form-label"> رقم السجل التجاري : </label>
+                                    <label class="form-label"> رقم السجل التجاري :  </label>
                                     <input type="text" class="form-control" name="commercial_number"
                                            value="{{old('commercial_number')}}">
                                 </div>
@@ -244,7 +251,7 @@
                                 </div>
 
 
-                                <div class="form-group ">
+                                <div class="form-group">
                                     <label class="form-label">التصنيف : </label>
                                     <select class="form-control" name="type">
                                         <option value=""> -- حدد التصنيف --</option>
@@ -273,14 +280,7 @@
                                         <option @if(old('isadarـduration') == 5) selected @endif value="5"> 5</option>
                                     </select>
                                 </div>
-                                <div class="form-group ">
-                                    <label class="form-label"> حالة الشركة </label>
-                                    <select class="form-control" name="status">
-                                        <option> -- حدد الحالة --</option>
-                                        <option @if(old('status') == 1 ) selected @endif value="1"> فعالة</option>
-                                        <option @if(old('status') == 0) selected @endif value="0"> غير فعالة</option>
-                                    </select>
-                                </div>
+                                <input type="hidden" name="status" value="1">
                             </div>
                         </div>
                         <div class="card-footer text-left">

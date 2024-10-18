@@ -58,7 +58,7 @@
                                             </form>
                                             <div style="margin-top: 15px">
 
-                                                <a href="{{url('companies/store')}}"> تسجيل شركة جديدة  </a>
+                                                <a href="{{url('companies/store')}}"> تسجيل نشاط جديد  </a>
                                             </div>
 
                                         </div>

@@ -312,14 +312,7 @@
                                         <option @if($company['isadarـduration'] == 5) selected @endif value="5"> 5</option>
                                     </select>
                                 </div>
-                                <div class="form-group ">
-                                    <label class="form-label"> حالة الشركة </label>
-                                    <select class="form-control" name="status">
-                                        <option> -- حدد الحالة --</option>
-                                        <option @if($company['status'] == 1 ) selected @endif value="1"> فعالة</option>
-                                        <option @if($company['status'] == 0) selected @endif value="0"> غير فعالة</option>
-                                    </select>
-                                </div>
+                                <input type="hidden" name="status" value="1">
                             </div>
                         </div>
                         <div class="card-footer text-left">
