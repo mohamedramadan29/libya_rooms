@@ -71,14 +71,15 @@
                                 @php
                                     $i = 1;
                                 @endphp
+
                                 @foreach($users as $user)
                                     <tr>
                                         <td> {{$i++}} </td>
                                         <td> {{$user['name']}} </td>
-                                        <td> {{$user['region']['name']}} </td>
+                                        <td> {{ optional($user['region']['name'] ?? 'N/A')}} </td>
                                         <td>
                                             @if($user['branches'] !=null)
-                                                {{$user['branch']['name']}}
+                                                {{ optional($user['branch'])['name'] ?? 'N/A' }}
                                             @else
                                                 الكل
                                             @endif

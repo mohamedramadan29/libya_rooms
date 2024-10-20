@@ -64,7 +64,7 @@
                                          <option value="تجديد قيد"> تجديد قيد  </option>
                                          <option value="استخراج شهائد"> استخراج شهائد </option>
                                          <option value="تصديق المستندات"> تصديق المستندات  </option>
-                                         <option value="ايرادات اخري">ايرادات اخري</option>
+                                         <option value="ايرادات اخري">ايرادات اخرى</option>
                                      </select>
                                 </div>
                                 <div class="form-group ">

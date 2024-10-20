@@ -54,7 +54,7 @@
                                    فقد  </strong>
                                 <br>
                                 <strong class="no-print"> تم القيد بسجلات الغرفه تحت رقم ( </strong>  <span class="text2"> {{$company['id']}} </span> <strong class="no-print"> ) شعبة رقم ( </strong>
-                                <span class="text3"> {{$company['category']['number']}} </span> <strong class="no-print">  ) </strong>
+                                <span class="text3"> {{$company['categorydata']['number']}} </span> <strong class="no-print">  ) </strong>
                             </p>
                         </div>
 
