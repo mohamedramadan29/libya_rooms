@@ -184,6 +184,27 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+                <div class="card overflow-hidden sales-card bg-success-gradient">
+                    <div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+                        <div class="">
+                            <h6 class="mb-3 tx-17 text-white"> شعب تحت المراجعه  </h6>
+                        </div>
+                        <div class="pb-0 mt-0">
+                            <div class="d-flex">
+                                <div class="">
+                                    @php
+
+                                    @endphp
+                                    <h4 class="tx-20 font-weight-bold mb-1 text-white"> @php echo count(\App\Models\admin\Companies::where('active_status', 0)->get()) @endphp  </h4>
+                                    <a href="{{url('admin/companies/company_under_view')}}" class="mb-0 tx-17 text-white op-7"> مشاهدة
+                                        التفاصيل </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         @elseif(Auth::user()->type == 'supervisor')
             <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
                 <div class="card overflow-hidden sales-card bg-primary-gradient">
@@ -335,6 +356,33 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+                <div class="card overflow-hidden sales-card bg-success-gradient">
+                    <div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+                        <div class="">
+                            <h6 class="mb-3 tx-17 text-white"> شعب تحت المراجعه  </h6>
+                        </div>
+                        <div class="pb-0 mt-0">
+                            <div class="d-flex">
+                                <div class="">
+                                    @php
+                                        $query = \App\Models\admin\Companies::where('region', $user->regions);
+                                                   // إذا كان لدى المشرف فرع معين، أضف شرط الفرع
+                                                   if ($user->branches !== null) {
+                                                       $query->where('branch', $user->branches);
+                                                   }
+                                                   $companies = $query->where('active_status', 0)->get();
+                                        @endphp
+                                    <h4 class="tx-20 font-weight-bold mb-1 text-white"> @php echo count($companies) @endphp  </h4>
+                                    <a href="{{url('admin/companies/company_under_view')}}" class="mb-0 tx-17 text-white op-7"> مشاهدة
+                                        التفاصيل </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         @elseif(\Illuminate\Support\Facades\Auth::user()->type == 'market')
             <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">

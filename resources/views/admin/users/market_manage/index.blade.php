@@ -60,7 +60,7 @@
                                     <th class="wd-15p border-bottom-0"> #</th>
                                     <th class="wd-15p border-bottom-0"> الأسم</th>
                                     <th class="wd-15p border-bottom-0"> المنطقة</th>
-                                    <th class="wd-15p border-bottom-0"> الفرع</th>
+                                    <th class="wd-15p border-bottom-0"> المكتب </th>
                                     <th class="wd-15p border-bottom-0"> رقم الهاتف</th>
                                     <th class="wd-20p border-bottom-0"> البريد الألكتروني</th>
                                     <th class="wd-15p border-bottom-0"> الحالة</th>

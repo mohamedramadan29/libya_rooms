@@ -249,7 +249,7 @@
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> عنوان الشركة : </label>
+                                    <label class="form-label"> عنوان النشاط : </label>
                                     <input type="text" class="form-control" name="address" value="{{$company['address']}}">
                                 </div>
 
@@ -295,7 +295,7 @@
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> تاريخ الاصدار : </label>
+                                    <label class="form-label"> تاريخ الانتهاء :   </label>
                                     <input type="date" class="form-control" name="isdar_date"
                                            value="{{$company['isdar_date']}}">
                                 </div>
@@ -311,6 +311,11 @@
                                         <option @if($company['isadarـduration'] == 4) selected @endif value="4"> 4</option>
                                         <option @if($company['isadarـduration'] == 5) selected @endif value="5"> 5</option>
                                     </select>
+                                </div>
+                                <div class="form-group ">
+                                    <label class="form-label">تاريخ انتهاء إذن السياحة  : </label>
+                                    <input type="date" class="form-control" name="tourism_expire_date"
+                                           value="{{$company['tourism_expire_date']}}">
                                 </div>
                                 <input type="hidden" name="status" value="1">
                             </div>

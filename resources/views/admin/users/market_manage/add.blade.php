@@ -28,7 +28,7 @@
                             <div class="form-group">
                                 <label>الفرع</label>
                                 <select name="branches" id="branches" class="form-control">
-                                    <option value="">- حدد الفرع -</option>
+                                    <option value="">- حدد المكتب -</option>
                                 </select>
                             </div>
                         @else
@@ -49,9 +49,9 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>الفرع</label>
+                            <label> المكتب </label>
                             <select name="branches" id="branches" class="form-control">
-                                <option value="">- حدد الفرع -</option>
+                                <option value="">- حدد المكتب -</option>
                             </select>
                         </div>
                     @endif
@@ -67,7 +67,7 @@
                                     dataType: 'json',
                                     success: function(data) {
                                         $('#branches').empty();
-                                        $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                        $('#branches').append('<option value="">- حدد المكتب -</option>');
                                         $.each(data, function(key, value) {
                                             $('#branches').append('<option value="'+ value.id +'">'+ value.name +'</option>');
                                         });
@@ -75,7 +75,7 @@
                                 });
                             } else {
                                 $('#branches').empty();
-                                $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                $('#branches').append('<option value="">- حدد المكتب  -</option>');
                             }
                         });
                     </script>

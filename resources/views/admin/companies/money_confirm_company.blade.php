@@ -33,11 +33,12 @@
                     <div class="form-group ">
                         <label class="form-label"> نوع التحويل : </label>
                         <select required class="form-control" name="trans_type">
-                            <option> -- حدد نوع التحويل --</option>
-                            <option value="القيد">القيد</option>
-                            <option value="التجديد">التجديد</option>
-                            <option value="التصديق">التصديق</option>
-                            <option value="الشهادات">الشهادات</option>
+                            <option> -- حدد نوع التحويل  -- </option>
+                            <option value="قيد جديد"> قيد جديد</option>
+                            <option value="تجديد قيد"> تجديد قيد  </option>
+                            <option value="استخراج شهائد"> استخراج شهائد </option>
+                            <option value="تصديق المستندات"> تصديق المستندات  </option>
+                            <option value="ايرادات اخري">ايرادات اخرى</option>
                         </select>
                     </div>
                     @if(empty($company['first_market_confirm_date']))

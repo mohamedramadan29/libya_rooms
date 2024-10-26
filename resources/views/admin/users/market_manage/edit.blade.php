@@ -53,9 +53,9 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label>الفرع</label>
+                                        <label>المكتب </label>
                                         <select name="branches" id="branches" class="form-control">
-                                            <option value="">- حدد الفرع -</option>
+                                            <option value="">- حدد المكتب  -</option>
                                         </select>
                                     </div>
                                 @else
@@ -74,9 +74,9 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>الفرع</label>
+                                    <label>المكتب </label>
                                     <select name="branches" id="branches" class="form-control">
-                                        <option value="">- حدد الفرع -</option>
+                                        <option value="">- حدد المكتب  -</option>
                                     </select>
                                 </div>
                             @endif
@@ -84,7 +84,7 @@
 
                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                             <script type="text/javascript">
-                                var selectedBranch = {{ $user['branches'] ?? 'null' }}; // الفرع الحالي للمستخدم
+                                var selectedBranch = {{ $user['branches'] ?? 'null' }}; // المكتب  الحالي للمستخدم
                                 console.log(selectedBranch);
 
                                 // عندما تتغير المنطقة
@@ -102,7 +102,7 @@
                                             dataType: 'json',
                                             success: function (data) {
                                                 $('#branches').empty();
-                                                $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                                $('#branches').append('<option value="">- حدد المكتب  -</option>');
                                                 $.each(data, function (key, value) {
                                                     var selected = (branch_id && branch_id == value.id) ? 'selected' : '';
                                                     $('#branches').append('<option value="' + value.id + '" ' + selected + '>' + value.name + '</option>');
@@ -111,15 +111,15 @@
                                         });
                                     } else {
                                         $('#branches').empty();
-                                        $('#branches').append('<option value="">- حدد الفرع -</option>');
+                                        $('#branches').append('<option value="">- حدد المكتب  -</option>');
                                     }
                                 }
 
-                                // عند تحميل الصفحة، إذا كانت المنطقة محددة مسبقًا، استدعِ الفروع واضبط الفرع المختار
+                                // عند تحميل الصفحة، إذا كانت المنطقة محددة مسبقًا، استدعِ الفروع واضبط المكتب  المختار
                                 $(document).ready(function () {
                                     var region_id = $('#regions').val();
                                     if (region_id) {
-                                        loadBranches(region_id, selectedBranch); // تحميل الفروع وتحديد الفرع الحالي
+                                        loadBranches(region_id, selectedBranch); // تحميل الفروع وتحديد المكتب  الحالي
                                     }
                                 });
                             </script>
