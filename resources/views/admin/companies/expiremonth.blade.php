@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-  شركات تنتهي خلال شهر من الان
+  انشطة تنتهي خلال شهر من الان
 @endsection
 @section('css')
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                    class="text-muted mt-1 tx-13 mr-2 mb-0">/  شركات تنتهي خلال شهر من الان     </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/  انشطة تنتهي خلال شهر من الان     </span>
             </div>
         </div>
     </div>
@@ -41,13 +41,13 @@
                     </div>
                 @endif
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5> شركات تنتهي خلال شهر من الان </h5>
+                    <h5> انشطة تنتهي خلال شهر من الان </h5>
                     <h6 class="bg-danger" style="color:#fff;padding:5px;border-radius: 5px;"> {{$expiringCount}}
                         شركة </h6>
                 </div>
                 <div class="card-body">
                     <div>
-                        <p> فلترة الشركات منتهية الصلاحية حسب السنة والشهر </p>
+                        <p> فلترة الانشطة منتهية الصلاحية حسب السنة والشهر </p>
 
                         <form method="GET" action="{{ url('admin/company/filter') }}">
                             <div class="d-flex align-items-center">

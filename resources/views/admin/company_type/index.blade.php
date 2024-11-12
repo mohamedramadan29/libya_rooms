@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-   انواع الشركات
+    أنواع التصنيفات
 @endsection
 @section('css')
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                    class="text-muted mt-1 tx-13 mr-2 mb-0">/  انواع الشركات  </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/  أنواع التصنيفات  </span>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
                             </ul>
                         </div>
                     @endif
-                    <div class="mb-4 main-content-label"> انواع الشركات  </div>
+                    <div class="mb-4 main-content-label"> أنواع التصنيفات </div>
                     <div class="card-header">
                         <button data-target="#add_model"
                                 data-toggle="modal" class="btn btn-primary btn-sm"> اضافة نوع جديد <i
