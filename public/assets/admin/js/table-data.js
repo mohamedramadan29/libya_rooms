@@ -22,14 +22,19 @@ $(function(e) {
                 text: 'استخراج ملف PDF',
                 exportOptions: {
                     orthogonal: "PDF",
+
                     columns: ':visible' // لتصدير الأعمدة المرئية فقط
                 },
                 customize: function (doc) {
+                    // إعداد النصوص لمحاذاة صحيحة ودعم اللغة العربية
                     doc.defaultStyle.alignment = 'right';
-                    // محاذاة النصوص داخل الجدول (الخلايا والعناوين)
+                    doc.defaultStyle.direction = 'rtl';
+
+                    // تخصيص محتوى الجدول
                     doc.content[1].table.body.forEach(function (row, index) {
                         row.forEach(function (cell) {
-                            cell.alignment = 'right'; // محاذاة الخلايا إلى اليمين
+                            cell.alignment = 'right'; // محاذاة النصوص داخل الخلايا
+                            cell.direction = 'rtl';
                         });
                     });
                 }
@@ -38,8 +43,22 @@ $(function(e) {
                 extend: 'colvis',
 
                 text: 'إظهار/إخفاء الأعمدة'
+            },
+
+        ],
+        columnDefs: [
+            {
+                targets: '_all',
+                render: function (data, type, row) {
+                    if (type === 'myExport') {
+                        // معالجة النصوص أثناء التصدير (عكس الكلمات هنا كمثال)
+                        return data.split(' ').reverse().join(' ');
+                    }
+                    return data; // النصوص الافتراضية للعرض
+                }
             }
         ],
+
 		responsive: false,
 		language: {},
         order: [[0, 'desc']],

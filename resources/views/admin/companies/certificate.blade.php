@@ -46,15 +46,15 @@
                     </div>
                     <div class="content_body">
                         <div>
-                            <p> <strong class="no-print">  بناءا علي طلب القيد المؤرخ في </strong> <span class="text1"> </span> <span> </span> <span> /  </span>
+                            <p> <strong>  بناءا علي طلب القيد المؤرخ في </strong> <span class="text1"> </span> <span> </span> <span> /  </span>
                                 <span> </span>
-                                <span> /  </span> <span> </span>   <strong class="no-print">  عملاء باحكام المادة </strong><br>
-                               <strong class="no-print">  رقم (5) من القانون رقم (7) لسنة ( 2024 م ) بشان السياحة واللوائح والقرارات الصادرة
+                                <span> /  </span> <span> </span>   <strong>  عملاء باحكام المادة </strong><br>
+                               <strong>  رقم (5) من القانون رقم (7) لسنة ( 2024 م ) بشان السياحة واللوائح والقرارات الصادرة
                                    بالخصوص .
                                    فقد  </strong>
                                 <br>
-                                <strong class="no-print"> تم القيد بسجلات الغرفه تحت رقم ( </strong>  <span class="text2"> {{$company['id']}} </span> <strong class="no-print"> ) شعبة رقم ( </strong>
-                                <span class="text3"> {{$company['categorydata']['number']}} </span> <strong class="no-print">  ) </strong>
+                                <strong> تم القيد بسجلات الغرفه تحت رقم ( </strong>  <span class="text2"> {{$company['id']}} </span> <strong> ) شعبة رقم ( </strong>
+                                <span class="text3"> {{$company['categorydata']['number']}} </span> <strong>  ) </strong>
                             </p>
                         </div>
 
@@ -121,11 +121,11 @@
                                     display: none;
                                 }
                                 .text1{
-                                    display: inline-block;margin-left: 200px
+                                    display: inline-block;
                                 }
                                 .text2{
-                                    display: inline-block; margin-right: 245px;
-                                    margin-left: 104px;
+                                    display: inline-block;
+
                                 }
                                 .text4{
                                     margin-right: 55px;

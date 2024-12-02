@@ -3,9 +3,9 @@
     الادارة المالية
 @endsection
 @section('css')
-    <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
+    <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('assets/admin/plugins/datatable/css/responsive.bootstrap4.min.css') }}" rel="stylesheet"/>
+    <link href="{{ URL::asset('assets/admin/plugins/datatable/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/responsive.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/admin/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
@@ -15,8 +15,8 @@
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                        class="text-muted mt-1 tx-13 mr-2 mb-0">/   الادارة المالية  </span>
+                <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/ الادارة
+                    المالية </span>
             </div>
         </div>
     </div>
@@ -28,9 +28,8 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    @if(Session::has('Success_message'))
-                        <div
-                                class="alert alert-success"> {{Session::get('Success_message')}} </div>
+                    @if (Session::has('Success_message'))
+                        <div class="alert alert-success"> {{ Session::get('Success_message') }} </div>
                     @endif
 
                     @if ($errors->any())
@@ -42,11 +41,10 @@
                             </ul>
                         </div>
                     @endif
-                    <div class="mb-4 main-content-label">  مستخدمين الادارة المالية  </div>
+                    <div class="mb-4 main-content-label"> مستخدمين الادارة المالية </div>
                     <div class="card-header">
-                        <button data-target="#add_model"
-                                data-toggle="modal" class="btn btn-primary btn-sm"> اضف مستخدم جديد   <i
-                                    class="fa fa-plus"></i>
+                        <button data-target="#add_model" data-toggle="modal" class="btn btn-primary btn-sm"> اضف مستخدم جديد
+                            <i class="fa fa-plus"></i>
                         </button>
                     </div>
                     <!-- Add New Section -->
@@ -56,53 +54,49 @@
                         <div class="table-responsive">
                             <table class="table text-md-nowrap" id="example">
                                 <thead>
-                                <tr>
-                                    <th class="wd-15p border-bottom-0"> #</th>
-                                    <th class="wd-15p border-bottom-0"> الأسم</th>
-                                    <th class="wd-15p border-bottom-0"> المنطقة</th>
-                                    <th class="wd-15p border-bottom-0"> المكتب</th>
-                                    <th class="wd-15p border-bottom-0"> رقم الهاتف</th>
-                                    <th class="wd-20p border-bottom-0"> البريد الألكتروني</th>
-                                    <th class="wd-15p border-bottom-0"> الحالة</th>
-                                    <th class="wd-15p border-bottom-0"> العمليات</th>
-                                </tr>
+                                    <tr>
+                                        <th class="wd-15p border-bottom-0"> #</th>
+                                        <th class="wd-15p border-bottom-0"> الأسم</th>
+                                        <th class="wd-15p border-bottom-0"> المنطقة</th>
+                                        <th class="wd-15p border-bottom-0"> المكتب</th>
+                                        <th class="wd-15p border-bottom-0"> رقم الهاتف</th>
+                                        <th class="wd-20p border-bottom-0"> البريد الألكتروني</th>
+                                        <th class="wd-15p border-bottom-0"> الحالة</th>
+                                        <th class="wd-15p border-bottom-0"> العمليات</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @php
-                                    $i = 1;
-                                @endphp
-                                @foreach($users as $user)
-                                    <tr>
-                                        <td> {{$i++}} </td>
-                                        <td> {{$user['name']}} </td>
-                                        <td> {{$user['region']['name']}} </td>
-                                        <td>
-                                            @if($user['branches'] !=null)
-                                                {{$user['branch']['name']}}
-                                            @else
-                                                الكل
-                                            @endif
-                                        </td>
-                                        <td> {{$user['phone']}} </td>
-                                        <td> {{$user['email']}} </td>
-                                        <td>
-                                            @if($user['status'] == 1)
-                                                <span class="badge badge-success"> فعال </span>
-                                            @elseif($user['status'] == 0)
-                                                <span class="badge badge-danger"> غير فعال </span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="{{url('admin/money-manage/update/'.$user['id'])}}" class="btn btn-primary btn-sm"> <i class="fa fa-edit"></i> </a>
-                                            <button data-target="#delete_model_{{$user['id']}}"
-                                                    data-toggle="modal" class="btn btn-danger btn-sm"><i
-                                                        class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <!-- Delete Section Model  -->
-                                    @include('admin.users.money_manage.delete')
-                                @endforeach
+                                    @php
+                                        $i = 1;
+                                    @endphp
+                                    @foreach ($users as $user)
+                                        <tr>
+                                            <td> {{ $i++ }} </td>
+                                            <td> {{ $user['name'] }} </td>
+                                            <td> {{ $user['region']['name'] ?? 'N/A' }} </td>
+                                            <td>
+                                                {{ $user['branches'] ? $user['branch']['name'] ?? 'N/A' : 'الكل' }}
+                                            </td>
+                                            <td> {{ $user['phone'] }} </td>
+                                            <td> {{ $user['email'] }} </td>
+                                            <td>
+                                                @if ($user['status'] == 1)
+                                                    <span class="badge badge-success"> فعال </span>
+                                                @elseif($user['status'] == 0)
+                                                    <span class="badge badge-danger"> غير فعال </span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="{{ url('admin/money-manage/update/' . $user['id']) }}"
+                                                    class="btn btn-primary btn-sm"> <i class="fa fa-edit"></i> </a>
+                                                <button data-target="#delete_model_{{ $user['id'] }}" data-toggle="modal"
+                                                    class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- Delete Section Model  -->
+                                        @include('admin.users.money_manage.delete')
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -130,8 +124,8 @@
     <script src="{{ URL::asset('assets/admin/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ URL::asset('assets/admin/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
     <script src="{{ URL::asset('assets/admin/plugins/datatable/js/jszip.min.js') }}"></script>
-    <script src="{{asset('assets/admin/newdatatable/pdfmake.js')}}"></script>
-    <script src="{{asset('assets/admin/newdatatable/vfs_fonts.js')}}"></script>
+    <script src="{{ asset('assets/admin/newdatatable/pdfmake.js') }}"></script>
+    <script src="{{ asset('assets/admin/newdatatable/vfs_fonts.js') }}"></script>
     <script src="{{ URL::asset('assets/admin/plugins/datatable/js/buttons.html5.min.js') }}"></script>
     <script src="{{ URL::asset('assets/admin/plugins/datatable/js/buttons.print.min.js') }}"></script>
     <script src="{{ URL::asset('assets/admin/plugins/datatable/js/buttons.colVis.min.js') }}"></script>

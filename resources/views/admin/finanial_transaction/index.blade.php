@@ -112,14 +112,14 @@
                                 @foreach($transactions as $trans)
                                     <tr>
                                         <td> {{$i++}} </td>
-                                        <td> {{$trans['company_data']['id']}} </td>
+                                        <td> {{ optional($trans['company_data'])['id']}} </td>
                                         <td> {{$trans['trans_number']}} </td>
                                         <td>
-                                            <a href="{{url('admin/company/transactions/'.$trans['company_data']['id'])}}"> {{$trans['company_data']['trade_name']}}  </a>
+                                            <a href="{{url('admin/company/transactions/'.optional($trans['company_data'])['id'])}}"> {{ optional($trans['company_data'])['trade_name']}}  </a>
                                         </td>
                                         <td> {{ $trans['created_at']->format('Y-m-d') }} </td>
                                         @php
-                                            $totalAmount = \App\Models\admin\FinanialTransaction::total_transaction($trans['company_data']['id']);
+                                            $totalAmount = \App\Models\admin\FinanialTransaction::total_transaction(optional($trans['company_data'])['id']);
  @endphp
                                         <td> {{ $totalAmount  }} </td>
 

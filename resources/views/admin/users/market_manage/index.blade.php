@@ -76,13 +76,9 @@
                                     <tr>
                                         <td> {{$i++}} </td>
                                         <td> {{$user['name']}} </td>
-                                        <td> {{ optional($user['region']['name'] ?? 'N/A')}} </td>
+                                        <td> {{ $user['region']['name'] ?? 'N/A' }} </td>
                                         <td>
-                                            @if($user['branches'] !=null)
-                                                {{ optional($user['branch'])['name'] ?? 'N/A' }}
-                                            @else
-                                                الكل
-                                            @endif
+                                            {{ $user['branches'] ? ($user['branch']['name'] ?? 'N/A') : 'الكل' }}
                                         </td>
                                         <td> {{$user['phone']}} </td>
                                         <td> {{$user['email']}} </td>

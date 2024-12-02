@@ -1,13 +1,13 @@
 @extends('admin.layouts.master')
 @section('title')
-   تعديل بيانات الشعبة
+    تعديل بيانات الشعبة
 @endsection
 @section('content')
     <!-- breadcrumb -->
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">الرئيسية  / </h4><span class="text-muted mt-1 tx-13 mr-2 mb-0"> تعديل بيانات الشعبة    </span>
+                <h4 class="content-title mb-0 my-auto">الرئيسية / </h4><span class="text-muted mt-1 tx-13 mr-2 mb-0"> تعديل بيانات الشعبة    </span>
             </div>
         </div>
     </div>
@@ -32,12 +32,18 @@
                         </div>
                     @endif
 
-                    <form class="form-horizontal" method="post" action="{{ url('admin/companies/update/'.$company['id']) }}"
+                    <form class="form-horizontal" method="post"
+                          action="{{ url('admin/companies/update/'.$company['id']) }}"
                           enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-lg-4 col-12">
                                 <div class="mb-4  btn btn-sm btn-success-gradient light-text"> البيانات الاساسية</div>
+                                <div class="form-group ">
+                                    <label class="form-label"> رقم القيد : </label>
+                                    <input min="1" required type="number" class="form-control" name="company_number"
+                                           value="{{ $company['company_number'] }}">
+                                </div>
                                 <div class="form-group ">
                                     <label class="form-label"> اسم الممثل القانوني : </label>
                                     <input type="text" class="form-control" name="name" value="{{$company['name']}}">
@@ -49,7 +55,8 @@
                                             <select name="regions" id="regions" class="form-control">
                                                 <option value="">- حدد المنطقة -</option>
                                                 @foreach($regions as $region)
-                                                    <option {{$company['region'] == $region['id'] ? 'selected':''}}  value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                                                    <option
+                                                        {{$company['region'] == $region['id'] ? 'selected':''}}  value="{{ $region['id'] }}">{{ $region['name'] }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -72,7 +79,8 @@
                                         <select name="regions" id="regions" class="form-control">
                                             <option value="">- حدد المنطقة -</option>
                                             @foreach($regions as $region)
-                                                <option {{$company['region'] == $region['id'] ? 'selected':''}}  value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                                                <option
+                                                    {{$company['region'] == $region['id'] ? 'selected':''}}  value="{{ $region['id'] }}">{{ $region['name'] }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -165,16 +173,17 @@
 
                                 <div class="form-group ">
                                     <label class="form-label"> حدد الشعبة : </label>
-                                    <select  id="main_category" class="form-control" name="category">
-                                        <option value=""> -- حدد الشعبة -- </option>
+                                    <select id="main_category" class="form-control" name="category">
+                                        <option value=""> -- حدد الشعبة --</option>
                                         @foreach($categories as $category)
-                                            <option @if($company['category'] == $category['id']) selected @endif value="{{$category['id']}}"> {{$category['name']}} </option>
+                                            <option @if($company['category'] == $category['id']) selected
+                                                    @endif value="{{$category['id']}}"> {{$category['name']}} </option>
                                         @endforeach
                                     </select>
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label">   نوع النشاط   : </label>
+                                    <label class="form-label"> نوع النشاط : </label>
                                     <select id="sub_category" class="form-control" name="sub_category">
                                         <option value=""> -- حدد نوع النشاط --</option>
                                     </select>
@@ -187,7 +196,7 @@
 
                                     // عندما تتغير المنطقة
                                     $('#main_category').on('change', function () {
-                                        var main_category= $(this).val();
+                                        var main_category = $(this).val();
                                         loadSubcategories(main_category, null); // تحميل الفروع بناءً على المنطقة
                                     });
 
@@ -223,7 +232,6 @@
                                 </script>
 
 
-
                                 <div class="form-group ">
                                     <label class="form-label"> راس المال : </label>
                                     <input type="text" class="form-control" name="money_head"
@@ -250,12 +258,14 @@
 
                                 <div class="form-group ">
                                     <label class="form-label"> عنوان النشاط : </label>
-                                    <input type="text" class="form-control" name="address" value="{{$company['address']}}">
+                                    <input type="text" class="form-control" name="address"
+                                           value="{{$company['address']}}">
                                 </div>
 
                                 <div class="form-group ">
                                     <label class="form-label"> الهاتف : </label>
-                                    <input type="text" class="form-control" name="mobile" value="{{$company['mobile']}}">
+                                    <input type="text" class="form-control" name="mobile"
+                                           value="{{$company['mobile']}}">
                                 </div>
 
                                 <div class="form-group ">
@@ -278,24 +288,25 @@
                                            value="{{$company['jihad_isdar']}}">
                                 </div>
 
-{{--                                <div class="form-group ">--}}
-{{--                                    <label class="form-label"> دائرة النشاط : </label>--}}
-{{--                                    <input type="text" class="form-control" name="active_circle"--}}
-{{--                                           value="{{$company['active_circle']}}">--}}
-{{--                                </div>--}}
+                                {{--                                <div class="form-group ">--}}
+                                {{--                                    <label class="form-label"> دائرة النشاط : </label>--}}
+                                {{--                                    <input type="text" class="form-control" name="active_circle"--}}
+                                {{--                                           value="{{$company['active_circle']}}">--}}
+                                {{--                                </div>--}}
 
                                 <div class="form-group ">
                                     <label class="form-label"> التصنيف : </label>
                                     <select class="form-control" name="type">
-                                        <option value=""> -- حدد التصنيف  -- </option>
+                                        <option value=""> -- حدد التصنيف --</option>
                                         @foreach($types as $type)
-                                            <option @if($company['type'] == $type['id']) selected @endif value="{{$type['id']}}">{{$type['name']}}</option>
+                                            <option @if($company['type'] == $type['id']) selected
+                                                    @endif value="{{$type['id']}}">{{$type['name']}}</option>
                                         @endforeach
                                     </select>
                                 </div>
 
                                 <div class="form-group ">
-                                    <label class="form-label"> تاريخ الانتهاء :   </label>
+                                    <label class="form-label"> تاريخ الانتهاء : </label>
                                     <input type="date" class="form-control" name="isdar_date"
                                            value="{{$company['isdar_date']}}">
                                 </div>
@@ -305,15 +316,20 @@
                                     </label>
                                     <select class="form-control" name="isadarـduration">
                                         <option> -- حدد الفترة --</option>
-                                        <option @if($company['isadarـduration'] == 1) selected @endif value="1"> 1</option>
-                                        <option @if($company['isadarـduration'] == 2) selected @endif value="2"> 2</option>
-                                        <option @if($company['isadarـduration'] == 3) selected @endif value="3"> 3</option>
-                                        <option @if($company['isadarـduration'] == 4) selected @endif value="4"> 4</option>
-                                        <option @if($company['isadarـduration'] == 5) selected @endif value="5"> 5</option>
+                                        <option @if($company['isadarـduration'] == 1) selected @endif value="1"> 1
+                                        </option>
+                                        <option @if($company['isadarـduration'] == 2) selected @endif value="2"> 2
+                                        </option>
+                                        <option @if($company['isadarـduration'] == 3) selected @endif value="3"> 3
+                                        </option>
+                                        <option @if($company['isadarـduration'] == 4) selected @endif value="4"> 4
+                                        </option>
+                                        <option @if($company['isadarـduration'] == 5) selected @endif value="5"> 5
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="form-group ">
-                                    <label class="form-label">تاريخ انتهاء إذن السياحة  : </label>
+                                    <label class="form-label">تاريخ انتهاء إذن السياحة : </label>
                                     <input type="date" class="form-control" name="tourism_expire_date"
                                            value="{{$company['tourism_expire_date']}}">
                                 </div>

@@ -50,7 +50,7 @@
                 </div>
                 <div class="card-body">
                     <div>
-                        <p> فلترة الشركات </p>
+                        <p> فلترة الشعب </p>
                         <form method="GET" action="{{ url('admin/company/main-filter')}}">
                             <div class="d-flex align-items-center">
                                 <div class="form_box" style="min-width: 30%">
@@ -129,14 +129,21 @@
                             </div>
                         </form>
                     </div>
+                    <br>
+                    <div class="d-flex">
+                        <a style="margin:5px" target="_blank" class="btn btn-primary" href="{{url('admin/company-report')}}">
+                            استخراج ملف Pdf </a>
+                        <a style="margin:5px" target="_blank" class="btn btn-warning" href="{{url('admin/company-excel')}}"> استخراج
+                            ملف Excel </a>
+                    </div>
                     <div class="table-responsive">
-                        <table class="table text-md-nowrap" id="example">
+                        <table class="table text-md-nowrap nowrap" id="example2" width="100%">
                             <thead>
                             <tr style="direction: rtl">
-                                <th class="border-bottom-0"> رقم القيد  </th>
+                                <th class="border-bottom-0"> رقم القيد</th>
                                 <th class="wd-15p border-bottom-0"> اسم النشاط</th>
-                                <th class=" border-bottom-0"> الشعبة  </th>
-                                <th class="wd-15p border-bottom-0"> الشكل القانوني  </th>
+                                <th class=" border-bottom-0"> الشعبة</th>
+                                <th class="wd-15p border-bottom-0"> الشكل القانوني</th>
                                 <th class="border-bottom-0"> تاريخ الانتهاء</th>
                                 <th class="border-bottom-0"> نوع النشاط</th>
                                 @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type=='supervisor' || Auth::user()->type =='money')
@@ -153,7 +160,7 @@
                             @endphp
                             @foreach($companies as $company)
                                 <tr>
-                                    <td> {{$company['id']}} </td>
+                                    <td> {{$company['company_number']}} </td>
                                     <td style="direction: rtl;text-align: right"> {{$company['trade_name']}} </td>
                                     <td> {{$company['categorydata']['name']}} </td>
                                     <td> {{$company['companytype']['name']}} </td>
@@ -274,48 +281,51 @@
     <script src="{{ URL::asset('assets/admin/plugins/datatable/js/responsive.bootstrap4.min.js') }}"></script>
     <!--Internal  Datatable js -->
     <script src="{{ URL::asset('assets/admin/js/table-data.js') }}"></script>
+
 @endsection
 
 
+@section('js')
+    <!-- تضمين jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<!-- تضمين jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        // عند النقر على زر تغيير حالة الشحنات
-        $('.change_orders_status2').on('click', function () {
-            var selectedOrders = [];
-            // الحصول على الطلبات المحددة
-            $('input[name="select_row"]:checked').each(function () {
-                selectedOrders.push($(this).val());
-            });
-            // تحديث قيمة حقل الإدخال الخفي
-            $('.selected_orders').val(selectedOrders.join(','));
-
-            // إرسال الطلبات المحددة إلى الخادم
-            $('.change_orders_status_form').submit();
-        });
-        // تحديد الكل
-        document.getElementById("order_check_select_all").addEventListener("change", function () {
-            var checkboxes = document.querySelectorAll('.order_check_single');
-            checkboxes.forEach(function (checkbox) {
-                checkbox.checked = document.getElementById("order_check_select_all").checked;
-            });
-        });
-
-        // إلغاء تحديد الكل عند إلغاء تحديد أحد الـ checkbox
-        document.querySelectorAll('.order_check_single').forEach(function (checkbox) {
-            checkbox.addEventListener('change', function () {
-                var allChecked = true;
-                document.querySelectorAll('.order_check_single').forEach(function (checkbox) {
-                    if (!checkbox.checked) {
-                        allChecked = false;
-                    }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // عند النقر على زر تغيير حالة الشحنات
+            $('.change_orders_status2').on('click', function () {
+                var selectedOrders = [];
+                // الحصول على الطلبات المحددة
+                $('input[name="select_row"]:checked').each(function () {
+                    selectedOrders.push($(this).val());
                 });
-                document.getElementById("order_check_select_all").checked = allChecked;
-            });
-        });
+                // تحديث قيمة حقل الإدخال الخفي
+                $('.selected_orders').val(selectedOrders.join(','));
 
-    });
-</script>
+                // إرسال الطلبات المحددة إلى الخادم
+                $('.change_orders_status_form').submit();
+            });
+            // تحديد الكل
+            document.getElementById("order_check_select_all").addEventListener("change", function () {
+                var checkboxes = document.querySelectorAll('.order_check_single');
+                checkboxes.forEach(function (checkbox) {
+                    checkbox.checked = document.getElementById("order_check_select_all").checked;
+                });
+            });
+
+            // إلغاء تحديد الكل عند إلغاء تحديد أحد الـ checkbox
+            document.querySelectorAll('.order_check_single').forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    var allChecked = true;
+                    document.querySelectorAll('.order_check_single').forEach(function (checkbox) {
+                        if (!checkbox.checked) {
+                            allChecked = false;
+                        }
+                    });
+                    document.getElementById("order_check_select_all").checked = allChecked;
+                });
+            });
+
+        });
+    </script>
+
+@endsection

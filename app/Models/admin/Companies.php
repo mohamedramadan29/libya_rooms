@@ -40,7 +40,8 @@ class Companies extends Model
             : Carbon::parse($this->first_market_confirm_date);
 
         // إضافة مدة القيد (عدد السنوات)
-        return $marketConfirmDate->addYears($this->isadarـduration);
+
+        return $marketConfirmDate->addYears(intval($this->isadarـduration));
     }
 
     // التحقق مما إذا كانت الشركة منتهية الصلاحية
