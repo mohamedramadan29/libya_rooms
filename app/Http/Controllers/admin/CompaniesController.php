@@ -368,93 +368,112 @@ class CompaniesController extends Controller
     public function money_confirm(Request $request, $id)
     {
         $company = Companies::findOrFail($id);
+        if ($request->isMethod('post')) {
         try {
-            if ($request->isMethod('post')) {
+
                 $alldata = $request->all();
+                $company_id = $alldata['company_id'];
+                $company_data = Companies::findOrFail($company_id);
+                // dd($company_data);
                 $rules = [
-                    'trans_number' => 'required|numeric|unique:finanial_transactions,trans_number',
-                    'company_id' => 'required',
-                    'trans_type' => 'required',
-                    'trans_price' => 'required|numeric',
-                    //'file' => 'required'
+                    'trans_number' => 'required|numeric', // التحقق من رقم الإيصال
+                    'company_id' => 'required|exists:companies,id', // الشركة مطلوبة ويجب أن تكون موجودة في قاعدة البيانات
+                    'trans_types' => 'required|array', // أنواع المعاملات يجب أن تكون مصفوفة
+                    'trans_types.*' => 'required|string', // كل نوع من الأنواع داخل المصفوفة يجب أن يكون نصًا
+                    'trans_prices' => 'required|array', // قيم المعاملات يجب أن تكون مصفوفة
+                    'trans_prices.*' => 'required|numeric|min:0', // كل قيمة من القيم داخل المصفوفة يجب أن تكون رقمًا
+                    'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048', // الملف اختياري ولكن يجب أن يكون بصيغة صحيحة وحجمه أقل من 2MB
+                    'notes' => 'nullable|string|max:1000', // الملاحظات اختيارية ولكن يجب أن تكون نصًا محدود الطول
                 ];
                 $messages = [
-                    'trans_type.required' => 'من فضلك حدد نوع المعاملة ',
-                    'trans_number.numeric' => ' رقم الايصال يجب ان يكون رقم صحيح  ',
-                    'trans_number.unique' => ' رقم الايصال  متواجد من قبل   ',
-                    'company_id.required' => 'من فضلك حدد الشركة ',
-                    'trans_number.required' => 'من فضلك ادخل رقم الايصال ',
-                    'trans_price.required' => 'من فضلك ادخل قيمة الايصال ',
-                    'trans_price.numeric' => ' قيمة الايصال يجب ان يكون رقم صحيح  ',
-                    // 'file.required' => 'من فضلك ادخل مرفقات الايصال '
+                    'trans_number.required' => 'من فضلك أدخل رقم الإيصال.',
+                    'trans_number.numeric' => 'رقم الإيصال يجب أن يكون رقماً صحيحاً.',
+                    'company_id.required' => 'من فضلك حدد الشركة.',
+                    'company_id.exists' => 'الشركة المحددة غير موجودة.',
+                    'trans_types.required' => 'من فضلك حدد أنواع المعاملات.',
+                    'trans_types.array' => 'أنواع المعاملات يجب أن تكون قائمة.',
+                    'trans_types.*.required' => 'كل نوع معاملة مطلوب.',
+                    'trans_types.*.string' => 'كل نوع معاملة يجب أن يكون نصاً.',
+                    'trans_prices.required' => 'من فضلك أدخل قيم المعاملات.',
+                    'trans_prices.array' => 'قيم المعاملات يجب أن تكون قائمة.',
+                    'trans_prices.*.required' => 'كل قيمة معاملة مطلوبة.',
+                    'trans_prices.*.numeric' => 'كل قيمة معاملة يجب أن تكون رقماً صحيحاً.',
+                    'trans_prices.*.min' => 'كل قيمة معاملة يجب أن تكون على الأقل 0.',
+                    'file.file' => 'الملف يجب أن يكون من نوع صحيح.',
+                    'file.mimes' => 'الملف يجب أن يكون بصيغة: jpg, jpeg, png, pdf.',
+                    'file.max' => 'حجم الملف يجب ألا يتجاوز 2 ميجابايت.',
+                    'notes.string' => 'الملاحظات يجب أن تكون نصاً.',
+                    'notes.max' => 'الملاحظات يجب ألا تتجاوز 1000 حرف.',
                 ];
                 $validator = Validator::make($alldata, $rules, $messages);
                 if ($validator->fails()) {
                     return redirect()->back()->withInput()->withErrors($validator);
                 }
-                $filename = '';
                 if ($request->hasFile('file')) {
                     $filename = $this->saveImage($request->file, public_path('assets/files/transaction_files'));
                 }
-                DB::beginTransaction();
-                $transaction = new FinanialTransaction();
-                $transaction->trans_number = $alldata['trans_number'];
-                $transaction->trans_price = $alldata['trans_price'];
-                $transaction->company_id = $alldata['company_id'];
-                $transaction->trans_type = $alldata['trans_type'];
-                $transaction->region = $company['region'];
-                $transaction->branch = $company['branch'];
-                $transaction->notes = $alldata['notes'];
-                $transaction->file = $filename;
-                $transaction->employe_id = Auth::user()->id;
-                $transaction->save();
+                foreach ($request->trans_types as $index => $type) {
+                    $transaction = new FinanialTransaction();
+                    $transaction->trans_number = $alldata['trans_number'];
+                    $transaction->trans_price = $request->trans_prices[$index];
+                    $transaction->company_id = $alldata['company_id'];
+                    $transaction->region = $company_data['region'];
+                    $transaction->branch = $company_data['branch'];
+                    $transaction->trans_type = $type;
+                    $transaction->notes = $alldata['notes'];
+                    $transaction->file = $filename ?? null;
+                    $transaction->employe_id = Auth::user()->id;
+                    $transaction->save();
+                }
                 ///// Update Company Status
                 ///
                 $company->update([
                     'money_confirm' => 1
                 ]);
-                // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
-                if (empty($company->first_market_confirm_date)) {
-                    if (isset($alldata['special_date']) && $alldata['special_date'] != '') {
-                        $company->update([
-                            'first_market_confirm_date' => $alldata['special_date'], // إضافة التاريخ الحالي فقط
-                        ]);
-                    } else {
-                        $company->update([
-                            'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
-                        ]);
-                    }
-                } else {
-                    // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
-                    $lastConfirmDate = $company->new_market_confirm_date
-                        ? Carbon::parse($company->new_market_confirm_date)
-                        : Carbon::parse($company->first_market_confirm_date);
-
-                    // الحصول على مدة القيد (عدد السنوات للتجديد)
-                    $duration = $company->isadarـduration;
-
-                    // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
-                    $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
-
-                    // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
-                    $fixedDayMonth = $lastConfirmDate->format('m-d');
-
-                    // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
-                    $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
-
-                    // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
-                    $company->update([
-                        'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
-                    ]);
-                }
+//                // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
+//                if (empty($company->first_market_confirm_date)) {
+//                    if (isset($alldata['special_date']) && $alldata['special_date'] != '') {
+//                        $company->update([
+//                            'first_market_confirm_date' => $alldata['special_date'], // إضافة التاريخ الحالي فقط
+//                        ]);
+//                    } else {
+//                        $company->update([
+//                            'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
+//                        ]);
+//                    }
+//                } else {
+//                    // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
+//                    $lastConfirmDate = $company->new_market_confirm_date
+//                        ? Carbon::parse($company->new_market_confirm_date)
+//                        : Carbon::parse($company->first_market_confirm_date);
+//
+//                    // الحصول على مدة القيد (عدد السنوات للتجديد)
+//                    $duration = $company->isadarـduration;
+//
+//                    // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
+//                    $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
+//
+//                    // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
+//                    $fixedDayMonth = $lastConfirmDate->format('m-d');
+//
+//                    // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
+//                    $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
+//
+//                    // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
+//                    $company->update([
+//                        'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
+//                    ]);
+//                }
 
                 DB::commit();
 
                 return $this->success_message(' تم اضافه المعامله بنجاح وتاكيد دفع الشركه  ');
-            }
+
         } catch (\Exception $e) {
             return $this->exception_message($e);
         }
+        }
+        return view('admin.companies.money_confirm_company',compact('company'));
     }
 
     // UnConfirmed Companies With Market Team
@@ -596,17 +615,18 @@ class CompaniesController extends Controller
         }
 
         // فلترة الشركات التي انتهت صلاحيتها باستخدام تواريخ التوثيق ومدة الإيداع
-        $query->where(function ($subQuery) {
-            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-            $subQuery->where(function ($query) {
-                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
-                    ->whereNull('new_market_confirm_date');
-            })
-                ->orWhere(function ($query) {
-                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
-                });
-        });
+//        $query->where(function ($subQuery) {
+//            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+//            $subQuery->where(function ($query) {
+//                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
+//                    ->whereNull('new_market_confirm_date');
+//            })
+//                ->orWhere(function ($query) {
+//                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
+//                });
+//        });
 
+        $query->where('isdar_date', '<', now());
         // جلب الشركات المفلترة والمنتهية الصلاحية
         $companies = $query->orderBy('id', 'desc')->get();
 
@@ -642,18 +662,20 @@ class CompaniesController extends Controller
             }
         }
 
-        // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
-        $query->where(function ($subQuery) {
-            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-            $subQuery->where(function ($query) {
-                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
-                    ->whereNull('new_market_confirm_date');
-            })
-                ->orWhere(function ($query) {
-                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
-                });
-        });
+//        // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
+//        $query->where(function ($subQuery) {
+//            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+//            $subQuery->where(function ($query) {
+//                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
+//                    ->whereNull('new_market_confirm_date');
+//            })
+//                ->orWhere(function ($query) {
+//                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
+//                });
+//        });
 
+        // فلترة الشركات التي ستنتهي صلاحيتها خلال الشهر الحالي
+        $query->whereBetween('isdar_date', [now(), now()->addMonth()]);
         // جلب الشركات المفلترة التي ستنتهي صلاحيتها خلال الشهر الحالي
         $companies = $query->orderBy('id', 'desc')->get();
 
@@ -678,23 +700,23 @@ class CompaniesController extends Controller
             try {
                 $data = $request->all();
                 $rules = [
-                    'name' => 'required',
-
+                    'company_number' => 'required|unique:companies,company_number',
+                    'name' => 'required|unique:companies,name',
                     'birthplace' => 'required',
                     'nationality' => 'required',
                     'id_number' => 'required',
                     'place' => 'required',
-                    'personal_number' => 'required',
-                    'trade_name' => 'required',
+                    'personal_number' => 'required|unique:companies,personal_number',
+                    'trade_name' => 'required|unique:companies,trade_name',
                     'category' => 'required',
                     'money_head' => 'required',
                     'bank_name' => 'required',
-                    'licenseـnumber' => 'required',
-                    'tax_number' => 'required',
+                    'licenseـnumber' => 'required|unique:companies,licenseـnumber',
+                    'tax_number' => 'required|unique:companies,tax_number',
                     'address' => 'required',
-                    'mobile' => 'required',
-                    'email' => 'required',
-                    'commercial_number' => 'required',
+                    'mobile' => 'required|unique:companies,mobile',
+                    'email' => 'email',
+                    'commercial_number' => 'required|unique:companies,commercial_number',
                     'jihad_isdar' => 'required',
                     //                    'active_circle' => 'required',
                     'isdar_date' => 'required',
@@ -705,8 +727,9 @@ class CompaniesController extends Controller
                     'branches' => 'required',
                 ];
                 $messages = [
+                    'company_number.required' => ' من فضلك ادخل رقم القيد ',
+                    'company_number.unique' => ' رقم القيد متواجد من قبل  ',
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
-
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
                     'nationality.required' => 'من فضلك ادخل الجنسية ',
                     'id_number.required' => 'من فضلك ادخل الرقم الوطني ',
@@ -720,7 +743,7 @@ class CompaniesController extends Controller
                     'tax_number.required' => 'من فضلك ادخل الرقم الضريبي ',
                     'address.required' => 'من فضلك ادخل العنوان ',
                     'mobile.required' => 'من فضلك ادخل رقم الهاتف ',
-                    'email.required' => 'من فضلك ادخل البريد الالكتروني ',
+                    'email.email' => ' من فضلك ادخل البريد بشكل صحيح  ',
                     'commercial_number.required' => 'من فضلك ادخل رقم السجل التجاري ',
                     'jihad_isdar.required' => 'من فضلك ادخل جهه الاصدار',
                     //                    'active_circle.required' => 'من فضلك ادخل دائرة النشاط ',
@@ -729,7 +752,14 @@ class CompaniesController extends Controller
                     'type.required' => 'من فضلك حدد التصنيف ',
                     'status.required' => 'من فضلك حدد حالة الشركة ',
                     'regions.required' => ' من فضلك حدد المنطقة  ',
-                    'branches.required' => '  من فضلك حدد الفرع '
+                    'branches.required' => '  من فضلك حدد الفرع ',
+                    'name.unique' => 'اسم الممثل القانوني مستخدم بالفعل.',
+                    'personal_number.unique' => 'رقم إثبات الشخصية مستخدم بالفعل.',
+                    'trade_name.unique' => 'الاسم التجاري مستخدم بالفعل.',
+                    'licenseـnumber.unique' => 'رقم الترخيص مستخدم بالفعل.',
+                    'tax_number.unique' => 'الرقم الضريبي مستخدم بالفعل.',
+                    'mobile.unique' => 'رقم الهاتف مستخدم بالفعل.',
+                    'commercial_number.unique' => 'رقم السجل التجاري مستخدم بالفعل.',
                 ];
 
                 $validator = Validator::make($data, $rules, $messages);

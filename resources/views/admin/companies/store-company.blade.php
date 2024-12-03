@@ -39,7 +39,11 @@
                         <div class="row">
                             <div class="col-lg-4 col-12">
                                 <div class="mb-4  btn btn-sm btn-success-gradient light-text"> البيانات الاساسية</div>
-
+                                <div class="form-group ">
+                                    <label class="form-label">   رقم القيد  : </label>
+                                    <input min="1" required type="number" class="form-control" name="company_number"
+                                           value="{{ old('company_number') }}">
+                                </div>
                                 <div class="form-group">
                                     <label>المنطقة</label>
                                     <select name="regions" id="regions" class="form-control">
@@ -244,7 +248,7 @@
                                            value="{{old('isdar_date')}}">
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" style="display: none">
                                     <label class="form-label"> حدد الفترة <span class="badge badge-info"> سنة  </span> :
                                     </label>
                                     <select class="form-control" name="isadarـduration">

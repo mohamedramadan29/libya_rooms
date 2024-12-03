@@ -90,8 +90,8 @@
                                 <th class="wd-15p border-bottom-0"> اسم النشاط</th>
                                 <th class=" border-bottom-0"> الشعبة  </th>
                                 <th class="wd-15p border-bottom-0"> الشكل القانوني  </th>
-                                <th class="wd-15p border-bottom-0">   نوع النشاط</th>
-                                <th class="wd-15p border-bottom-0"> الفترة</th>
+{{--                                <th class="wd-15p border-bottom-0">   نوع النشاط</th>--}}
+{{--                                <th class="wd-15p border-bottom-0"> الفترة</th>--}}
                                 <th class="wd-15p border-bottom-0"> تاريخ الانتهاء</th>
                                 @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
                                     <th class="wd-15p border-bottom-0"> المعاملات المالية</th>
@@ -111,9 +111,10 @@
                                     <td> {{$company['trade_name']}} </td>
                                     <td> {{$company['categorydata']['name']}} </td>
                                     <td>  {{ optional($company->companytype)->name }}  </td>
-                                    <td> {{$company['isadarـduration']}} <span class="badge badge-danger"> سنة </span>
-                                    </td>
-                                    <td style="color:red"> {{ $company->expiry_date->format('Y-m-d') }} </td>
+{{--                                    <td> {{$company['isadarـduration']}} <span class="badge badge-danger"> سنة </span>--}}
+{{--                                    </td>--}}
+{{--                                    <td style="color:red"> {{ $company->expiry_date->format('Y-m-d') }} </td>--}}
+                                    <td style="color:red">  {{$company['isdar_date']}} </td>
                                     @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
                                         <td><a class="btn btn-info-gradient btn-sm"
                                                href="{{url('admin/company/transactions/'.$company['id'])}}">
@@ -157,16 +158,15 @@
                                         @endif
 
                                         @if(Auth::user()->type == 'money' && $company['money_confirm'] !=1)
-                                            <button data-target="#money_confirm_{{$company['id']}}"
-                                                    data-toggle="modal" class="btn btn-success btn-sm"><i
-                                                    class="fa fa-check"> تأكيد الدفع </i>
-                                            </button>
+                                                <a href="{{url('admin/companies/money_confirm/'.$company['id'])}}" class="btn btn-success btn-sm"><i
+                                                        class="fa fa-check"> تأكيد الدفع </i>
+                                                </a>
                                         @endif
                                     </td>
                                 </tr>
                                 @include('admin.companies.delete')
                                 @include('admin.companies.market_confirm_company')
-                                @include('admin.companies.money_confirm_company')
+{{--                                @include('admin.companies.money_confirm_company')--}}
                             @endforeach
                             </tbody>
                         </table>

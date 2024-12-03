@@ -41,86 +41,6 @@
                     </div>
                 @endif
                 <div class="card-body">
-                    {{--                    <div>--}}
-                    {{--                        <p> فلترة الشركات </p>--}}
-                    {{--                        <form method="GET" action="{{ url('admin/company/main-filter')}}">--}}
-                    {{--                            <div class="d-flex align-items-center">--}}
-                    {{--                                <div class="form_box" style="min-width: 30%">--}}
-                    {{--                                    <label for="category"> الشعبة </label>--}}
-                    {{--                                    <select class="form-control" name="category" id="main_category">--}}
-                    {{--                                        <option value=""> الكل</option>--}}
-                    {{--                                        @foreach($categories as $category)--}}
-                    {{--                                            <option--}}
-                    {{--                                                value="{{$category['id']}}" {{ old('category',request('category')) == $category['id'] ? 'selected':'' }}> {{$category['name']}} </option>--}}
-                    {{--                                        @endforeach--}}
-                    {{--                                    </select>--}}
-                    {{--                                </div>--}}
-                    {{--                                <div class="form_box" style="min-width: 30%">--}}
-                    {{--                                    <label for="category"> نوع النشاط </label>--}}
-                    {{--                                    <select class="form-control" name="sub_category" id="sub_category">--}}
-                    {{--                                        <option value=""> الكل</option>--}}
-                    {{--                                    </select>--}}
-                    {{--                                </div>--}}
-                    {{--                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>--}}
-                    {{--                                <script type="text/javascript">--}}
-                    {{--                                    var selectedsubcategory = {{ old('sub_category') ?? 'null' }}; // الفرع الحالي للمستخدم--}}
-                    {{--                                    // عندما تتغير المنطقة--}}
-                    {{--                                    $('#main_category').on('change', function () {--}}
-                    {{--                                        console.log('cliekc');--}}
-                    {{--                                        var main_category = $(this).val();--}}
-                    {{--                                        loadSubcategories(main_category, null); // تحميل الفروع بناءً على المنطقة--}}
-                    {{--                                    });--}}
-
-                    {{--                                    // دالة لتحميل الفروع--}}
-                    {{--                                    function loadSubcategories(main_category, sub_category) {--}}
-                    {{--                                        if (main_category) {--}}
-                    {{--                                            $.ajax({--}}
-                    {{--                                                url: '/admin/companies/get-subcategories/' + main_category,--}}
-                    {{--                                                type: 'GET',--}}
-                    {{--                                                dataType: 'json',--}}
-                    {{--                                                success: function (data) {--}}
-                    {{--                                                    $('#sub_category').empty();--}}
-                    {{--                                                    $('#sub_category').append('<option value="">الكل</option>');--}}
-                    {{--                                                    $.each(data, function (key, value) {--}}
-                    {{--                                                        var selected = (sub_category && sub_category == value.id) ? 'selected' : '';--}}
-                    {{--                                                        $('#sub_category').append('<option value="' + value.id + '" ' + selected + '>' + value.name + '</option>');--}}
-                    {{--                                                    });--}}
-                    {{--                                                }--}}
-                    {{--                                            });--}}
-                    {{--                                        } else {--}}
-                    {{--                                            $('#sub_category').empty();--}}
-                    {{--                                            $('#sub_category').append('<option value=""> الكل </option>');--}}
-                    {{--                                        }--}}
-                    {{--                                    }--}}
-
-                    {{--                                    // عند تحميل الصفحة، إذا كانت المنطقة محددة مسبقًا، استدعِ الفروع واضبط الفرع المختار--}}
-                    {{--                                    $(document).ready(function () {--}}
-                    {{--                                        var main_category = $('#main_category').val();--}}
-                    {{--                                        if (main_category) {--}}
-                    {{--                                            loadSubcategories(main_category, selectedsubcategory); // تحميل الفروع وتحديد الفرع الحالي--}}
-                    {{--                                        }--}}
-                    {{--                                    });--}}
-                    {{--                                </script>--}}
-
-
-                    {{--                                <div class="form_box" style="min-width: 30%">--}}
-                    {{--                                    <label for="year" class="d-block"> تصنيف الشعبة </label>--}}
-                    {{--                                    <select class="form-control" name="type" id="type">--}}
-                    {{--                                        <option value=""> الكل</option>--}}
-                    {{--                                        @foreach($types as $type)--}}
-                    {{--                                            <option--}}
-                    {{--                                                value="{{$type['id']}}" {{ old('type',request('type')) == $type['id'] ? 'selected':'' }}>{{$type['name']}}</option>--}}
-                    {{--                                        @endforeach--}}
-                    {{--                                    </select>--}}
-                    {{--                                </div>--}}
-                    {{--                                <div class="form_box" style="min-width: 20%">--}}
-                    {{--                                    <button style="margin-top: 29px" type="submit" class="btn btn-primary"><i--}}
-                    {{--                                            class="fa fa-search"></i> تصفية--}}
-                    {{--                                    </button>--}}
-                    {{--                                </div>--}}
-                    {{--                            </div>--}}
-                    {{--                        </form>--}}
-                    {{--                    </div>--}}
                     <div class="table-responsive">
                         <table class="table text-md-nowrap" id="example">
                             <thead>
@@ -147,11 +67,7 @@
                                     <td> {{$company['subcategory']['name']}} </td>
                                     <td> {{ optional($company->companytype)->name }} </td>
                                     <td>
-                                        @if($company['first_market_confirm_date'] == null && $company['new_market_confirm_date'] == null)
-                                            <span class="badge badge-danger"> لم يحدد بعد </span>
-                                        @else
-                                            {{ $company->expiry_date->format('Y-m-d') }}
-                                        @endif
+                                       {{$company['isdar_date']}}
                                     </td>
                                     @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type=='supervisor'  || Auth::user()->type =='money')
                                         <td><a class="btn btn-info-gradient btn-sm"

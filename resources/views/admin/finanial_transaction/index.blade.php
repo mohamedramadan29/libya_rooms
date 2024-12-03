@@ -111,89 +111,48 @@
                                 @endphp
                                 @foreach($transactions as $trans)
                                     <tr>
-                                        <td> {{$i++}} </td>
-                                        <td> {{ optional($trans['company_data'])['id']}} </td>
-                                        <td> {{$trans['trans_number']}} </td>
+                                        <td> {{ $i++ }} </td>
+                                        <td> {{ optional($trans['company_data'])['id'] }} </td>
+                                        <td> {{ $trans['trans_number'] }} </td>
                                         <td>
-                                            <a href="{{url('admin/company/transactions/'.optional($trans['company_data'])['id'])}}"> {{ optional($trans['company_data'])['trade_name']}}  </a>
+                                            <a href="{{ url('admin/company/transactions/' . optional($trans['company_data'])['id']) }}">
+                                                {{ optional($trans['company_data'])['trade_name'] }}
+                                            </a>
                                         </td>
                                         <td> {{ $trans['created_at']->format('Y-m-d') }} </td>
-                                        @php
-                                            $totalAmount = \App\Models\admin\FinanialTransaction::total_transaction(optional($trans['company_data'])['id']);
- @endphp
-                                        <td> {{ $totalAmount  }} </td>
-
-
-                                        <td>
-                                            @if($trans['trans_type'] == 'قيد جديد')
-                                                {{$trans['trans_price']}}
-                                                @php $total_new = $total_new + $trans['trans_price']; @endphp
-                                            @else
-                                                0
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($trans['trans_type'] == 'تجديد قيد')
-                                                {{$trans['trans_price']}}
-                                                @php $total_renew = $total_renew + $trans['trans_price']; @endphp
-                                            @else
-                                                0
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($trans['trans_type'] == 'تصديق المستندات')
-                                                {{$trans['trans_price']}}
-                                                @php $total_confirm = $total_confirm + $trans['trans_price']; @endphp
-                                            @else
-                                                0
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($trans['trans_type'] == 'استخراج شهائد')
-                                                {{$trans['trans_price']}}
-                                                @php $total_certificate = $total_certificate + $trans['trans_price']; @endphp
-                                            @else
-                                                0
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($trans['trans_type'] == 'ايرادات اخري')
-                                                {{$trans['trans_price']}}
-                                                @php $total_other = $total_other + $trans['trans_price']; @endphp
-                                            @else
-                                                0
-                                            @endif
-                                        </td>
-
-                                        {{--                                        @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')--}}
-                                        <td> {{$trans['employe_data']['name']}} </td>
+                                        <td> {{ $trans['total_price'] }} </td>
+                                        <td> {{ $trans['types']['قيد جديد'] }} </td>
+                                        <td> {{ $trans['types']['تجديد قيد'] }} </td>
+                                        <td> {{ $trans['types']['تصديق المستندات'] }} </td>
+                                        <td> {{ $trans['types']['استخراج شهائد'] }} </td>
+                                        <td> {{ $trans['types']['ايرادات اخري'] }} </td>
+                                        <td> {{ $trans['employe_data']['name'] ?? '---' }} </td>
                                         @if((Auth::user()->type == 'supervisor' && Auth::user()->branches != null) || Auth::user()->type == 'money')
                                             <td>
-                                                <a href="{{url('admin/transaction/update/'.$trans['id'])}}"
-                                                   class="bn btn-primary btn-sm"> <i class="fa fa-edit"></i> </a>
-                                                <button data-target="#delete_model_{{$trans['id']}}"
-                                                        data-toggle="modal" class="btn btn-danger btn-sm"><i
-                                                        class="fa fa-trash"></i>
-                                                </button>
+{{--                                                <a href="{{ url('admin/transaction/update/' . $trans['id']) }}" class="bn btn-primary btn-sm">--}}
+{{--                                                    <i class="fa fa-edit"></i>--}}
+{{--                                                </a>--}}
+{{--                                                <button data-target="#delete_model_{{ $trans['id'] }}" data-toggle="modal" class="btn btn-danger btn-sm">--}}
+{{--                                                    <i class="fa fa-trash"></i>--}}
+{{--                                                </button>--}}
                                             </td>
                                         @endif
                                     </tr>
-                                    <!-- Delete Section Model  -->
-                                    @include('admin.finanial_transaction.delete')
                                 @endforeach
+                            @endif
                             </tbody>
+
                             <tfoot>
                             <tr>
-                                <th colspan="6">  الاجمالي</th>
-                                <th> {{ $total_new  }} </th>
-                                <th> {{ $total_renew  }} </th>
-                                <th> {{ $total_confirm  }} </th>
-                                <th> {{ $total_certificate  }} </th>
-                                <th> {{ $total_other  }} </th>
+                                <th colspan="6">الإجمالي</th>
+                                <th> {{ $transactions->sum(fn($t) => $t['types']['قيد جديد']) }} </th>
+                                <th> {{ $transactions->sum(fn($t) => $t['types']['تجديد قيد']) }} </th>
+                                <th> {{ $transactions->sum(fn($t) => $t['types']['تصديق المستندات']) }} </th>
+                                <th> {{ $transactions->sum(fn($t) => $t['types']['استخراج شهائد']) }} </th>
+                                <th> {{ $transactions->sum(fn($t) => $t['types']['ايرادات اخري']) }} </th>
                                 <th></th>
                             </tr>
                             </tfoot>
-                            @endif
                         </table>
                     </div>
 

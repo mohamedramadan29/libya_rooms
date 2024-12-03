@@ -165,11 +165,12 @@
                                     <td> {{$company['categorydata']['name']}} </td>
                                     <td> {{$company['companytype']['name']}} </td>
                                     <td>
-                                        @if($company['first_market_confirm_date'] == null && $company['new_market_confirm_date'] == null)
-                                            <span class="badge badge-danger"> لم يحدد بعد </span>
-                                        @else
-                                            {{ $company->expiry_date->format('Y-m-d') }}
-                                        @endif
+                                        {{$company['isdar_date']}}
+{{--                                        @if($company['first_market_confirm_date'] == null && $company['new_market_confirm_date'] == null)--}}
+{{--                                            <span class="badge badge-danger"> لم يحدد بعد </span>--}}
+{{--                                        @else--}}
+{{--                                            {{ $company->expiry_date->format('Y-m-d') }}--}}
+{{--                                        @endif--}}
                                     </td>
                                     <td> {{$company['subcategory']['name']}} </td>
 
@@ -204,10 +205,9 @@
                                         @else
                                             <span class="badge badge-danger">  لم يتم الدفع   </span>
                                             @if(Auth::user()->type == 'supervisor' && $company['market_confirm'] == 1)
-                                                <button data-target="#money_confirm_{{$company['id']}}"
-                                                        data-toggle="modal" class="btn btn-success btn-sm"><i
+                                                <a href="{{url('admin/companies/money_confirm/'.$company['id'])}}" class="btn btn-success btn-sm"><i
                                                         class="fa fa-check"> تأكيد الدفع </i>
-                                                </button>
+                                                </a>
                                             @endif
                                         @endif
                                     </td>
@@ -238,7 +238,7 @@
                                 </tr>
                                 @include('admin.companies.delete')
                                 @include('admin.companies.market_confirm_company')
-                                @include('admin.companies.money_confirm_company')
+{{--                                @include('admin.companies.money_confirm_company')--}}
 
                             @endforeach
                             </tbody>
