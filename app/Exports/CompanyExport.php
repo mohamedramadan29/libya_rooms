@@ -10,8 +10,10 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-class CompanyExport implements FromCollection, WithHeadings, WithStyles{
-   use Exportable;
+
+class CompanyExport implements FromCollection, WithHeadings, WithStyles
+{
+    use Exportable;
 
     public function collection()
     {
@@ -35,18 +37,26 @@ class CompanyExport implements FromCollection, WithHeadings, WithStyles{
                 $company->companytype->name ?? 'غير محدد',
                 $expiryDate,
                 $company->subcategory->name ?? 'غير محدد',
+                $company->name,
+                $company->personal_number,
+                $company->id_number
+
+
             ];
         });
     }
-    public function headings():array
+    public function headings(): array
     {
         return [
             ' رقم القيد ',
             'اسم النشاط',
-            'الشعبة' ,
+            'الشعبة',
             'الشكل القانوني',
             'تاريخ الانتهاء',
             'نوع النشاط',
+            ' الممثل القانوني ',
+            ' رقم اثبات الهوية ',
+            ' الرقم الوطني',
         ];
     }
     public function styles(Worksheet $sheet)

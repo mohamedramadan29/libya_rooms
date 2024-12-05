@@ -49,6 +49,9 @@ class GeneratePdfController extends Controller
                         <th>الشكل القانوني</th>
                         <th>تاريخ الانتهاء</th>
                         <th>نوع النشاط</th>
+                        <th> الممثل القانوني  </th>
+                        <th> رقم اثبات الهوية  </th>
+                        <th> الرقم الوطني  </th>
                     </tr>
                 </thead>
                 <tbody>';
@@ -69,6 +72,9 @@ class GeneratePdfController extends Controller
                         <td>' . ($company->companytype ? $company->companytype->name : 'غير محدد') . '</td>
                         <td>' . $expiryDate . '</td>
                         <td>' . ($company->subcategory ? $company->subcategory->name : 'غير محدد') . '</td>
+                         <td>' . $company->name . '</td>
+                         <td>' . $company->personal_number . '</td>
+                         <td>' . $company->id_number . '</td>
                     </tr>';
         }
 

@@ -127,7 +127,7 @@
                                 </tr>
                                 @include('admin.companies.delete')
                                 @include('admin.companies.market_confirm_company')
-                                @include('admin.companies.money_confirm_company')
+                                {{-- @include('admin.companies.money_confirm_company') --}}
                                 @include('admin.companies.confirm-modal')
                             @endforeach
                             </tbody>
