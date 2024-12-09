@@ -59,7 +59,7 @@
                                 <tr>
                                     <th class="wd-15p border-bottom-0"> #</th>
                                     <th class="wd-15p border-bottom-0"> الاسم  </th>
-                                    <th class="wd-15p border-bottom-0"> الفروع  </th>
+                                    <th class="wd-15p border-bottom-0"> المكاتب  </th>
                                     <th class="wd-15p border-bottom-0" id="column1"> العمليات</th>
                                 </tr>
                                 </thead>

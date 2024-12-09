@@ -184,7 +184,7 @@
                                         @if($company['market_confirm'] == 1)
                                             <span class="badge badge-success"> موثق  </span>
                                         @else
-                                            @if(Auth::user()->type == 'supervisor')
+                                            @if(Auth::user()->type == 'supervisor' && Auth::user()->branches !=null)
                                                 <button data-target="#market_confirm_{{$company['id']}}"
                                                         data-toggle="modal" class="btn btn-success btn-sm"><i
                                                         class="fa fa-check"> توثيق الشركه </i>
@@ -204,7 +204,7 @@
                                             @endif
                                         @else
                                             <span class="badge badge-danger">  لم يتم الدفع   </span>
-                                            @if(Auth::user()->type == 'supervisor' && $company['market_confirm'] == 1)
+                                            @if(Auth::user()->type == 'supervisor' && Auth::user()->branches !=null && $company['market_confirm'] == 1)
                                                 <a href="{{url('admin/companies/money_confirm/'.$company['id'])}}" class="btn btn-success btn-sm"><i
                                                         class="fa fa-check"> تأكيد الدفع </i>
                                                 </a>
@@ -229,10 +229,9 @@
                                         @endif
 
                                         @if(Auth::user()->type == 'money' && $company['money_confirm'] !=1)
-                                            <button data-target="#money_confirm_{{$company['id']}}"
-                                                    data-toggle="modal" class="btn btn-success btn-sm"><i
-                                                    class="fa fa-check"> تأكيد الدفع </i>
-                                            </button>
+                                        <a href="{{url('admin/companies/money_confirm/'.$company['id'])}}" class="btn btn-success btn-sm"><i
+                                            class="fa fa-check"> تأكيد الدفع </i>
+                                    </a>
                                         @endif
                                     </td>
                                 </tr>

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    مشرفين المناطق والفروع
+    مشرفين المناطق والمكاتب
 @endsection
 @section('css')
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
@@ -16,7 +16,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الرئيسية </h4><span
-                    class="text-muted mt-1 tx-13 mr-2 mb-0">/   مشرفين المناطق والفروع   </span>
+                    class="text-muted mt-1 tx-13 mr-2 mb-0">/   مشرفين المناطق والمكاتب   </span>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
                             </ul>
                         </div>
                     @endif
-                    <div class="mb-4 main-content-label"> مشرفين المناطق والفروع</div>
+                    <div class="mb-4 main-content-label"> مشرفين المناطق والمكاتب</div>
                     <div class="card-header">
                         <button data-target="#add_model"
                                 data-toggle="modal" class="btn btn-primary btn-sm"> اضافة مشرف جديد <i

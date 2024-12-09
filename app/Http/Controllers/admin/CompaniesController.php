@@ -27,19 +27,19 @@ class CompaniesController extends Controller
     {
         $user = Auth::user();
         if ($user->type == 'admin') {
-            $companies = Companies::with('subcategory', 'categorydata', 'companytype')->orderby('id', 'desc')->get();
+            $companies = Companies::with('subcategory', 'categorydata', 'companytype')->where('active_status', 1)->orderby('id', 'desc')->get();
             //  dd($companies);
         } elseif ($user->type == 'supervisor') {
-            $query = Companies::where('region', $user->regions);
+            $query = Companies::where('region', $user->regions)->where('active_status', 1);
             // إذا كان لدى المشرف فرع معين، أضف شرط الفرع
             if ($user->branches !== null) {
                 $query->where('branch', $user->branches);
             }
             $companies = $query->with('subcategory', 'categorydata', 'companytype')->get();
         } elseif ($user->type == 'money') {
-            $companies = Companies::with('subcategory', 'categorydata', 'companytype')->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory', 'categorydata', 'companytype')->where('active_status', 1)->where('market_confirm', '1')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         } elseif ($user->type == 'market') {
-            $companies = Companies::with('subcategory', 'categorydata', 'companytype')->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
+            $companies = Companies::with('subcategory', 'categorydata', 'companytype')->where('active_status', 1)->orderby('id', 'desc')->where('region', $user->regions)->where('branch', $user->branches)->get();
         }
         $categories = CompanyCategories::where('status', '1')->where('parent_id', '0')->get();
         $types = CompanyType::where('status', '1')->get();
@@ -369,7 +369,7 @@ class CompaniesController extends Controller
     {
         $company = Companies::findOrFail($id);
         if ($request->isMethod('post')) {
-        try {
+            try {
 
                 $alldata = $request->all();
                 $company_id = $alldata['company_id'];
@@ -430,57 +430,69 @@ class CompaniesController extends Controller
                 $company->update([
                     'money_confirm' => 1
                 ]);
-//                // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
-//                if (empty($company->first_market_confirm_date)) {
-//                    if (isset($alldata['special_date']) && $alldata['special_date'] != '') {
-//                        $company->update([
-//                            'first_market_confirm_date' => $alldata['special_date'], // إضافة التاريخ الحالي فقط
-//                        ]);
-//                    } else {
-//                        $company->update([
-//                            'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
-//                        ]);
-//                    }
-//                } else {
-//                    // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
-//                    $lastConfirmDate = $company->new_market_confirm_date
-//                        ? Carbon::parse($company->new_market_confirm_date)
-//                        : Carbon::parse($company->first_market_confirm_date);
-//
-//                    // الحصول على مدة القيد (عدد السنوات للتجديد)
-//                    $duration = $company->isadarـduration;
-//
-//                    // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
-//                    $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
-//
-//                    // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
-//                    $fixedDayMonth = $lastConfirmDate->format('m-d');
-//
-//                    // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
-//                    $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
-//
-//                    // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
-//                    $company->update([
-//                        'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
-//                    ]);
-//                }
+                //                // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
+                //                if (empty($company->first_market_confirm_date)) {
+                //                    if (isset($alldata['special_date']) && $alldata['special_date'] != '') {
+                //                        $company->update([
+                //                            'first_market_confirm_date' => $alldata['special_date'], // إضافة التاريخ الحالي فقط
+                //                        ]);
+                //                    } else {
+                //                        $company->update([
+                //                            'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
+                //                        ]);
+                //                    }
+                //                } else {
+                //                    // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
+                //                    $lastConfirmDate = $company->new_market_confirm_date
+                //                        ? Carbon::parse($company->new_market_confirm_date)
+                //                        : Carbon::parse($company->first_market_confirm_date);
+                //
+                //                    // الحصول على مدة القيد (عدد السنوات للتجديد)
+                //                    $duration = $company->isadarـduration;
+                //
+                //                    // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
+                //                    $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
+                //
+                //                    // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
+                //                    $fixedDayMonth = $lastConfirmDate->format('m-d');
+                //
+                //                    // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
+                //                    $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
+                //
+                //                    // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
+                //                    $company->update([
+                //                        'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
+                //                    ]);
+                //                }
 
                 DB::commit();
 
                 return $this->success_message(' تم اضافه المعامله بنجاح وتاكيد دفع الشركه  ');
-
-        } catch (\Exception $e) {
-            return $this->exception_message($e);
+            } catch (\Exception $e) {
+                return $this->exception_message($e);
+            }
         }
-        }
-        return view('admin.companies.money_confirm_company',compact('company'));
+        return view('admin.companies.money_confirm_company', compact('company'));
     }
 
     // UnConfirmed Companies With Market Team
     public function companies_unconfirmed()
     {
         $user = Auth::user();
-        $companies = Companies::where('market_confirm', '0')->where('region', $user->regions)->where('branch', $user->branches)->orderby('id', 'desc')->get();
+        if ($user->type == 'admin') {
+            $companies = Companies::with('subcategory', 'categorydata', 'companytype')->where('active_status', 1)->where('market_confirm', '0')->orderby('id', 'desc')->get();
+            //  dd($companies);
+        } elseif ($user->type == 'supervisor') {
+            $query = Companies::where('region', $user->regions)->where('active_status', 1)->where('market_confirm', '0');
+            // إذا كان لدى المشرف فرع معين، أضف شرط الفرع
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+            $companies = $query->with('subcategory', 'categorydata', 'companytype')->get();
+        } elseif ($user->type == 'market') {
+            $companies = Companies::where('market_confirm', '0')->where('active_status',1)->where('region', $user->regions)->where('branch', $user->branches)->orderby('id', 'desc')->get();
+        }
+
         $categories = CompanyCategories::where('status', '1')->get();
         $types = CompanyType::where('status', '1')->get();
         return view('admin.companies.index', compact('companies', 'categories', 'types'));
@@ -615,16 +627,16 @@ class CompaniesController extends Controller
         }
 
         // فلترة الشركات التي انتهت صلاحيتها باستخدام تواريخ التوثيق ومدة الإيداع
-//        $query->where(function ($subQuery) {
-//            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-//            $subQuery->where(function ($query) {
-//                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
-//                    ->whereNull('new_market_confirm_date');
-//            })
-//                ->orWhere(function ($query) {
-//                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
-//                });
-//        });
+        //        $query->where(function ($subQuery) {
+        //            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+        //            $subQuery->where(function ($query) {
+        //                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
+        //                    ->whereNull('new_market_confirm_date');
+        //            })
+        //                ->orWhere(function ($query) {
+        //                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
+        //                });
+        //        });
 
         $query->where('isdar_date', '<', now());
         // جلب الشركات المفلترة والمنتهية الصلاحية
@@ -662,17 +674,17 @@ class CompaniesController extends Controller
             }
         }
 
-//        // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
-//        $query->where(function ($subQuery) {
-//            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-//            $subQuery->where(function ($query) {
-//                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
-//                    ->whereNull('new_market_confirm_date');
-//            })
-//                ->orWhere(function ($query) {
-//                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
-//                });
-//        });
+        //        // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
+        //        $query->where(function ($subQuery) {
+        //            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+        //            $subQuery->where(function ($query) {
+        //                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
+        //                    ->whereNull('new_market_confirm_date');
+        //            })
+        //                ->orWhere(function ($query) {
+        //                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
+        //                });
+        //        });
 
         // فلترة الشركات التي ستنتهي صلاحيتها خلال الشهر الحالي
         $query->whereBetween('isdar_date', [now(), now()->addMonth()]);
@@ -715,7 +727,7 @@ class CompaniesController extends Controller
                     'tax_number' => 'required|unique:companies,tax_number',
                     'address' => 'required',
                     'mobile' => 'required|unique:companies,mobile',
-                   // 'email' => 'email',
+                    // 'email' => 'email',
                     'commercial_number' => 'required|unique:companies,commercial_number',
                     'jihad_isdar' => 'required',
                     //                    'active_circle' => 'required',

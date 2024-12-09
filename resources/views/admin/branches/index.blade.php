@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    فروع المنطقة
+    مكاتب المنطقة
 @endsection
 @section('css')
     <link href="{{ URL::asset('assets/admin/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
