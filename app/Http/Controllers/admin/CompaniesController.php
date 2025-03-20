@@ -62,6 +62,7 @@ class CompaniesController extends Controller
 
     public function store(Request $request)
     {
+
         if (Auth::user()->type == 'admin') {
             $regions = Region::all();
         } elseif (Auth::user()->type == 'supervisor') {
@@ -102,7 +103,26 @@ class CompaniesController extends Controller
                     'regions' => 'required',
                     'branches' => 'required',
                 ];
+                if ($request->hasFile('commercial_image')) {
+                    $rules['commercial_image'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+                if ($request->hasFile('commercial_record')) {
+                    $rules['commercial_record'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+                if ($request->hasFile('tourism_image')) {
+                    $rules['tourism_image'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+                if ($request->hasFile('room_certificate')) {
+                    $rules['room_certificate'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+
+
                 $messages = [
+                    'commercial_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,svg,webp,pdf ',
+                    'commercial_record.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
+                    'tourism_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
+                    'room_certificate.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
+
                     'company_number.required' => ' من فضلك ادخل رقم القيد ',
                     'company_number.unique' => ' رقم القيد متواجد من قبل  ',
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
@@ -142,6 +162,18 @@ class CompaniesController extends Controller
                 if ($validator->fails()) {
                     return Redirect::back()->withInput()->withErrors($validator);
                 }
+                if ($request->hasFile('commercial_image')) {
+                    $commercial_image = $this->SaveImage($request->file('commercial_image'), public_path('assets/files/company_register'));
+                }
+                if ($request->hasFile('commercial_record')) {
+                    $commercial_record = $this->SaveImage($request->file('commercial_record'), public_path('assets/files/company_register'));
+                }
+                if ($request->hasFile('tourism_image')) {
+                    $tourism_image = $this->SaveImage($request->file('tourism_image'), public_path('assets/files/company_register'));
+                }
+                if ($request->hasFile('room_certificate')) {
+                    $room_certificate = $this->SaveImage($request->file('room_certificate'), public_path('assets/files/company_register'));
+                }
                 $company = new Companies();
                 $company->name = $data['name'];
                 $company->company_number = $data['company_number'];
@@ -170,7 +202,10 @@ class CompaniesController extends Controller
                 $company->region = $data['regions'];
                 $company->branch = $data['branches'];
                 $company->tourism_expire_date = $data['tourism_expire_date'];
-
+                $company->commercial_image = $commercial_image;
+                $company->commercial_record = $commercial_record;
+                $company->tourism_image = $tourism_image;
+                $company->room_certificate = $room_certificate;
                 $company->save();
                 return $this->success_message('تم اضافة شركة جديدة بنجاح ');
             } catch (\Exception $e) {
@@ -223,6 +258,20 @@ class CompaniesController extends Controller
                     'regions' => 'required',
                     'branches' => 'required'
                 ];
+
+                if ($request->hasFile('commercial_image')) {
+                    $rules['commercial_image'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+                if ($request->hasFile('commercial_record')) {
+                    $rules['commercial_record'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+                if ($request->hasFile('tourism_image')) {
+                    $rules['tourism_image'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+                if ($request->hasFile('room_certificate')) {
+                    $rules['room_certificate'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+
                 $messages = [
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
                     'company_number.unique' => ' رقم القيد متواجد من قبل  ',
@@ -257,11 +306,62 @@ class CompaniesController extends Controller
                     'tax_number.unique' => 'الرقم الضريبي مستخدم بالفعل.',
                     'mobile.unique' => 'رقم الهاتف مستخدم بالفعل.',
                     'commercial_number.unique' => 'رقم السجل التجاري مستخدم بالفعل.',
+                    'commercial_image.required' => ' من فضلك ادخل صورة الرخصة التجارية ',
+                    'commercial_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,svg,webp,pdf ',
+                    'commercial_record.required' => ' من فضلك ادخل صورة السجل التجاري ',
+                    'commercial_record.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
+                    'tourism_image.required' => ' من فضلك ادخل صورة اذن السياحة ',
+                    'tourism_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                 ];
 
                 $validator = Validator::make($data, $rules, $messages);
                 if ($validator->fails()) {
                     return Redirect::back()->withInput()->withErrors($validator);
+                }
+                if ($request->hasFile('commercial_image')) {
+                    /////  Delete Old File
+                    $commercial_old_image = public_path('assets/files/company_register/' . $company->commercial_image);
+                    if (file_exists($commercial_old_image)) {
+                        @unlink($commercial_old_image);
+                    }
+                    $commercial_image = $this->SaveImage($request->file('commercial_image'), public_path('assets/files/company_register'));
+
+                    $company->update([
+                        "commercial_image" => $commercial_image
+                    ]);
+                }
+                if ($request->hasFile('commercial_record')) {
+                    ##### Delete Old File
+                    $commercial_old_record = public_path('assets/files/company_register/' . $company->commercial_record);
+                    if (file_exists($commercial_old_record)) {
+                        @unlink($commercial_old_record);
+                    }
+                    $commercial_record = $this->SaveImage($request->file('commercial_record'), public_path('assets/files/company_register'));
+                    $company->update([
+                        "commercial_record" => $commercial_record
+                    ]);
+                }
+                if ($request->hasFile('tourism_image')) {
+                    ##### Delete Old File
+                    $tourism_old_image = public_path('assets/files/company_register/' . $company->tourism_image);
+                    if (file_exists($tourism_old_image)) {
+                        @unlink($tourism_old_image);
+                    }
+                    $tourism_image = $this->SaveImage($request->file('tourism_image'), public_path('assets/files/company_register'));
+                    $company->update([
+                        "tourism_image" => $tourism_image
+                    ]);
+                }
+                if ($request->hasFile('room_certificate')) {
+                    ##### Delete Old File
+                    $room_old_certificate = public_path('assets/files/company_register/' . $company->room_certificate);
+                    if (file_exists($room_old_certificate)) {
+                        @unlink($room_old_certificate);
+                    }
+                    $room_certificate = $this->SaveImage($request->file('room_certificate'), public_path('assets/files/company_register'));
+                    $company->update([
+                        "room_certificate" => $room_certificate
+                    ]);
                 }
                 $company->update([
                     "name" => $data['name'],
@@ -490,7 +590,7 @@ class CompaniesController extends Controller
             }
             $companies = $query->with('subcategory', 'categorydata', 'companytype')->get();
         } elseif ($user->type == 'market') {
-            $companies = Companies::where('market_confirm', '0')->where('active_status',1)->where('region', $user->regions)->where('branch', $user->branches)->orderby('id', 'desc')->get();
+            $companies = Companies::where('market_confirm', '0')->where('active_status', 1)->where('region', $user->regions)->where('branch', $user->branches)->orderby('id', 'desc')->get();
         }
 
         $categories = CompanyCategories::where('status', '1')->get();
@@ -711,6 +811,7 @@ class CompaniesController extends Controller
         if ($request->isMethod('post')) {
             try {
                 $data = $request->all();
+                // dd($data);
                 $rules = [
                     'company_number' => 'required|unique:companies,company_number',
                     'name' => 'required|unique:companies,name',
@@ -738,7 +839,23 @@ class CompaniesController extends Controller
                     'regions' => 'required',
                     'branches' => 'required',
                 ];
+                if ($request->hasFile('commercial_image')) {
+                    $rules['commercial_image'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+                if ($request->hasFile('commercial_record')) {
+                    $rules['commercial_record'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+                if ($request->hasFile('tourism_image')) {
+                    $rules['tourism_image'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
+                if ($request->hasFile('room_certificate')) {
+                    $rules['room_certificate'] = 'mines:jpg,png,jpeg,gif,svg,pdf,webp';
+                }
                 $messages = [
+                    'commercial_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,svg,webp,pdf ',
+                    'commercial_record.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
+                    'tourism_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
+                    'room_certificate.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'company_number.required' => ' من فضلك ادخل رقم القيد ',
                     'company_number.unique' => ' رقم القيد متواجد من قبل  ',
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
@@ -778,6 +895,18 @@ class CompaniesController extends Controller
                 if ($validator->fails()) {
                     return Redirect::back()->withInput()->withErrors($validator);
                 }
+                if ($request->hasFile('commercial_image')) {
+                    $commercial_image = $this->SaveImage($request->file('commercial_image'), public_path('assets/files/company_register'));
+                }
+                if ($request->hasFile('commercial_record')) {
+                    $commercial_record = $this->SaveImage($request->file('commercial_record'), public_path('assets/files/company_register'));
+                }
+                if ($request->hasFile('tourism_image')) {
+                    $tourism_image = $this->SaveImage($request->file('tourism_image'), public_path('assets/files/company_register'));
+                }
+                if ($request->hasFile('room_certificate')) {
+                    $room_certificate = $this->SaveImage($request->file('room_certificate'), public_path('assets/files/company_register'));
+                }
                 $company = new Companies();
                 $company->name = $data['name'];
                 $company->birthplace = $data['birthplace'];
@@ -804,6 +933,10 @@ class CompaniesController extends Controller
                 $company->status = $data['status'];
                 $company->region = $data['regions'];
                 $company->branch = $data['branches'];
+                $company->commercial_image = $commercial_image;
+                $company->commercial_record = $commercial_record;
+                $company->tourism_image = $tourism_image;
+                $company->room_certificate = $room_certificate;
                 $company->active_status = 0;
 
                 $company->save();

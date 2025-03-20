@@ -7,13 +7,17 @@
                         type="button"><span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="{{url('admin/region/store')}}">
+            <form method="post" action="{{url('admin/region/store')}}" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
 
                     <div class="form-group">
                         <label>  اسم المنطقة   </label>
                         <input required type="text" name="name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>  اضافة لوجو    </label>
+                        <input required type="file" name="logo" class="form-control" accept="image/*">
                     </div>
                 </div>
                 <div class="modal-footer">

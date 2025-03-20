@@ -42,8 +42,8 @@
                                 <div class="mb-4  btn btn-sm btn-success-gradient light-text"> البيانات الاساسية</div>
                                 <div class="form-group ">
                                     <label class="form-label"> رقم القيد : </label>
-                                    <input required min="1" required type="number" class="form-control" name="company_number"
-                                        value="{{ old('company_number') }}">
+                                    <input required min="1" required type="number" class="form-control"
+                                        name="company_number" value="{{ old('company_number') }}">
                                 </div>
                                 @if (Auth::user()->type == 'supervisor')
                                     @if (Auth::user()->branches == null)
@@ -116,7 +116,8 @@
 
                                 <div class="form-group ">
                                     <label class="form-label"> اسم الممثل القانوني : </label>
-                                    <input required type="text" class="form-control" name="name" value="{{ old('name') }}">
+                                    <input required type="text" class="form-control" name="name"
+                                        value="{{ old('name') }}">
                                 </div>
 
 
@@ -148,7 +149,8 @@
 
                                 <div class="form-group">
                                     <label class="form-label"> محل الاقامة : </label>
-                                    <input required type="text" class="form-control" name="place" value="{{ old('place') }}">
+                                    <input required type="text" class="form-control" name="place"
+                                        value="{{ old('place') }}">
                                 </div>
 
 
@@ -300,9 +302,41 @@
                                 </div>
                                 <div class="form-group ">
                                     <label class="form-label">تاريخ انتهاء إذن السياحة : </label>
-                                    <input required type="date" class="form-control" name="tourism_expire_date"
+                                    <input type="date" class="form-control" name="tourism_expire_date"
                                         value="{{ old('tourism_expire_date') }}">
                                 </div>
+
+                                <div class="form-group ">
+                                    <label class="form-label">تاريخ انتهاء إذن السياحة : </label>
+                                    <input type="date" class="form-control" name="tourism_expire_date"
+                                        value="{{ old('tourism_expire_date') }}">
+                                </div>
+
+                                <div class="form-group ">
+                                    <label class="form-label"> رخصة النشاط : </label>
+                                    <input type="file" class="form-control" name="commercial_image"
+                                        accept="image/*, application/pdf">
+                                </div>
+
+                                <div class="form-group ">
+                                    <label class="form-label"> السجل التجاري : </label>
+                                    <input required type="file" class="form-control" name="commercial_record"
+                                        accept="image/*, application/pdf">
+                                </div>
+
+
+                                <div class="form-group ">
+                                    <label class="form-label"> اذن مزاولة السياحة : </label>
+                                    <input required type="file" class="form-control" name="tourism_image"
+                                        accept="image/*, application/pdf">
+                                </div>
+
+                                <div class="form-group ">
+                                    <label class="form-label"> شهادة الغرفة ( لمن لدية قيد سابق ) : </label>
+                                    <input required type="file" class="form-control" name="room_certificate"
+                                        accept="image/*, application/pdf">
+                                </div>
+
                                 <input type="hidden" name="status" value="1">
                             </div>
                         </div>

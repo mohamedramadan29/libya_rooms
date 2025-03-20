@@ -91,7 +91,6 @@ class GeneratePdfController extends Controller
 
         // تحميل المحتوى إلى ملف PDF
         $mpdf->WriteHTML($html);
-
         // توليد ملف PDF وإرساله للتنزيل
         return $mpdf->Output('تقرير عن الشعب.pdf', 'I'); // 'I' لعرض الملف في المتصفح
     }

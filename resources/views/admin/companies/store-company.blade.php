@@ -50,7 +50,8 @@
                                         <select required name="regions" id="regions" class="form-control">
                                             <option value="">- حدد المنطقة -</option>
                                             @foreach ($regions as $region)
-                                                <option @if($region['id'] == old('regions')) selected @endif value="{{ $region['id'] }}">{{ $region['name'] }}</option>
+                                                <option @if ($region['id'] == old('regions')) selected @endif
+                                                    value="{{ $region['id'] }}">{{ $region['name'] }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -78,8 +79,11 @@
                                                             $('#branches').empty();
                                                             $('#branches').append('<option value="">- حدد المكتب -</option>');
                                                             $.each(data, function(key, value) {
-                                                                var selected = (value.id == oldBranch) ? 'selected' : ''; // تحديد المكتب القديم
-                                                                $('#branches').append('<option ' + selected + ' value="' + value.id + '">' + value.name + '</option>');
+                                                                var selected = (value.id == oldBranch) ? 'selected' :
+                                                                ''; // تحديد المكتب القديم
+                                                                $('#branches').append('<option ' + selected +
+                                                                    ' value="' + value.id + '">' + value.name +
+                                                                    '</option>');
                                                             });
                                                         }
                                                     });
@@ -181,10 +185,13 @@
                                                         dataType: 'json',
                                                         success: function(data) {
                                                             $('#sub_category').empty();
-                                                            $('#sub_category').append('<option value=""> -- حدد نوع النشاط --</option>');
+                                                            $('#sub_category').append(
+                                                                '<option value=""> -- حدد نوع النشاط --</option>');
                                                             $.each(data, function(key, value) {
-                                                                var selected = (value.id == oldSubCategory) ? 'selected' : ''; // تحديد الخيار القديم
-                                                                $('#sub_category').append('<option ' + selected + ' value="' + value.id + '">' +
+                                                                var selected = (value.id == oldSubCategory) ?
+                                                                    'selected' : ''; // تحديد الخيار القديم
+                                                                $('#sub_category').append('<option ' + selected +
+                                                                    ' value="' + value.id + '">' +
                                                                     value.name + '</option>');
                                                             });
                                                         }
@@ -302,6 +309,32 @@
                                         <input type="date" class="form-control" name="tourism_expire_date"
                                             value="{{ old('tourism_expire_date') }}">
                                     </div>
+
+                                    <div class="form-group ">
+                                        <label class="form-label">  رخصة النشاط : </label>
+                                        <input type="file" class="form-control" name="commercial_image"
+                                            accept="image/*, application/pdf">
+                                    </div>
+
+                                    <div class="form-group ">
+                                        <label class="form-label">  السجل التجاري : </label>
+                                        <input type="file" class="form-control" name="commercial_record"
+                                            accept="image/*, application/pdf">
+                                    </div>
+
+
+                                    <div class="form-group ">
+                                        <label class="form-label">  اذن مزاولة السياحة : </label>
+                                        <input type="file" class="form-control" name="tourism_image"
+                                            accept="image/*, application/pdf">
+                                    </div>
+
+                                    <div class="form-group ">
+                                        <label class="form-label"> شهادة الغرفة ( لمن لدية قيد سابق ) : </label>
+                                        <input required type="file" class="form-control" name="room_certificate"
+                                            accept="image/*, application/pdf">
+                                    </div>
+
                                     <input type="hidden" name="status" value="1">
 
                                 </div>
