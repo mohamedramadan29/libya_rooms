@@ -144,7 +144,7 @@
                                 <th class="wd-15p border-bottom-0"> اسم النشاط</th>
                                 <th class=" border-bottom-0"> الشعبة</th>
                                 <th class="wd-15p border-bottom-0"> الشكل القانوني</th>
-                                <th class="border-bottom-0"> تاريخ الانتهاء</th>
+                                <th class="border-bottom-0"> تاريخ الانتهاء القيد </th>
                                 <th class="border-bottom-0"> نوع النشاط</th>
                                 @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type=='supervisor' || Auth::user()->type =='money')
                                     <th class="wd-15p border-bottom-0"> المعاملات المالية</th>
@@ -165,7 +165,8 @@
                                     <td> {{$company['categorydata']['name']}} </td>
                                     <td> {{$company['companytype']['name']}} </td>
                                     <td>
-                                        {{$company['isdar_date']}}
+                                    {{ $company['tourism_expire_date'] }}
+                                        {{-- {{$company['isdar_date']}} --}}
 {{--                                        @if($company['first_market_confirm_date'] == null && $company['new_market_confirm_date'] == null)--}}
 {{--                                            <span class="badge badge-danger"> لم يحدد بعد </span>--}}
 {{--                                        @else--}}

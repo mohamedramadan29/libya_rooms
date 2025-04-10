@@ -305,12 +305,7 @@
                                     <input type="date" class="form-control" name="tourism_expire_date"
                                         value="{{ old('tourism_expire_date') }}">
                                 </div>
-
-                                <div class="form-group ">
-                                    <label class="form-label">تاريخ انتهاء إذن السياحة : </label>
-                                    <input type="date" class="form-control" name="tourism_expire_date"
-                                        value="{{ old('tourism_expire_date') }}">
-                                </div>
+ 
 
                                 <div class="form-group ">
                                     <label class="form-label"> رخصة النشاط : </label>

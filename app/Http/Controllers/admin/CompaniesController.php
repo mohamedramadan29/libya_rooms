@@ -934,6 +934,7 @@ class CompaniesController extends Controller
                 $company->status = $data['status'];
                 $company->region = $data['regions'];
                 $company->branch = $data['branches'];
+                $company->tourism_expire_date = $data['tourism_expire_date'];
                 $company->commercial_image = $commercial_image;
                 $company->commercial_record = $commercial_record;
                 $company->tourism_image = $tourism_image;
