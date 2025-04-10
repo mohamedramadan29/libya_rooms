@@ -68,7 +68,7 @@
                                     @endphp
                                     @foreach ($regions as $region)
                                         <tr>
-                                            <td> {{ $region['id'] }} </td>
+                                            <td> {{ $loop->iteration }} </td>
                                             <td> {{ $region['name'] }} </td>
                                             <td> <img width="80px" height="80px" src="{{ asset('assets/files/region_logo/' . $region['logo']) }}"
                                                     alt=""> </td>

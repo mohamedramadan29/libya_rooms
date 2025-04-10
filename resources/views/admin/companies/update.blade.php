@@ -379,7 +379,7 @@
 
                                 <div class="form-group ">
                                     <label class="form-label"> شهادة الغرفة ( لمن لدية قيد سابق ) : </label>
-                                    <input required type="file" class="form-control" name="room_certificate"
+                                    <input type="file" class="form-control" name="room_certificate"
                                         accept="image/*, application/pdf">
                                     @if ($company['room_certificate'] != null)
                                         <br>

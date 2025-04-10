@@ -122,7 +122,6 @@ class CompaniesController extends Controller
                     'commercial_record.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'tourism_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'room_certificate.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
-
                     'company_number.required' => ' من فضلك ادخل رقم القيد ',
                     'company_number.unique' => ' رقم القيد متواجد من قبل  ',
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
@@ -162,15 +161,19 @@ class CompaniesController extends Controller
                 if ($validator->fails()) {
                     return Redirect::back()->withInput()->withErrors($validator);
                 }
+                $commercial_image = '';
                 if ($request->hasFile('commercial_image')) {
                     $commercial_image = $this->SaveImage($request->file('commercial_image'), public_path('assets/files/company_register'));
                 }
+                $commercial_record = '';
                 if ($request->hasFile('commercial_record')) {
                     $commercial_record = $this->SaveImage($request->file('commercial_record'), public_path('assets/files/company_register'));
                 }
+                $tourism_image = '';
                 if ($request->hasFile('tourism_image')) {
                     $tourism_image = $this->SaveImage($request->file('tourism_image'), public_path('assets/files/company_register'));
                 }
+                $room_certificate = '';
                 if ($request->hasFile('room_certificate')) {
                     $room_certificate = $this->SaveImage($request->file('room_certificate'), public_path('assets/files/company_register'));
                 }
@@ -817,7 +820,7 @@ class CompaniesController extends Controller
                     'name' => 'required|unique:companies,name',
                     'birthplace' => 'required',
                     'nationality' => 'required',
-                    'id_number' => 'required',
+                    'id_number' => 'required|unique:companies,id_number',
                     'place' => 'required',
                     'personal_number' => 'required|unique:companies,personal_number',
                     'trade_name' => 'required|unique:companies,trade_name',
@@ -838,19 +841,11 @@ class CompaniesController extends Controller
                     'status' => 'required',
                     'regions' => 'required',
                     'branches' => 'required',
+                    'commercial_image' => 'nullable|mimes:jpg,png,jpeg,gif,svg,pdf,webp',
+                    'commercial_record' => 'nullable|mimes:jpg,png,jpeg,gif,svg,pdf,webp',
+                    'tourism_image' => 'nullable|mimes:jpg,png,jpeg,gif,svg,pdf,webp',
+                    'room_certificate' => 'nullable|mimes:jpg,png,jpeg,gif,svg,pdf,webp',
                 ];
-                if ($request->hasFile('commercial_image')) {
-                    $rules['commercial_image'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
-                }
-                if ($request->hasFile('commercial_record')) {
-                    $rules['commercial_record'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
-                }
-                if ($request->hasFile('tourism_image')) {
-                    $rules['tourism_image'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
-                }
-                if ($request->hasFile('room_certificate')) {
-                    $rules['room_certificate'] = 'mines:jpg,png,jpeg,gif,svg,pdf,webp';
-                }
                 $messages = [
                     'commercial_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,svg,webp,pdf ',
                     'commercial_record.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
@@ -862,6 +857,7 @@ class CompaniesController extends Controller
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
                     'nationality.required' => 'من فضلك ادخل الجنسية ',
                     'id_number.required' => 'من فضلك ادخل الرقم الوطني ',
+                    'id_number.unique' => ' الرقم الوطني موجود من قبل  ',
                     'place.required' => 'من فضلك ادخل محل الاقامة ',
                     'personal_number.required' => 'من فضلك ادخل رقم اثبات الشخصية ',
                     'trade_name.required' => 'من فضلك ادخل الاسم التجاري ',
@@ -895,19 +891,24 @@ class CompaniesController extends Controller
                 if ($validator->fails()) {
                     return Redirect::back()->withInput()->withErrors($validator);
                 }
+                $commercial_image = '';
                 if ($request->hasFile('commercial_image')) {
                     $commercial_image = $this->SaveImage($request->file('commercial_image'), public_path('assets/files/company_register'));
                 }
+                $commercial_record = '';
                 if ($request->hasFile('commercial_record')) {
                     $commercial_record = $this->SaveImage($request->file('commercial_record'), public_path('assets/files/company_register'));
                 }
+                $tourism_image = '';
                 if ($request->hasFile('tourism_image')) {
                     $tourism_image = $this->SaveImage($request->file('tourism_image'), public_path('assets/files/company_register'));
                 }
+                $room_certificate = '';
                 if ($request->hasFile('room_certificate')) {
                     $room_certificate = $this->SaveImage($request->file('room_certificate'), public_path('assets/files/company_register'));
                 }
                 $company = new Companies();
+                $company->company_number = $data['company_number'];
                 $company->name = $data['name'];
                 $company->birthplace = $data['birthplace'];
                 $company->nationality = $data['nationality'];
