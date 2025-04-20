@@ -417,8 +417,44 @@ class CompaniesController extends Controller
 
     public function transactions($id)
     {
-        $transactions = FinanialTransaction::where('company_id', $id)->get();
+       // $transactions = FinanialTransaction::where('company_id', $id)->get();
         $company = Companies::findOrFail($id);
+
+        $user = Auth::user();
+        if ($user->type == 'admin') {
+            $transactions = FinanialTransaction::with('company_data', 'employe_data')->where('company_id', $id)->get();
+        } elseif ($user->type == 'supervisor') {
+            $query = FinanialTransaction::with('company_data', 'employe_data')->where('region', $user->regions);
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+            $transactions = $query->get();
+        } elseif ($user->type == 'money') {
+            $transactions = FinanialTransaction::with('company_data', 'employe_data')->where('company_id', $id)->where('region', $user->regions)->where('branch', $user->branches)->get();
+        }
+
+        // تجميع البيانات حسب رقم الإيصال
+        $transactions = $transactions->groupBy('trans_number')->map(function ($group) {
+            $total_price = $group->sum('trans_price');
+            $types = [
+                'قيد جديد' => $group->where('trans_type', 'قيد جديد')->sum('trans_price'),
+                'تجديد قيد' => $group->where('trans_type', 'تجديد قيد')->sum('trans_price'),
+                'تصديق المستندات' => $group->where('trans_type', 'تصديق المستندات')->sum('trans_price'),
+                'استخراج شهائد' => $group->where('trans_type', 'استخراج شهائد')->sum('trans_price'),
+                'ايرادات اخري' => $group->where('trans_type', 'ايرادات اخري')->sum('trans_price'),
+            ];
+
+            return [
+                'company_data' => $group->first()->company_data,
+                'employe_data' => $group->first()->employe_data,
+                'trans_number' => $group->first()->trans_number,
+                'created_at' => $group->first()->created_at,
+                'total_price' => $total_price,
+                'types' => $types,
+            ];
+        });
+
+        $transactions_count = $transactions->count();
         return view('admin.companies.transactions', compact('transactions', 'company'));
     }
 
@@ -533,40 +569,40 @@ class CompaniesController extends Controller
                 $company->update([
                     'money_confirm' => 1
                 ]);
-                //                // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
-                //                if (empty($company->first_market_confirm_date)) {
-                //                    if (isset($alldata['special_date']) && $alldata['special_date'] != '') {
-                //                        $company->update([
-                //                            'first_market_confirm_date' => $alldata['special_date'], // إضافة التاريخ الحالي فقط
-                //                        ]);
-                //                    } else {
-                //                        $company->update([
-                //                            'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
-                //                        ]);
-                //                    }
-                //                } else {
-                //                    // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
-                //                    $lastConfirmDate = $company->new_market_confirm_date
-                //                        ? Carbon::parse($company->new_market_confirm_date)
-                //                        : Carbon::parse($company->first_market_confirm_date);
-                //
-                //                    // الحصول على مدة القيد (عدد السنوات للتجديد)
-                //                    $duration = $company->isadarـduration;
-                //
-                //                    // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
-                //                    $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
-                //
-                //                    // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
-                //                    $fixedDayMonth = $lastConfirmDate->format('m-d');
-                //
-                //                    // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
-                //                    $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
-                //
-                //                    // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
-                //                    $company->update([
-                //                        'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
-                //                    ]);
-                //                }
+                // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
+                if (empty($company->first_market_confirm_date)) {
+                    if (isset($alldata['special_date']) && $alldata['special_date'] != '') {
+                        $company->update([
+                            'first_market_confirm_date' => $alldata['special_date'], // إضافة التاريخ الحالي فقط
+                        ]);
+                    } else {
+                        $company->update([
+                            'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
+                        ]);
+                    }
+                } else {
+                    // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
+                    $lastConfirmDate = $company->new_market_confirm_date
+                        ? Carbon::parse($company->new_market_confirm_date)
+                        : Carbon::parse($company->first_market_confirm_date);
+
+                    // الحصول على مدة القيد (عدد السنوات للتجديد)
+                    $duration = $company->isadarـduration;
+
+                    // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
+                    $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
+
+                    // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
+                    $fixedDayMonth = $lastConfirmDate->format('m-d');
+
+                    // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
+                    $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
+
+                    // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
+                    $company->update([
+                        'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
+                    ]);
+                }
 
                 DB::commit();
 
@@ -617,7 +653,8 @@ class CompaniesController extends Controller
         $confirmationDate = $company['new_market_confirm_date'] ?? $company['first_market_confirm_date'];
 
         // Calculate the expiration date by adding `isadar_duration` to the confirmation date
-        $expirationDate = Carbon::parse($confirmationDate)->addYears($company['isadarـduration']);
+        $duration = (int) $company['isadarـduration'];
+        $expirationDate = Carbon::parse($confirmationDate)->addYears($duration);
         // dd($company);
         try {
             if ($request->isMethod('post')) {
@@ -816,7 +853,7 @@ class CompaniesController extends Controller
                 $data = $request->all();
                 // dd($data);
                 $rules = [
-                    'company_number' => 'required|unique:companies,company_number',
+                    'company_number' => 'nullable|unique:companies,company_number',
                     'name' => 'required|unique:companies,name',
                     'birthplace' => 'required',
                     'nationality' => 'required',
@@ -851,7 +888,7 @@ class CompaniesController extends Controller
                     'commercial_record.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'tourism_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'room_certificate.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
-                    'company_number.required' => ' من فضلك ادخل رقم القيد ',
+                  //  'company_number.required' => ' من فضلك ادخل رقم القيد ',
                     'company_number.unique' => ' رقم القيد متواجد من قبل  ',
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',

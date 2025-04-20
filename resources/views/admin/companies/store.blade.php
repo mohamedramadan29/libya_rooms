@@ -288,16 +288,16 @@
                                     </label>
                                     <select class="form-control" name="isadarـduration">
                                         <option> -- حدد الفترة --</option>
-                                        <option @if (old('isadarـduration') == 1) selected @endif value="1"> 1
+                                        <option selected value="1"> 1
                                         </option>
-                                        <option @if (old('isadarـduration') == 2) selected @endif value="2"> 2
+                                        {{-- <option @if (old('isadarـduration') == 2) selected @endif value="2"> 2
                                         </option>
                                         <option @if (old('isadarـduration') == 3) selected @endif value="3"> 3
                                         </option>
                                         <option @if (old('isadarـduration') == 4) selected @endif value="4"> 4
                                         </option>
                                         <option @if (old('isadarـduration') == 5) selected @endif value="5"> 5
-                                        </option>
+                                        </option> --}}
                                     </select>
                                 </div>
                                 <div class="form-group ">
@@ -305,7 +305,7 @@
                                     <input type="date" class="form-control" name="tourism_expire_date"
                                         value="{{ old('tourism_expire_date') }}">
                                 </div>
- 
+
 
                                 <div class="form-group ">
                                     <label class="form-label"> رخصة النشاط : </label>

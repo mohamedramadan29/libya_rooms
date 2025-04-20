@@ -42,7 +42,7 @@
                                     <div class="mb-4  btn btn-sm btn-success-gradient light-text"> البيانات الاساسية</div>
                                     <div class="form-group ">
                                         <label class="form-label"> رقم القيد : </label>
-                                        <input required min="1" required type="number" class="form-control"
+                                        <input min="1" type="number" class="form-control"
                                             name="company_number" value="{{ old('company_number') }}">
                                     </div>
                                     <div class="form-group">

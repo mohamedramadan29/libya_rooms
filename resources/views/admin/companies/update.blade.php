@@ -316,7 +316,7 @@
                                         value="{{ $company['isdar_date'] }}">
                                 </div>
 
-                                <div class="form-group ">
+                                <div class="form-group d-none">
                                     <label class="form-label"> حدد الفترة <span class="badge badge-info"> سنة </span> :
                                     </label>
                                     <select class="form-control" name="isadarـduration">
