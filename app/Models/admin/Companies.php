@@ -3,8 +3,9 @@
 namespace App\Models\admin;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Companies extends Model
 {
@@ -32,16 +33,40 @@ class Companies extends Model
 
 
     // تحديد تاريخ انتهاء الشركة بناءً على آخر توثيق ومدة القيد
-    public function getExpiryDateAttribute()
+    public function expiringCompaniesinlastmonth()
     {
-        // إذا كان هناك تاريخ تجديد توثيق، نستخدمه؛ وإلا نستخدم أول توثيق
-        $marketConfirmDate = $this->new_market_confirm_date
-            ? Carbon::parse($this->new_market_confirm_date)
-            : Carbon::parse($this->first_market_confirm_date);
+        $user = Auth::user();
 
-        // إضافة مدة القيد (عدد السنوات)
+        // استعلام الشركات بناءً على نوع المستخدم
+        if ($user->type == 'admin') {
+            $query = Companies::with('subcategory', 'categorydata', 'companytype');
+        } elseif ($user->type == 'supervisor') {
+            $query = Companies::with('subcategory', 'categorydata', 'companytype')
+                ->where('region', $user->regions);
 
-        return $marketConfirmDate->addYears(intval($this->isadarـduration));
+            if ($user->branches !== null) {
+                $query->where('branch', $user->branches);
+            }
+        }
+
+        // جلب الشركات (بدون فلترة التاريخ بعد)
+        $allCompanies = $query->orderBy('id', 'desc')->get();
+
+        // فلترة الشركات التي سينتهي توثيقها خلال الشهر القادم باستخدام accessor
+        $companies = $allCompanies->filter(function ($company) {
+            $expiryDate = $company->expiry_date;
+
+            return $expiryDate >= now() && $expiryDate <= now()->addMonth();
+        });
+
+        // حساب العدد
+        $expiringCount = $companies->count();
+
+        // إرسال للواجهة
+        return view('admin.companies.expiremonth', [
+            'companies' => $companies,
+            'expiringCount' => $expiringCount
+        ]);
     }
 
     // التحقق مما إذا كانت الشركة منتهية الصلاحية

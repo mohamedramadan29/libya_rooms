@@ -39,9 +39,9 @@ class CompanyExport implements FromCollection, WithHeadings, WithStyles
                 $company->subcategory->name ?? 'غير محدد',
                 $company->name,
                 $company->personal_number,
-                $company->id_number
-
-
+                $company->id_number,
+                $company->isdar_date,
+                $company->tourism_expire_date,
             ];
         });
     }
@@ -57,6 +57,8 @@ class CompanyExport implements FromCollection, WithHeadings, WithStyles
             ' الممثل القانوني ',
             ' رقم اثبات الهوية ',
             ' الرقم الوطني',
+            'تاريخ انتهاء السجل  التجاري ',
+            'تاريخ انتهاء إذن السياحة'
         ];
     }
     public function styles(Worksheet $sheet)

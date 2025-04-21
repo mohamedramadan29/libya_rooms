@@ -118,48 +118,6 @@ class FinaialTransactionController extends Controller
                     $transaction->employe_id = Auth::user()->id;
                     $transaction->save();
                 }
-
-//                if (in_array('قيد جديد', $request->trans_types) || in_array('تجديد قيد', $request->trans_types)) {
-//                    $company = Companies::findOrFail($alldata['company_id']);
-//                   // $company = $companyinfo->id;
-//                    // إذا لم يكن هناك توثيق أول، نقوم بإضافة التاريخ الحالي كتاريخ التوثيق الأول
-//                    if (empty($company->first_market_confirm_date)) {
-//                        if (isset($alldata['special_date']) && $alldata['special_date'] != '') {
-//                            $company->update([
-//                                'first_market_confirm_date' => $alldata['special_date'], // إضافة التاريخ الحالي فقط
-//                            ]);
-//                        } else {
-//                            $company->update([
-//                                'first_market_confirm_date' => date('Y-m-d'), // إضافة التاريخ الحالي فقط
-//                            ]);
-//                        }
-//                    } else {
-//                        // إذا تم التوثيق من قبل، نحسب التاريخ الجديد بناءً على آخر توثيق
-//                        $lastConfirmDate = $company->new_market_confirm_date
-//                            ? Carbon::parse($company->new_market_confirm_date)
-//                            : Carbon::parse($company->first_market_confirm_date);
-//
-//                        // الحصول على مدة القيد (عدد السنوات للتجديد)
-//                        $duration = $company->isadarـduration;
-//
-//                        // حساب السنة الجديدة بإضافة عدد السنوات من مدة القيد
-//                        $newYear = $lastConfirmDate->copy()->addYears($duration)->year;
-//
-//                        // الحفاظ على اليوم والشهر ثابتين من آخر توثيق
-//                        $fixedDayMonth = $lastConfirmDate->format('m-d');
-//
-//                        // تكوين التاريخ الجديد مع السنة الجديدة واليوم والشهر الثابتين
-//                        $newMarketConfirmDate = Carbon::createFromFormat('Y-m-d', "$newYear-$fixedDayMonth");
-//
-//                        // تحديث تاريخ التوثيق الجديد مع التأكد أن التنسيق يعرض التاريخ فقط
-//                        $company->update([
-//                            'new_market_confirm_date' => $newMarketConfirmDate->format('Y-m-d'), // التأكد من حفظ التاريخ فقط
-//                        ]);
-//                    }
-//
-//                }
-
-
                 return $this->success_message('تم اضافة معاملة جديدة بنجاح ');
             }
 
@@ -174,52 +132,60 @@ class FinaialTransactionController extends Controller
     {
         $transaction = FinanialTransaction::findOrFail($id);
         $companies = Companies::all();
-        try {
-            if ($request->isMethod('post')) {
-                $alldata = $request->all();
+        $trans_number = $transaction->trans_number;
 
+        $transactions = FinanialTransaction::where('trans_number', $trans_number)->get();
+
+        if ($request->isMethod('post')) {
+            try {
+                $alldata = $request->all();
+                $company_id = $alldata['company_id'];
+                $company_data = Companies::findOrFail($company_id);
+                $mainTransaction = FinanialTransaction::findOrFail($id);
+                $trans_number = $mainTransaction->trans_number;
                 $rules = [
-                    'trans_number' => 'required|numeric',
                     'company_id' => 'required',
-                    'trans_type' => 'required',
-                    'trans_price' => 'required|numeric'
                 ];
+
                 $messages = [
-                    'trans_type.required' => 'من فضلك حدد نوع المعاملة ',
-                    'trans_type.numeric' => ' رقم الايصال يجب ان يكون رقم صحيح  ',
                     'company_id.required' => 'من فضلك حدد الشركة ',
-                    'trans_number.required' => 'من فضلك ادخل رقم الايصال ',
-                    'trans_price.required' => 'من فضلك ادخل قيمة الايصال ',
-                    'trans_price.numeric' => ' قيمة الايصال يجب ان يكون رقم صحيح  ',
                 ];
-                $validator = Validator::make($alldata, $rules, $messages);
+
+                $validator = Validator::make($request->all(), $rules, $messages);
                 if ($validator->fails()) {
                     return redirect()->back()->withInput()->withErrors($validator);
                 }
+
+                // حفظ الملف
+                $filename = $mainTransaction->file;
                 if ($request->hasFile('file')) {
-                    $filename = $this->saveImage($request->file, public_path('assets/files/transaction_files'));
-                    // delete old file
-                    if ($transaction['file'] != '') {
-                        unlink(public_path('assets/files/transaction_files/' . $transaction['file']));
+                    $filename = $this->saveImage($request->file('file'), public_path('assets/files/transaction_files'));
+                    if ($mainTransaction->file && file_exists(public_path('assets/files/transaction_files/' . $mainTransaction->file))) {
+                        unlink(public_path('assets/files/transaction_files/' . $mainTransaction->file));
                     }
-                    $transaction->update(["file" => $filename,]);
                 }
-                $transaction->update([
-                    "trans_number" => $alldata['trans_number'],
-                    "trans_price" => $alldata['trans_price'],
-                    "company_id" => $alldata['company_id'],
-                    "trans_type" => $alldata['trans_type'],
-                    "notes" => $alldata['notes'],
-                    "employe_id" => Auth::user()->id,
-                ]);
+                FinanialTransaction::where('trans_number', $trans_number)->delete();
+                foreach ($request->trans_types as $index => $type) {
+                    $transaction = new FinanialTransaction();
+                    $transaction->trans_number = $alldata['trans_number'];
+                    $transaction->trans_price = $request->trans_prices[$index];
+                    $transaction->company_id = $alldata['company_id'];
+                    $transaction->region = $company_data['region'];
+                    $transaction->branch = $company_data['branch'];
+                    $transaction->trans_type = $type;
+                    $transaction->notes = $alldata['notes'];
+                    $transaction->file = $filename ?? null;
+                    $transaction->employe_id = Auth::user()->id;
+                    $transaction->save();
+                }
 
-                return $this->success_message('تم تعديل المعاملة بنجاح  ');
-
+                return redirect()->route('company.transactions', ['id' => $company_id])->with('success', 'تم تعديل معاملات الشركة بنجاح');
+            } catch (\Exception $e) {
+                return back()->with('error', 'حدث خطأ: ' . $e->getMessage());
             }
-        } catch (\Exception $e) {
-            return $this->exception_message($e);
         }
-        return view('admin.finanial_transaction.update', compact('transaction', 'companies'));
+
+        return view('admin.finanial_transaction.update', compact('transaction', 'transactions', 'companies'));
     }
 
     public function destroy($id)

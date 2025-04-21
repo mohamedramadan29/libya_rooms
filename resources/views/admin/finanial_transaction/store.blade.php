@@ -7,7 +7,8 @@
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">الرئيسية /</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">  اضافة معاملة مالية    </span>
+                <h4 class="content-title mb-0 my-auto">الرئيسية /</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0"> اضافة
+                    معاملة مالية </span>
             </div>
         </div>
     </div>
@@ -33,7 +34,7 @@
                     @endif
 
                     <form class="form-horizontal" method="post" action="{{ url('admin/transaction/store') }}"
-                          enctype="multipart/form-data">
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-lg-12 col-12">
@@ -42,7 +43,7 @@
                                 <div class="form-group">
                                     <label class="form-label">رقم الايصال:</label>
                                     <input required type="number" class="form-control" name="trans_number"
-                                           value="{{ old('trans_number') }}">
+                                        value="{{ old('trans_number') }}">
                                 </div>
 
                                 <div id="transaction-types-container">
@@ -62,7 +63,7 @@
                                         <div class="form-group">
                                             <label class="form-label">قيمة المعاملة:</label>
                                             <input required type="number" class="form-control" name="trans_prices[]"
-                                                   value="">
+                                                value="">
                                         </div>
                                     </div>
                                 </div>
@@ -75,10 +76,10 @@
                                     <label class="form-label">حدد النشاط:</label>
                                     <select required class="form-control select2" name="company_id">
                                         <option>-- حدد النشاط --</option>
-                                        @foreach($companies as $company)
-                                            <option @if(old('company') == $company['id']) selected
-                                                    @endif value="{{$company['id']}}">
-                                                {{$company['trade_name']}}
+                                        @foreach ($companies as $company)
+                                            <option @if (old('company') == $company['id']) selected @endif
+                                                value="{{ $company['id'] }}">
+                                                {{ $company['trade_name'] }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -90,8 +91,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">ملاحظات إضافية:</label>
-                                    <textarea name="notes" class="form-control" cols="30"
-                                              rows="5">{{ old('notes') }}</textarea>
+                                    <textarea name="notes" class="form-control" cols="30" rows="5">{{ old('notes') }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
 
 @section('js')
     <script>
-        document.getElementById('add-transaction-type').addEventListener('click', function () {
+        document.getElementById('add-transaction-type').addEventListener('click', function() {
             const container = document.getElementById('transaction-types-container');
 
             const newTransactionType = document.createElement('div');
@@ -146,7 +146,7 @@
             container.appendChild(newTransactionType);
 
             // إضافة حدث لحذف الحقل عند الضغط على زر الحذف
-            newTransactionType.querySelector('.remove-transaction-type').addEventListener('click', function () {
+            newTransactionType.querySelector('.remove-transaction-type').addEventListener('click', function() {
                 newTransactionType.remove();
             });
         });

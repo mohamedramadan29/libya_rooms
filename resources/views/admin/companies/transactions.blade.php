@@ -41,7 +41,8 @@
                             </ul>
                         </div>
                     @endif
-                    <div class="mb-4 main-content-label"> المعاملات المالية لشركة :: {{ $company['name'] }} </div>
+                    <div class="mb-4 main-content-label"> المعاملات المالية لنشاط :: {{ optional($company)->trade_name }}
+                    </div>
                     <div class="card-header">
                     </div>
                     <!-- Add New Section -->
@@ -98,30 +99,22 @@
                                             <td> {{ $trans['types']['استخراج شهائد'] }} </td>
                                             <td> {{ $trans['types']['ايرادات اخري'] }} </td>
                                             <td> {{ $trans['employe_data']['name'] ?? '---' }} </td>
-                                            @if ((Auth::user()->type == 'supervisor' && Auth::user()->branches != null) || Auth::user()->type == 'money')
+                                            @if (Auth::user()->type == 'supervisor')
+                                            {{-- @if ((Auth::user()->type == 'supervisor' && Auth::user()->branches != null) || Auth::user()->type == 'money') --}}
                                                 <td>
-                                                    {{--                                                <a href="{{ url('admin/transaction/update/' . $trans['id']) }}" class="bn btn-primary btn-sm"> --}}
-                                                    {{--                                                    <i class="fa fa-edit"></i> --}}
-                                                    {{--                                                </a> --}}
-                                                    {{--                                                <button data-target="#delete_model_{{ $trans['id'] }}" data-toggle="modal" class="btn btn-danger btn-sm"> --}}
-                                                    {{--                                                    <i class="fa fa-trash"></i> --}}
-                                                    {{--                                                </button> --}}
+                                                    <a href="{{ url('admin/transaction/update/' . $trans['id']) }}"
+                                                        class="bn btn-primary btn-sm"> <i class="fa fa-edit"></i> </a>
+                                                    <button data-target="#delete_model_{{ $trans['id'] }}"
+                                                        data-toggle="modal" class="btn btn-danger btn-sm"><i
+                                                            class="fa fa-trash"></i>
+                                                    </button>
                                                 </td>
                                             @endif
                                         </tr> <!-- Delete Section Model  -->
-                                        {{-- @include('admin.finanial_transaction.delete') --}}
+                                        @include('admin.finanial_transaction.delete')
                                     @endforeach
                                 </tbody>
-                                @if ((Auth::user()->type == 'supervisor' && Auth::user()->branches != null) || Auth::user()->type == 'money')
-                                    {{-- <td>
-                                    <a href="{{url('admin/transaction/update/'.$trans['id'])}}"
-                                       class="bn btn-primary btn-sm"> <i class="fa fa-edit"></i> </a>
-                                    <button data-target="#delete_model_{{$trans['id']}}"
-                                            data-toggle="modal" class="btn btn-danger btn-sm"><i
-                                            class="fa fa-trash"></i>
-                                    </button>
-                                </td> --}}
-                                @endif
+
                                 <tfoot>
                                     <tr>
                                         <th colspan="6">الإجمالي</th>

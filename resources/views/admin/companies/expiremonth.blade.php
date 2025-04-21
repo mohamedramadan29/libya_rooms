@@ -114,7 +114,15 @@
 {{--                                    <td> {{$company['isadarـduration']}} <span class="badge badge-danger"> سنة </span>--}}
 {{--                                    </td>--}}
 {{--                                    <td style="color:red"> {{ $company->expiry_date->format('Y-m-d') }} </td>--}}
-                                    <td style="color:red">  {{$company['isdar_date']}} </td>
+                                    <td style="color:red">
+
+                                            @if ($company['first_market_confirm_date'] == null && $company['new_market_confirm_date'] == null)
+                                                <span class="badge badge-danger"> لم يحدد بعد </span>
+                                            @else
+                                                {{ $company->expiry_date->format('Y-m-d') }}
+                                            @endif
+                                     
+                                    </td>
                                     @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
                                         <td><a class="btn btn-info-gradient btn-sm"
                                                href="{{url('admin/company/transactions/'.$company['id'])}}">

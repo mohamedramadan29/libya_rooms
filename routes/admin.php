@@ -58,7 +58,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::match(['post', 'get'], 'companies/update/{id}', 'update');
             Route::post('companies/destroy/{id}', 'destroy');
             // get the company transactions
-            Route::get('company/transactions/{id}', 'transactions');
+            Route::get('company/transactions/{id}', 'transactions')->name('company.transactions');
             Route::post('companies/market_confirm/{id}', 'market_confirm');
             Route::match(['post','get'],'companies/money_confirm/{id}', 'money_confirm');
             Route::get('companies/market-unconfirmed', 'companies_unconfirmed');

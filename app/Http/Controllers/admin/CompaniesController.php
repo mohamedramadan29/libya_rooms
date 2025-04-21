@@ -77,7 +77,7 @@ class CompaniesController extends Controller
             try {
                 $data = $request->all();
                 $rules = [
-                    'company_number' => 'required|unique:companies,company_number',
+                   // 'company_number' => 'required',
                     'name' => 'required|unique:companies,name',
                     'birthplace' => 'required',
                     'nationality' => 'required',
@@ -122,7 +122,7 @@ class CompaniesController extends Controller
                     'commercial_record.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'tourism_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'room_certificate.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
-                    'company_number.required' => ' من فضلك ادخل رقم القيد ',
+                    //'company_number.required' => ' من فضلك ادخل رقم القيد ',
                     'company_number.unique' => ' رقم القيد متواجد من قبل  ',
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
@@ -237,7 +237,7 @@ class CompaniesController extends Controller
                 $data = $request->all();
                 $rules = [
                     'name' => 'required|unique:companies,name,' . $company->id,
-                    'company_number' => 'required|unique:companies,company_number,' . $company->id,
+                    'company_number' => 'nullable',
                     'birthplace' => 'required',
                     'nationality' => 'required',
                     'id_number' => 'required',
@@ -277,8 +277,8 @@ class CompaniesController extends Controller
 
                 $messages = [
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
-                    'company_number.unique' => ' رقم القيد متواجد من قبل  ',
-                    'company_number.required' => ' من فضلك ادخل رقم القيد ',
+                   // 'company_number.unique' => ' رقم القيد متواجد من قبل  ',
+                   // 'company_number.required' => ' من فضلك ادخل رقم القيد ',
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
                     'nationality.required' => 'من فضلك ادخل الجنسية ',
                     'id_number.required' => 'من فضلك ادخل الرقم الوطني ',
@@ -451,6 +451,7 @@ class CompaniesController extends Controller
                 'created_at' => $group->first()->created_at,
                 'total_price' => $total_price,
                 'types' => $types,
+                'id'=>$group->first()->id
             ];
         });
 
@@ -814,18 +815,6 @@ class CompaniesController extends Controller
             }
         }
 
-        //        // فلترة الشركات التي تنتهي صلاحيتها خلال الشهر الحالي
-        //        $query->where(function ($subQuery) {
-        //            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-        //            $subQuery->where(function ($query) {
-        //                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)')
-        //                    ->whereNull('new_market_confirm_date');
-        //            })
-        //                ->orWhere(function ($query) {
-        //                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)');
-        //                });
-        //        });
-
         // فلترة الشركات التي ستنتهي صلاحيتها خلال الشهر الحالي
         $query->whereBetween('isdar_date', [now(), now()->addMonth()]);
         // جلب الشركات المفلترة التي ستنتهي صلاحيتها خلال الشهر الحالي
@@ -853,7 +842,7 @@ class CompaniesController extends Controller
                 $data = $request->all();
                 // dd($data);
                 $rules = [
-                    'company_number' => 'nullable|unique:companies,company_number',
+                    'company_number' => 'nullable',
                     'name' => 'required|unique:companies,name',
                     'birthplace' => 'required',
                     'nationality' => 'required',
@@ -889,7 +878,7 @@ class CompaniesController extends Controller
                     'tourism_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'room_certificate.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                   //  'company_number.required' => ' من فضلك ادخل رقم القيد ',
-                    'company_number.unique' => ' رقم القيد متواجد من قبل  ',
+                  //  'company_number.unique' => ' رقم القيد متواجد من قبل  ',
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
                     'nationality.required' => 'من فضلك ادخل الجنسية ',
