@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\admin\Companies;
-use Illuminate\Http\Request;
 use Mpdf\Mpdf;
+use Illuminate\Http\Request;
+use App\Models\admin\Companies;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class GeneratePdfController extends Controller
 {
     public function generatecompanypdf()
     {
+        $user = Auth::user();
         // جلب بيانات الشركات مع العلاقات المطلوبة
-        $companies = Companies::with('subcategory', 'categorydata', 'companytype')->orderby('id', 'desc')->get();
+     //   $companies = Companies::with('subcategory', 'categorydata', 'companytype')->orderby('id', 'desc')->get();
 
+        $companies = Companies::with('subcategory', 'categorydata', 'companytype')
+        ->where('region', $user->regions)
+            ->where('branch', $user->branches)
+            ->orderby('id', 'desc')
+            ->get();
         // إعداد محتوى HTML
         $html = '
         <html lang="ar" dir="rtl">

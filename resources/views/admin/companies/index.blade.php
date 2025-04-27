@@ -176,7 +176,7 @@
                                             @if ($company['first_market_confirm_date'] == null && $company['new_market_confirm_date'] == null)
                                                 <span class="badge badge-danger"> لم يحدد بعد </span>
                                             @else
-                                                {{ $company->expiry_date->format('Y-m-d') }}
+                                                {{ $company->expiry_date }}
                                             @endif
                                         </td>
                                         <td> {{ $company['subcategory']['name'] }} </td>

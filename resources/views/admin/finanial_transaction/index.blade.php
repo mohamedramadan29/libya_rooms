@@ -127,6 +127,14 @@
                                             <td> {{ $trans['types']['استخراج شهائد'] }} </td>
                                             <td> {{ $trans['types']['ايرادات اخري'] }} </td>
                                             <td> {{ $trans['employe_data']['name'] ?? '---' }} </td>
+                                            <td>
+                                                <a href="{{ url('admin/transaction/update/' . $trans['id']) }}"
+                                                    class="bn btn-primary btn-sm"> <i class="fa fa-edit"></i> </a>
+                                                <button data-target="#delete_model_{{ $trans['id'] }}"
+                                                    data-toggle="modal" class="btn btn-danger btn-sm"><i
+                                                        class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
                                             @if ((Auth::user()->type == 'supervisor' && Auth::user()->branches != null) || Auth::user()->type == 'money')
                                                 <td>
                                                     {{--                                                <a href="{{ url('admin/transaction/update/' . $trans['id']) }}" class="bn btn-primary btn-sm"> --}}
@@ -136,6 +144,7 @@
                                                     {{--                                                    <i class="fa fa-trash"></i> --}}
                                                     {{--                                                </button> --}}
                                                 </td>
+
                                             @endif
                                         </tr>
                                     @endforeach

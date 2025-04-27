@@ -83,7 +83,7 @@
                                     @foreach ($transactions as $trans)
                                         <tr>
                                             <td> {{ $i++ }} </td>
-                                            <td> {{ optional($trans['company_data'])['id'] }} </td>
+                                            <td> {{ $company['company_number'] }}  </td>
                                             <td> {{ $trans['trans_number'] }} </td>
                                             <td>
                                                 <a

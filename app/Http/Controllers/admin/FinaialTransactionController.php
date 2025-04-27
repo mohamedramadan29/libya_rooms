@@ -50,6 +50,7 @@ class FinaialTransactionController extends Controller
                 'created_at' => $group->first()->created_at,
                 'total_price' => $total_price,
                 'types' => $types,
+                'id' => $group->first()->id
             ];
         });
 
@@ -61,7 +62,13 @@ class FinaialTransactionController extends Controller
 
     public function store(Request $request)
     {
-        $companies = Companies::all();
+        $user = Auth::user();
+      //  $companies = Companies::all();
+      $companies = Companies::with('subcategory', 'categorydata', 'companytype')
+      ->where('region', $user->regions)
+          ->where('branch', $user->branches)
+          ->orderby('id', 'desc')
+          ->get();
         try {
             if ($request->isMethod('post')) {
                 $alldata = $request->all();

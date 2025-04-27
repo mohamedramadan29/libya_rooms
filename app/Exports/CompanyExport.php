@@ -4,11 +4,12 @@ namespace App\Exports;
 
 
 use App\Models\admin\Companies;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class CompanyExport implements FromCollection, WithHeadings, WithStyles
@@ -17,8 +18,11 @@ class CompanyExport implements FromCollection, WithHeadings, WithStyles
 
     public function collection()
     {
+        $user = Auth::user();
         // جلب البيانات المطلوبة مع العلاقات
         $companies = Companies::with('subcategory', 'categorydata', 'companytype')
+        ->where('region', $user->regions)
+            ->where('branch', $user->branches)
             ->orderby('id', 'desc')
             ->get();
 

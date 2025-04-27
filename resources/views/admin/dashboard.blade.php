@@ -231,6 +231,7 @@
                                             \App\Models\admin\Companies::where('market_confirm', '0')
                                                 // ->where('region', $user->regions)
                                                 // ->where('branch', $user->branches)
+                                                ->where('active_status', 1)
                                                 ->orderby('id', 'desc')
                                                 ->get(),
                                         );
@@ -509,6 +510,7 @@
                                     <h4 class="tx-20 font-weight-bold mb-1 text-white"> @php
                                         echo count(
                                             \App\Models\admin\Companies::where('market_confirm', '0')
+                                            ->where('active_status', 1)
                                                 ->where('region', $user->regions)
                                                 ->where('branch', $user->branches)
                                                 ->orderby('id', 'desc')
