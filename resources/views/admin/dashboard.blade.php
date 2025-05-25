@@ -56,7 +56,18 @@
                         <div class="pb-0 mt-0">
                             <div class="d-flex">
                                 <div class="">
-                                    <h4 class="tx-20 font-weight-bold mb-1 text-white"> @php  echo count(\App\Models\admin\FinanialTransaction::all()) @endphp </h4>
+                                    <h4 class="tx-20 font-weight-bold mb-1 text-white">
+                                        @php
+                                            //use Illuminate\Support\Facades\DB;
+                                            $counttrans = Illuminate\Support\Facades\DB::table('finanial_transactions')
+                                                ->select('trans_number')
+                                                ->groupBy('trans_number')
+                                                ->get()
+                                                ->count();
+                                        @endphp
+                                        {{ $counttrans }}
+
+                                    </h4>
                                     <a href="{{ url('admin/transaction') }}" class="mb-0 tx-17 text-white op-7"> مشاهدة
                                         التفاصيل </a>
                                 </div>
@@ -65,6 +76,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
                 @php
                     $user = \Illuminate\Support\Facades\Auth::user();
@@ -284,16 +296,29 @@
                             <div class="d-flex">
                                 <div class="">
                                     @php
-                                        $query = \App\Models\admin\FinanialTransaction::with(
-                                            'company_data',
-                                            'employe_data',
-                                        )->where('region', $user->regions);
+                                        // $query = \App\Models\admin\FinanialTransaction::with(
+                                        //     'company_data',
+                                        //     'employe_data',
+                                        // )->where('region', $user->regions);
+                                        // if ($user->branches !== null) {
+                                        //     $query->where('branch', $user->branches);
+                                        // }
+                                        // $transactions = $query->get();
+                                    @endphp
+                                    @php
+                                   //     use Illuminate\Support\Facades\DB;
+
+                                        $query = Illuminate\Support\Facades\DB::table('finanial_transactions')
+                                            ->select('trans_number')
+                                            ->where('region', $user->regions);
+
                                         if ($user->branches !== null) {
                                             $query->where('branch', $user->branches);
                                         }
-                                        $transactions = $query->get();
+
+                                        $counttrans = $query->groupBy('trans_number')->get()->count();
                                     @endphp
-                                    <h4 class="tx-20 font-weight-bold mb-1 text-white"> @php  echo count($transactions) @endphp </h4>
+                                    <h4 class="tx-20 font-weight-bold mb-1 text-white"> @php  echo count($counttrans) @endphp </h4>
                                     <a href="{{ url('admin/transaction') }}" class="mb-0 tx-17 text-white op-7"> مشاهدة
                                         التفاصيل </a>
                                 </div>
@@ -449,13 +474,16 @@
                             <div class="d-flex">
                                 <div class="">
                                     @php
-                                    $query = \App\Models\admin\Companies::where('region', $user->regions);
-                                    // إذا كان لدى المشرف فرع معين، أضف شرط الفرع
-                                    if ($user->branches !== null) {
-                                        $query->where('branch', $user->branches);
-                                    }
-                                    $companies = $query->where('active_status', 1)->where('market_confirm',0)->get();
-                                @endphp
+                                        $query = \App\Models\admin\Companies::where('region', $user->regions);
+                                        // إذا كان لدى المشرف فرع معين، أضف شرط الفرع
+                                        if ($user->branches !== null) {
+                                            $query->where('branch', $user->branches);
+                                        }
+                                        $companies = $query
+                                            ->where('active_status', 1)
+                                            ->where('market_confirm', 0)
+                                            ->get();
+                                    @endphp
 
                                     <h4 class="tx-20 font-weight-bold mb-1 text-white"> @php
                                         echo count($companies);
@@ -510,7 +538,7 @@
                                     <h4 class="tx-20 font-weight-bold mb-1 text-white"> @php
                                         echo count(
                                             \App\Models\admin\Companies::where('market_confirm', '0')
-                                            ->where('active_status', 1)
+                                                ->where('active_status', 1)
                                                 ->where('region', $user->regions)
                                                 ->where('branch', $user->branches)
                                                 ->orderby('id', 'desc')
@@ -592,17 +620,25 @@
                         <div class="pb-0 mt-0">
                             <div class="d-flex">
                                 <div class="">
-                                    @php   $user = \Illuminate\Support\Facades\Auth::user(); @endphp
-                                    <h4 class="tx-20 font-weight-bold mb-1 text-white"> @php
-                                        echo count(
-                                            \App\Models\admin\FinanialTransaction::where('region', $user->regions)
-                                                ->where('branch', $user->branches)
-                                                ->get(),
-                                        );
-                                    @endphp </h4>
-                                    <a href="{{ url('admin/transaction') }}" class="mb-0 tx-17 text-white op-7"> مشاهدة
-                                        التفاصيل </a>
+                                    @php
+                                       // use Illuminate\Support\Facades\DB;
+                                        $user = \Illuminate\Support\Facades\Auth::user();
+
+                                        $query = Illuminate\Support\Facades\DB::table('finanial_transactions')
+                                            ->select('trans_number')
+                                            ->where('region', $user->regions);
+
+                                        if (!is_null($user->branches)) {
+                                            $query->where('branch', $user->branches);
+                                        }
+
+                                        $counttrans = $query->groupBy('trans_number')->get()->count();
+                                    @endphp
+
+                                    <h4 class="tx-20 font-weight-bold mb-1 text-white">{{ $counttrans }}</h4>
+                                    <a href="{{ url('admin/transaction') }}" class="mb-0 tx-17 text-white op-7"> مشاهدة التفاصيل </a>
                                 </div>
+
                             </div>
                         </div>
                     </div>

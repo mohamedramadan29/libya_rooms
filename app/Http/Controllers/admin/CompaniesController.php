@@ -77,7 +77,7 @@ class CompaniesController extends Controller
             try {
                 $data = $request->all();
                 $rules = [
-                   // 'company_number' => 'required',
+                    // 'company_number' => 'required',
                     'name' => 'required|unique:companies,name',
                     'birthplace' => 'required',
                     'nationality' => 'required',
@@ -277,8 +277,8 @@ class CompaniesController extends Controller
 
                 $messages = [
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
-                   // 'company_number.unique' => ' رقم القيد متواجد من قبل  ',
-                   // 'company_number.required' => ' من فضلك ادخل رقم القيد ',
+                    // 'company_number.unique' => ' رقم القيد متواجد من قبل  ',
+                    // 'company_number.required' => ' من فضلك ادخل رقم القيد ',
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
                     'nationality.required' => 'من فضلك ادخل الجنسية ',
                     'id_number.required' => 'من فضلك ادخل الرقم الوطني ',
@@ -417,7 +417,7 @@ class CompaniesController extends Controller
 
     public function transactions($id)
     {
-       // $transactions = FinanialTransaction::where('company_id', $id)->get();
+        // $transactions = FinanialTransaction::where('company_id', $id)->get();
         $company = Companies::findOrFail($id);
 
         $user = Auth::user();
@@ -451,7 +451,7 @@ class CompaniesController extends Controller
                 'created_at' => $group->first()->created_at,
                 'total_price' => $total_price,
                 'types' => $types,
-                'id'=>$group->first()->id
+                'id' => $group->first()->id
             ];
         });
 
@@ -768,18 +768,18 @@ class CompaniesController extends Controller
         }
 
         // فلترة الشركات التي انتهت صلاحيتها باستخدام تواريخ التوثيق ومدة الإيداع
-        //        $query->where(function ($subQuery) {
-        //            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
-        //            $subQuery->where(function ($query) {
-        //                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
-        //                    ->whereNull('new_market_confirm_date');
-        //            })
-        //                ->orWhere(function ($query) {
-        //                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
-        //                });
-        //        });
+        $query->where(function ($subQuery) {
+            // حساب تاريخ انتهاء صلاحية الشركة بناءً على تاريخ التوثيق الأول أو الجديد
+            $subQuery->where(function ($query) {
+                $query->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()')
+                    ->whereNull('new_market_confirm_date');
+            })
+                ->orWhere(function ($query) {
+                    $query->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) < NOW()');
+                });
+        });
 
-        $query->where('isdar_date', '<', now());
+        // $query->where('isdar_date', '<', now());
         // جلب الشركات المفلترة والمنتهية الصلاحية
         $companies = $query->orderBy('id', 'desc')->get();
 
@@ -805,7 +805,6 @@ class CompaniesController extends Controller
     {
         $user = Auth::user();
 
-        // بناء الاستعلام الأساسي بناءً على نوع المستخدم
         if ($user->type == 'admin') {
             $query = Companies::with('subcategory', 'categorydata', 'companytype');
         } elseif ($user->type == 'supervisor') {
@@ -815,19 +814,23 @@ class CompaniesController extends Controller
             }
         }
 
-        // فلترة الشركات التي ستنتهي صلاحيتها خلال الشهر الحالي
-        $query->whereBetween('isdar_date', [now(), now()->addMonth()]);
-        // جلب الشركات المفلترة التي ستنتهي صلاحيتها خلال الشهر الحالي
-        $companies = $query->orderBy('id', 'desc')->get();
+        // فلترة الشركات التي ستنتهي خلال 30 يوم
+        $query->where(function ($subQuery) {
+            $subQuery->where(function ($query) {
+                $query->whereNull('new_market_confirm_date')
+                    ->whereRaw('DATE_ADD(first_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY)');
+            })
+                ->orWhere(function ($query) {
+                    $query->whereNotNull('new_market_confirm_date')
+                        ->whereRaw('DATE_ADD(new_market_confirm_date, INTERVAL isadarـduration YEAR) BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY)');
+                });
+        });
 
-        // حساب عدد الشركات التي ستنتهي صلاحيتها
+        $companies = $query->orderBy('id', 'desc')->get();
         $expiringCount = $companies->count();
 
-        // عرض النتيجة في صفحة
         return view('admin.companies.expiremonth', compact('companies', 'expiringCount'));
     }
-
-
 
 
     ///////////////////// User Store Company
@@ -877,8 +880,8 @@ class CompaniesController extends Controller
                     'commercial_record.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'tourism_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'room_certificate.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
-                  //  'company_number.required' => ' من فضلك ادخل رقم القيد ',
-                  //  'company_number.unique' => ' رقم القيد متواجد من قبل  ',
+                    //  'company_number.required' => ' من فضلك ادخل رقم القيد ',
+                    //  'company_number.unique' => ' رقم القيد متواجد من قبل  ',
                     'name.required' => ' من فضلك ادخل اسم الممثل القانوني  ',
                     'birthplace.required' => 'من فضلك ادخل مكان الميلاد',
                     'nationality.required' => 'من فضلك ادخل الجنسية ',

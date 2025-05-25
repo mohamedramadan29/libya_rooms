@@ -121,7 +121,7 @@
                                             @else
                                                 {{ $company->expiry_date->format('Y-m-d') }}
                                             @endif
-                                     
+
                                     </td>
                                     @if(\Illuminate\Support\Facades\Auth::user()->type=='admin' || Auth::user()->type =='money')
                                         <td><a class="btn btn-info-gradient btn-sm"
