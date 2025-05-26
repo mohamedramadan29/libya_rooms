@@ -16,11 +16,17 @@ class GeneratePdfController extends Controller
         // جلب بيانات الشركات مع العلاقات المطلوبة
      //   $companies = Companies::with('subcategory', 'categorydata', 'companytype')->orderby('id', 'desc')->get();
 
+     if ($user->type == 'admin') {
+        $companies = Companies::with('subcategory', 'categorydata', 'companytype')
+        ->orderby('id', 'desc')
+        ->get();
+    } elseif ($user->type == 'supervisor') {
         $companies = Companies::with('subcategory', 'categorydata', 'companytype')
         ->where('region', $user->regions)
             ->where('branch', $user->branches)
             ->orderby('id', 'desc')
             ->get();
+    }
         // إعداد محتوى HTML
         $html = '
         <html lang="ar" dir="rtl">
@@ -51,6 +57,8 @@ class GeneratePdfController extends Controller
                 <thead>
                     <tr>
                         <th>رقم القيد</th>
+                        <th>تاريخ تقديم الطلب</th>
+                        <th>نوع الطلب</th>
                         <th>اسم النشاط</th>
                         <th>الشعبة</th>
                         <th>الشكل القانوني</th>
@@ -74,6 +82,8 @@ class GeneratePdfController extends Controller
             $html .= '
                     <tr>
                         <td>' . $company->company_number . '</td>
+                        <td>' . $company->request_date . '</td>
+                        <td>' . $company->request_type . '</td>
                         <td>' . $company->trade_name . '</td>
                         <td>' . ($company->categorydata ? $company->categorydata->name : 'غير محدد') . '</td>
                         <td>' . ($company->companytype ? $company->companytype->name : 'غير محدد') . '</td>

@@ -102,6 +102,8 @@ class CompaniesController extends Controller
                     'status' => 'required',
                     'regions' => 'required',
                     'branches' => 'required',
+                    'request_date' => 'required',
+                    'request_type' => 'required',
                 ];
                 if ($request->hasFile('commercial_image')) {
                     $rules['commercial_image'] = 'mimes:jpg,png,jpeg,gif,svg,pdf,webp';
@@ -155,6 +157,8 @@ class CompaniesController extends Controller
                     'tax_number.unique' => 'الرقم الضريبي مستخدم بالفعل.',
                     'mobile.unique' => 'رقم الهاتف مستخدم بالفعل.',
                     'commercial_number.unique' => 'رقم السجل التجاري مستخدم بالفعل.',
+                    'request_date.required' => 'من فضلك حدد تاريخ تقديم الطلب',
+                    'request_type.required' => 'من فضلك حدد نوع الطلب',
                 ];
 
                 $validator = Validator::make($data, $rules, $messages);
@@ -209,6 +213,8 @@ class CompaniesController extends Controller
                 $company->commercial_record = $commercial_record;
                 $company->tourism_image = $tourism_image;
                 $company->room_certificate = $room_certificate;
+                $company->request_date = $data['request_date'];
+                $company->request_type = $data['request_type'];
                 $company->save();
                 return $this->success_message('تم اضافة شركة جديدة بنجاح ');
             } catch (\Exception $e) {
@@ -259,7 +265,9 @@ class CompaniesController extends Controller
                     'type' => 'required',
                     'status' => 'required',
                     'regions' => 'required',
-                    'branches' => 'required'
+                    'branches' => 'required',
+                    'request_date' => 'required',
+                    'request_type' => 'required',
                 ];
 
                 if ($request->hasFile('commercial_image')) {
@@ -315,6 +323,8 @@ class CompaniesController extends Controller
                     'commercial_record.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
                     'tourism_image.required' => ' من فضلك ادخل صورة اذن السياحة ',
                     'tourism_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,webp,svg,pdf ',
+                    'request_date.required' => 'من فضلك حدد تاريخ تقديم الطلب',
+                    'request_type.required' => 'من فضلك حدد نوع الطلب',
                 ];
 
                 $validator = Validator::make($data, $rules, $messages);
@@ -394,6 +404,8 @@ class CompaniesController extends Controller
                     'region' => $data['regions'],
                     'branch' => $data['branches'],
                     'tourism_expire_date' => $data['tourism_expire_date'],
+                    'request_date' => $data['request_date'],
+                    'request_type' => $data['request_type'],
 
                 ]);
                 return $this->success_message(' تم تعديل الشركة بنجاح  ');
@@ -424,7 +436,7 @@ class CompaniesController extends Controller
         if ($user->type == 'admin') {
             $transactions = FinanialTransaction::with('company_data', 'employe_data')->where('company_id', $id)->get();
         } elseif ($user->type == 'supervisor') {
-            $query = FinanialTransaction::with('company_data', 'employe_data')->where('region', $user->regions);
+            $query = FinanialTransaction::with('company_data', 'employe_data')->where('region', $user->regions)->where('company_id', $id);
             if ($user->branches !== null) {
                 $query->where('branch', $user->branches);
             }
@@ -874,6 +886,8 @@ class CompaniesController extends Controller
                     'commercial_record' => 'nullable|mimes:jpg,png,jpeg,gif,svg,pdf,webp',
                     'tourism_image' => 'nullable|mimes:jpg,png,jpeg,gif,svg,pdf,webp',
                     'room_certificate' => 'nullable|mimes:jpg,png,jpeg,gif,svg,pdf,webp',
+                    'request_date' => 'required',
+                    'request_type' => 'required',
                 ];
                 $messages = [
                     'commercial_image.mimes' => ' الملفات المسموح بها فقط تكون من نوع => jpg,png,jpeg,gif,svg,webp,pdf ',
@@ -914,6 +928,8 @@ class CompaniesController extends Controller
                     'tax_number.unique' => 'الرقم الضريبي مستخدم بالفعل.',
                     'mobile.unique' => 'رقم الهاتف مستخدم بالفعل.',
                     'commercial_number.unique' => 'رقم السجل التجاري مستخدم بالفعل.',
+                    'request_date.required' => 'من فضلك حدد تاريخ تقديم الطلب',
+                    'request_type.required' => 'من فضلك حدد نوع الطلب',
                 ];
 
                 $validator = Validator::make($data, $rules, $messages);
@@ -969,6 +985,8 @@ class CompaniesController extends Controller
                 $company->tourism_image = $tourism_image;
                 $company->room_certificate = $room_certificate;
                 $company->active_status = 0;
+                $company->request_date = $data['request_date'];
+                $company->request_type = $data['request_type'];
 
                 $company->save();
                 return $this->success_message(' تم اضافة الشركة بنجاح انتظر التفعيل من الادارة  ');

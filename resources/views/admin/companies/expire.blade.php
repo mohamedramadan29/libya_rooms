@@ -156,27 +156,27 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if (\Illuminate\Support\Facades\Auth::user()->type == 'admin')
+                                            {{-- @if (\Illuminate\Support\Facades\Auth::user()->type == 'admin') --}}
                                                 <a href="{{ url('admin/companies/update/' . $company['id']) }}"
                                                     class="btn btn-primary btn-sm"> <i class="fa fa-edit"></i> </a>
                                                 <button data-target="#delete_model_{{ $company['id'] }}"
                                                     data-toggle="modal" class="btn btn-danger btn-sm"><i
                                                         class="fa fa-trash"></i>
                                                 </button>
-                                            @endif
+                                            {{-- @endif --}}
 
-                                            @if (Auth::user()->type == 'market' && $company['market_confirm'] != 1)
+                                            {{-- @if (Auth::user()->type == 'market' && $company['market_confirm'] != 1) --}}
                                                 <button data-target="#market_confirm_{{ $company['id'] }}"
                                                     data-toggle="modal" class="btn btn-success btn-sm"><i
                                                         class="fa fa-check"> توثيق الشركه </i>
                                                 </button>
-                                            @endif
+                                            {{-- @endif --}}
 
-                                            @if (Auth::user()->type == 'money' && $company['money_confirm'] != 1)
+                                            {{-- @if (Auth::user()->type == 'money' && $company['money_confirm'] != 1) --}}
                                                 <a href="{{ url('admin/companies/money_confirm/' . $company['id']) }}"
                                                     class="btn btn-success btn-sm"><i class="fa fa-check"> تأكيد الدفع </i>
                                                 </a>
-                                            @endif
+                                            {{-- @endif --}}
                                         </td>
                                     </tr>
                                     @include('admin.companies.delete')

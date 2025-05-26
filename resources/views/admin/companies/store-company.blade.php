@@ -45,6 +45,25 @@
                                         <input min="1" type="number" class="form-control"
                                             name="company_number" value="{{ old('company_number') }}">
                                     </div>
+                                    <div class="form-group ">
+                                        <label class="form-label"> تاريخ تقديم الطلب : </label>
+                                        <input required type="date" class="form-control" name="request_date"
+                                            value="{{ old('request_date') }}">
+                                    </div>
+                                    <div class="form-group ">
+                                        <label class="form-label"> نوع الطلب : </label>
+                                        <select required name="request_type" class="form-control">
+                                            <option value="">- حدد نوع الطلب -</option>
+                                            <option value="قيد جديد" {{ old('request_type') == 'قيد جديد' ? 'selected' : '' }}>
+                                                قيد
+                                                جديد
+                                            </option>
+                                            <option value="تجديد قيد"
+                                                {{ old('request_type') == 'تجديد قيد' ? 'selected' : '' }}>
+                                                تجديد قيد
+                                            </option>
+                                        </select>
+                                    </div>
                                     <div class="form-group">
                                         <label>المنطقة</label>
                                         <select required name="regions" id="regions" class="form-control">

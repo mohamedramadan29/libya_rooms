@@ -45,6 +45,25 @@
                                         value="{{ $company['company_number'] }}">
                                 </div>
                                 <div class="form-group ">
+                                    <label class="form-label"> تاريخ تقديم الطلب : </label>
+                                    <input required type="date" class="form-control" name="request_date"
+                                        value="{{ $company['request_date'] }}">
+                                </div>
+                                <div class="form-group ">
+                                    <label class="form-label"> نوع الطلب : </label>
+                                    <select required name="request_type" class="form-control">
+                                        <option value="">- حدد نوع الطلب -</option>
+                                        <option value="قيد جديد" {{ $company['request_type'] == 'قيد جديد' ? 'selected' : '' }}>
+                                            قيد
+                                            جديد
+                                        </option>
+                                        <option value="تجديد قيد"
+                                            {{ $company['request_type'] == 'تجديد قيد' ? 'selected' : '' }}>
+                                            تجديد قيد
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group ">
                                     <label class="form-label"> اسم الممثل القانوني : </label>
                                     <input type="text" class="form-control" name="name"
                                         value="{{ $company['name'] }}">

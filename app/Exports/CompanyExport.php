@@ -19,13 +19,17 @@ class CompanyExport implements FromCollection, WithHeadings, WithStyles
     public function collection()
     {
         $user = Auth::user();
-        // جلب البيانات المطلوبة مع العلاقات
-        $companies = Companies::with('subcategory', 'categorydata', 'companytype')
-        ->where('region', $user->regions)
+        if ($user->type == 'admin') {
+            $companies = Companies::with('subcategory', 'categorydata', 'companytype')
+            ->orderby('id', 'desc')
+            ->get();
+        } elseif ($user->type == 'supervisor') {
+            $companies = Companies::with('subcategory', 'categorydata', 'companytype')
+            ->where('region', $user->regions)
             ->where('branch', $user->branches)
             ->orderby('id', 'desc')
             ->get();
-
+        }
         // معالجة البيانات المراد تصديرها
         return $companies->map(function ($company) {
             // التحقق من تاريخ الانتهاء
@@ -36,6 +40,8 @@ class CompanyExport implements FromCollection, WithHeadings, WithStyles
 
             return [
                 $company->company_number,
+                $company->request_date,
+                $company->request_type,
                 $company->trade_name,
                 $company->categorydata->name ?? 'غير محدد',
                 $company->companytype->name ?? 'غير محدد',
@@ -53,6 +59,8 @@ class CompanyExport implements FromCollection, WithHeadings, WithStyles
     {
         return [
             ' رقم القيد ',
+            'تاريخ تقديم الطلب',
+            'نوع الطلب',
             'اسم النشاط',
             'الشعبة',
             'الشكل القانوني',
